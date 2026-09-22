@@ -14,7 +14,7 @@ CanIEatThis is a mobile-first PWA prototype for international visitors eating in
 - Dining Assistant with party size, budget, temporary preference, hard-constraint filtering and rule-checked table plans.
 - Waiter Mode with large Chinese requests and confirmed order context.
 - Split Bill with equal, by-item and mixed modes, exact CNY reconciliation and native share-sheet hook.
-- Lightweight Find Food entry point and localStorage persistence for the Food Passport/session demo.
+- Lightweight Find Food entry point and scoped `cit:*` localStorage persistence for the Food Passport/session demo.
 - Installable PWA manifest, responsive mobile UI and generated Service Worker for offline shell caching.
 
 ## Run locally
@@ -32,6 +32,6 @@ npm run build
 npm run preview
 ```
 
-The current repository is intentionally backend-free. Menu/receipt recognition uses a deterministic local demo parser so the product flow can be tested offline. The parser and recommendation validator are isolated in `src/App.tsx` and can be replaced by OCR/AI services without changing the core UI flow.
+The current repository is intentionally backend-free. Menu recognition uses a deterministic local demo parser: both the sample menu and an uploaded image return the same six-dish fixture, while recording the source as `sample` or `uploaded-image`. The MVP does not perform OCR, upload the image, or claim that an image was actually recognized. Risk evaluation, recommendation validation, staff messages and storage helpers are isolated under `src/logic/` for deterministic testing and later replacement by OCR/AI services.
 
 Safety boundary: this app provides decision support from menu evidence and user input. It never makes an absolute allergy-safety claim; serious allergies must still be confirmed with the restaurant.
