@@ -1,6 +1,8 @@
-# CanIEatThis
+# Bitewise 食见
 
-CanIEatThis is a mobile-first PWA prototype for international visitors eating in China.
+Bitewise (食见) is a mobile-first PWA prototype for international visitors eating in China.
+
+> Your AI dining companion in China.
 
 > Understand the dish. Know what fits you. Order with confidence.
 
@@ -13,7 +15,7 @@ CanIEatThis is a mobile-first PWA prototype for international visitors eating in
 - Dish details, cultural context and bilingual Ask Restaurant copy with Chinese speech playback.
 - Dining Assistant with party size, budget, temporary preference, hard-constraint filtering and rule-checked table plans.
 - Waiter Mode with large Chinese requests and confirmed order context.
-- Split Bill with equal, by-item and mixed modes, exact CNY reconciliation and native share-sheet hook.
+- Split Bill with equal and by-item modes, exact CNY reconciliation and native share-sheet hook.
 - Lightweight Find Food entry point and localStorage persistence for the Food Passport/session demo.
 - Installable PWA manifest, responsive mobile UI and generated Service Worker for offline shell caching.
 
