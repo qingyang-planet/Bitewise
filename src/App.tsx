@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import * as React from 'react'
 import { createPortal } from 'react-dom'
+import { analyzeMenuImage, askDiningAssistant, validateMenuImage, type BackendDish, type BackendRisk } from './api'
 
 type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
 type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
@@ -340,6 +341,39 @@ const dishes: Dish[] = [
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
 
+const emptyLocalized: Record<Language, string> = { en: '', ko: '', ja: '', ru: '', es: '', it: '' }
+const mapBackendDish = (raw: BackendDish): Dish => {
+  const local = dishes.find((dish) => dish.name.toLowerCase() === raw.name.toLowerCase() || dish.zh === raw.zh)
+  const localized = { ...emptyLocalized, ...(local?.localized || {}), ...(raw.localized || {}), en: raw.localized?.en || raw.name }
+  Object.keys(localized).forEach((key) => { if (!localized[key as Language]) localized[key as Language] = raw.name })
+  return {
+    ...(local || {
+      imageSrc: '/bitewise-icon-192.png', className: 'visual-greens', taste: 'Not provided by the menu', texture: 'Not provided by the menu', cooking: 'Not provided by the menu', bestWith: 'Ask the restaurant', culture: 'No cultural context was returned.', reason: 'This dish was extracted from the uploaded menu and still needs restaurant confirmation.',
+    }),
+    id: raw.id,
+    name: raw.name,
+    zh: raw.zh,
+    localized,
+    price: raw.price ?? local?.price ?? 0,
+    ingredients: raw.ingredients,
+    zhIngredients: local?.zhIngredients || raw.ingredients,
+    allergens: raw.allergens,
+    possibleAllergens: raw.possibleAllergens,
+    tags: raw.tags,
+    spicy: raw.spicy ?? 0,
+    vegetarian: raw.vegetarian ?? local?.vegetarian ?? false,
+    vegan: raw.vegan ?? local?.vegan ?? false,
+    hasPork: raw.hasPork ?? local?.hasPork,
+    hasBeef: raw.hasBeef ?? local?.hasBeef,
+    hasPoultry: raw.hasPoultry ?? local?.hasPoultry,
+    hasSeafood: raw.hasSeafood ?? local?.hasSeafood,
+    hasOffal: raw.hasOffal ?? local?.hasOffal,
+    hasCilantro: raw.hasCilantro ?? local?.hasCilantro,
+    confidence: raw.confidence,
+  }
+}
+const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized })
+
 const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
 
 type DiningOrder = { id: string; restaurant: string; initials: string; location: string; time: string; status: 'current' | 'completed'; itemCount: number; total: number; preview: string; tone: string; billItems: BillItem[]; receiptItems: BillItem[]; menuSnapshot?: Dish[]; cartSnapshot?: CartItem[]; passportSnapshot?: Passport; companionNames?: string[]; savedAt?: number }
@@ -623,7 +657,10 @@ function App() {
   const [askSheet, setAskSheet] = useState(false)
   const [scanImage, setScanImage] = useState<string | null>(null)
   const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const [lastScanFile, setLastScanFile] = useState<File | null>(null)
   const [capturedPages, setCapturedPages] = useState<CapturedPage[]>([])
+  const [capturedFiles, setCapturedFiles] = useState<File[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
   const [sessionMenu, setSessionMenu] = useState<Dish[]>(() => {
     try {
@@ -632,6 +669,8 @@ function App() {
     } catch { return [] }
   })
   const [sessionRestaurant, setSessionRestaurant] = useState(() => localStorage.getItem('cit:session-restaurant') || '')
+  const [sessionRisks, setSessionRisks] = useState<Record<string, BackendRisk>>({})
+  const [analysisPassportKey, setAnalysisPassportKey] = useState('')
   const [sessionOrders, setSessionOrders] = useState<DiningOrder[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('cit:session-orders') || '') as DiningOrder[]
@@ -657,6 +696,9 @@ function App() {
   const [selectedCompanionEmail, setSelectedCompanionEmail] = useState<string | null>(null)
   const [activeCompanionIds, setActiveCompanionIds] = useState<string[]>([])
   const [toast, setToast] = useState('')
+  const [assistantAnswer, setAssistantAnswer] = useState('')
+  const [assistantLoading, setAssistantLoading] = useState(false)
+  const cameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const billInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const t = (key: CopyKey) => tFor(language, key)
@@ -696,6 +738,7 @@ function App() {
   useEffect(() => { localStorage.setItem('cit:session-restaurant', sessionRestaurant) }, [sessionRestaurant])
   useEffect(() => { localStorage.setItem('cit:session-orders', JSON.stringify(sessionOrders)) }, [sessionOrders])
   useEffect(() => { if (toast) { const timer = window.setTimeout(() => setToast(''), 2600); return () => window.clearTimeout(timer) } }, [toast])
+  useEffect(() => () => { if (scanImage) URL.revokeObjectURL(scanImage) }, [scanImage])
   useEffect(() => {
     window.scrollTo(0, 0)
     document.documentElement.scrollTop = 0
@@ -784,7 +827,10 @@ function App() {
     if (next === 'scan') {
       setScanImage(null)
       setScanning(false)
+      setScanError('')
+      setLastScanFile(null)
       setCapturedPages([])
+      setCapturedFiles([])
     }
     setScreen(next)
     track(`${next}_open`)
@@ -849,10 +895,11 @@ function App() {
       setToast('Enter the restaurant name before scanning')
       return
     }
-    setScreen('camera')
+    cameraInputRef.current?.click()
     track('camera_open')
   }
-  const addCapturedPage = () => {
+  const addCapturedPage = (file: File) => {
+    setCapturedFiles((current) => [...current, file])
     setCapturedPages((current) => {
       const nextNumber = current.length ? Math.max(...current.map((page) => Number(page.title.replace(/\D/g, '')) || 0)) + 1 : 1
       return [...current, { id: Date.now(), title: `Page ${String(nextNumber).padStart(2, '0')}`, variant: current.length % 3 }]
@@ -860,10 +907,18 @@ function App() {
     track('camera_page_captured')
   }
   const undoCapturedPage = () => {
+    setCapturedFiles((current) => current.slice(0, -1))
     setCapturedPages((current) => current.slice(0, -1))
     track('camera_page_undone')
   }
-  const removeCapturedPage = (id: number) => setCapturedPages((current) => current.filter((page) => page.id !== id))
+  const removeCapturedPage = (id: number) => {
+    setCapturedPages((current) => {
+      const index = current.findIndex((page) => page.id === id)
+      if (index >= 0) setCapturedFiles((files) => files.filter((_file, fileIndex) => fileIndex !== index))
+      return current.filter((page) => page.id !== id)
+    })
+  }
+  const passportKey = JSON.stringify(passport)
   const finishMenuScan = () => {
     const name = sessionRestaurant.trim()
     if (!name) {
@@ -871,29 +926,68 @@ function App() {
       openScreen('scan')
       return
     }
-    setSessionRestaurant(name)
-    setSessionMenu(dishes)
-    setScanning(false)
-    openScreen('menu')
-    track('menu_scan_success')
+    const firstCapturedFile = capturedFiles[0]
+    if (!firstCapturedFile) {
+      setToast('Capture a menu page before finishing')
+      return
+    }
+    void startScan(firstCapturedFile)
   }
-  const startScan = (file?: File) => {
+  const startScan = async (file?: File) => {
     if (!sessionRestaurant.trim()) {
       setToast('Enter the restaurant name before scanning')
       return
     }
-    if (file) setScanImage(URL.createObjectURL(file))
+    setScanError('')
+    if (!file) {
+      setSessionRestaurant(sessionRestaurant.trim())
+      setSessionMenu(dishes)
+      setSessionRisks({})
+      setAnalysisPassportKey('')
+      setScanning(false)
+      setScreen('menu')
+      track('sample_menu_loaded')
+      return
+    }
+    const validationError = validateMenuImage(file)
+    if (validationError) {
+      setScanError(validationError)
+      setToast(validationError)
+      return
+    }
+    setLastScanFile(file)
+    setScanImage(URL.createObjectURL(file))
     setScanning(true)
     track('menu_scan_start')
-    window.setTimeout(finishMenuScan, 1100)
+    try {
+      const result = await analyzeMenuImage(file, { restaurantName: sessionRestaurant.trim(), language, foodPassport: passport })
+      const nextDishes = result.dishes.map(mapBackendDish)
+      setSessionRestaurant(result.restaurantName || sessionRestaurant.trim())
+      setSessionMenu(nextDishes)
+      setSessionRisks(result.risks || {})
+      setAnalysisPassportKey(passportKey)
+      setScanning(false)
+      setScreen('menu')
+      track('menu_scan_success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Menu analysis failed. Please retry or use Sample Menu.'
+      setScanning(false)
+      setScanError(message)
+      setToast(message)
+      track('menu_scan_failed')
+    }
   }
-  const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (file) startScan(file) }
+  const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (file) void startScan(file)
+  }
+  const handleCameraFile = (file: File) => { setScreen('scan'); void startScan(file) }
   const getStatusForPassport = (dish: Dish, profile: Passport): Status => {
     const activeAllergyProfiles = [...profile.allergies.map((id) => profile.allergyProfiles[id] || defaultAllergyProfile), ...(profile.otherAllergen ? [profile.allergyProfiles.other || defaultAllergyProfile] : [])]
     const hasSevereAllergy = activeAllergyProfiles.some((profile) => profile.severity === 'severe')
     const avoidsCrossContact = activeAllergyProfiles.some((profile) => profile.crossContact)
     const avoidFoods = new Set([...profile.avoidFoods, ...profile.diets.filter((id) => avoidFoodIds.includes(id))])
-    if (dish.confidence < 0.7) return 'UNKNOWN'
     if (profile.allergies.some((allergen) => allergenMatchKeys(allergen).some((key) => dish.allergens.includes(key)))) return 'CONFLICT'
     const isVegetarianProfile = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo'].includes(profile.dietStyle) || profile.diets.includes('vegetarian')
     if (isVegetarianProfile && !dish.vegetarian) return 'CONFLICT'
@@ -908,16 +1002,17 @@ function App() {
     if (avoidFoods.has('no-offal') && dish.hasOffal) return 'CONFLICT'
     if ((profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasPork) return 'CONFLICT'
     if (profile.faithDiet === 'kosher' && dish.hasSeafood) return 'CONFLICT'
+    if (dish.confidence < 0.7) return 'UNKNOWN'
     if (hasSevereAllergy && dish.possibleAllergens?.some((allergen) => profile.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))) return 'WARNING'
     if (avoidsCrossContact && (dish.possibleAllergens?.length || dish.confidence < 0.9)) return 'WARNING'
     if (profile.preferences.includes('no-cilantro') && dish.hasCilantro) return 'WARNING'
     if (profile.spiceLevel !== null && dish.spicy > profile.spiceLevel) return 'WARNING'
     return 'MATCH'
   }
-  const getStatus = (dish: Dish): Status => getStatusForPassport(dish, passport)
+  const getStatus = (dish: Dish): Status => analysisPassportKey === passportKey ? sessionRisks[dish.id]?.status || getStatusForPassport(dish, passport) : getStatusForPassport(dish, passport)
   const getDiningStatus = (dish: Dish): Status => {
-    const selectedPassports = [passport, ...currentCompanions.filter((companion) => activeCompanionIds.includes(companion.id)).map((companion) => companion.passport)]
-    const statuses = selectedPassports.map((profile) => getStatusForPassport(dish, profile))
+    const selectedPassports = currentCompanions.filter((companion) => activeCompanionIds.includes(companion.id)).map((companion) => companion.passport)
+    const statuses = [getStatus(dish), ...selectedPassports.map((profile) => getStatusForPassport(dish, profile))]
     if (statuses.includes('CONFLICT')) return 'CONFLICT'
     if (statuses.includes('WARNING')) return 'WARNING'
     if (statuses.includes('UNKNOWN')) return 'UNKNOWN'
@@ -930,9 +1025,20 @@ function App() {
     UNKNOWN: { label: t('unknownLabel'), detail: t('detailsUnknown'), color: 'unknown', icon: 'alert' },
   }[status])
   const dishName = (dish: Dish) => dish.localized[language]
-  const questionFor = (dish: Dish) => passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
+  useEffect(() => {
+    if (!askSheet || !selectedDish || !sessionMenu.length) return
+    let active = true
+    setAssistantAnswer('')
+    setAssistantLoading(true)
+    askDiningAssistant({ question: `What should I ask the restaurant about ${selectedDish.name}?`, language, dishes: sessionMenu.map(serializeDish), foodPassport: passport })
+      .then((result) => { if (active) setAssistantAnswer(result.waiterChinese) })
+      .catch(() => { if (active) setAssistantAnswer('') })
+      .finally(() => { if (active) setAssistantLoading(false) })
+    return () => { active = false }
+  }, [askSheet, selectedDish, sessionMenu, passport, language])
+  const questionFor = (dish: Dish) => assistantAnswer || (passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
     ? '我对花生严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。'
-    : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`
+    : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`)
   const copyQuestion = async () => { await navigator.clipboard?.writeText(questionFor(selectedDish)); setToast('Question copied'); track('ask_restaurant_clicked') }
   const speak = (text: string) => { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); track('question_voice_play') } }
   const addToCart = (dish: Dish) => {
@@ -1012,8 +1118,8 @@ function App() {
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label="Bitewise 食见 home"><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
         {screen === 'home' && <Home t={t} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
-        {screen === 'scan' && <Scan t={t} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
-        {screen === 'camera' && <CameraCapture t={t} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
+        {screen === 'scan' && <Scan t={t} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} cameraInputRef={cameraInputRef} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
+        {screen === 'camera' && <CameraCapture t={t} pages={capturedPages} onCapture={addCapturedPage} onFallbackFile={handleCameraFile} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
         {screen === 'menu' && <MenuResults t={t} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
         {screen === 'detail' && <DishDetail t={t} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
         {screen === 'cart' && <Cart t={t} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onRemove={removeFromCart} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
@@ -1029,7 +1135,7 @@ function App() {
       </main>
       {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
-    {askSheet && <AskSheet t={t} language={language} dish={selectedDish} question={questionFor(selectedDish)} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
+    {askSheet && <AskSheet t={t} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
@@ -1312,26 +1418,69 @@ function Home({ t, passport, dishes, sessionRestaurant, currentOrder, getStatus,
   return <div className="page page-home"><section className="welcome-row"><div><div className="eyebrow"><span className="orange-dot" /> Evidence-aware dining in China</div><h1>{t('hello')}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">Decision-first dining</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />Scan, understand and choose with confidence.</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} conflict${flagged > 1 ? 's' : ''} flagged` : 'Evidence-aware'}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} dishes ready</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {t('recentSession')}</span><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? 'Order saved' : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span><strong>{hasSavedOrder && currentOrder ? currentOrder.time : 'Tonight · 7:42 PM'}</strong><small>{hasSavedOrder && currentOrder ? `${currentOrder.itemCount} dishes ordered · ¥${currentOrder.total}` : hasScannedMenu ? `${savedMenuCount} menu dishes · ${passport.diets.includes('vegetarian') ? 'Vegetarian' : 'Food Passport active'}` : t('scanMenu')}</small></span><button className="more-button"><Icon name="dots" size={20} /></button></div><div className="progress-line"><span style={{ width: hasSavedOrder ? '100%' : hasScannedMenu ? (cart.length ? '82%' : '45%') : '0%' }} /></div><div className="session-actions">{hasScannedMenu ? <><button onClick={() => openScreen('menu')}><Icon name="menu" size={17} /> {hasSavedOrder ? 'View menu' : t('openSession')}</button>{hasSavedOrder && currentOrder ? <><button onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> View order</button></> : <button onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> Review flags</button>}</> : <button onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}</div></div></section>}</div>
 }
 
-function Scan({ t, restaurantName, setRestaurantName, scanImage, scanning, fileInputRef, handleFile, startScan, onOpenCamera, onBack }: { t: (key: CopyKey) => string; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void; onOpenCamera: () => void; onBack: () => void }) {
+function Scan({ t, restaurantName, setRestaurantName, scanImage, scanning, scanError, cameraInputRef, fileInputRef, handleFile, startScan, onRetry, onOpenCamera, onBack }: { t: (key: CopyKey) => string; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; cameraInputRef: RefObject<HTMLInputElement>; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void }) {
   const hasRestaurantName = restaurantName.trim().length > 0
-  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker="Step 01 · Capture" onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">Where are you eating today?</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder="e.g. Chengdu Garden" disabled={scanning} required /><small>We’ll use this name to record today’s dining session.</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt="Uploaded menu preview" /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? 'Choose another photo' : t('upload')}</Button><button className="demo-link" onClick={() => startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
+  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker="Step 01 · Capture" onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">Where are you eating today?</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder="e.g. Chengdu Garden" disabled={scanning} required /><small>We’ll use this name to record today’s dining session.</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt="Uploaded menu preview" /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden /><input ref={fileInputRef} type="file" accept="image/*" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : scanError ? <div className="analysis-error"><strong>Menu analysis failed</strong><p>{scanError}</p><div className="analysis-error-actions"><Button onClick={onRetry} icon="refresh">Retry</Button><Button variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload">Choose another image</Button></div></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? 'Choose another photo' : t('upload')}</Button><button className="demo-link" onClick={() => void startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
 }
 
-function CameraCapture({ t, pages, onCapture, onUndo, onDelete, onDone, onBack }: { t: (key: CopyKey) => string; pages: CapturedPage[]; onCapture: () => void; onUndo: () => void; onDelete: (id: number) => void; onDone: () => void; onBack: () => void }) {
+function CameraCapture({ t, pages, onCapture, onFallbackFile, onUndo, onDelete, onDone, onBack }: { t: (key: CopyKey) => string; pages: CapturedPage[]; onCapture: (file: File) => void; onFallbackFile: (file: File) => void; onUndo: () => void; onDelete: (id: number) => void; onDone: () => void; onBack: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const fallbackInputRef = useRef<HTMLInputElement>(null)
   const [reviewing, setReviewing] = useState(false)
   const [showCapturedPages, setShowCapturedPages] = useState(false)
+  const [cameraReady, setCameraReady] = useState(false)
+  const [cameraError, setCameraError] = useState('')
+  const [reviewFile, setReviewFile] = useState<File | null>(null)
+  const [reviewUrl, setReviewUrl] = useState<string | null>(null)
   const hasPages = pages.length > 0
-  const beginCapture = () => { setReviewing(true); setShowCapturedPages(false) }
-  const confirmCapture = () => { onCapture(); setReviewing(false); setShowCapturedPages(false) }
+  useEffect(() => {
+    let stream: MediaStream | null = null
+    let active = true
+    const openCamera = async () => {
+      if (!navigator.mediaDevices?.getUserMedia) { setCameraError('This browser does not provide camera access.'); return }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false })
+        if (!active || !videoRef.current) return
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+        setCameraReady(true)
+      } catch { setCameraError('Camera permission was denied or no camera is available. You can upload a photo instead.') }
+    }
+    void openCamera()
+    return () => { active = false; stream?.getTracks().forEach((track) => track.stop()) }
+  }, [])
+  useEffect(() => () => { if (reviewUrl) URL.revokeObjectURL(reviewUrl) }, [reviewUrl])
+  const captureFrame = () => {
+    const video = videoRef.current
+    const canvas = canvasRef.current
+    if (!video || !canvas || !cameraReady || video.videoWidth === 0) { setCameraError('The camera preview is not ready yet. Please try again or upload a photo.'); return }
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height)
+    canvas.toBlob((blob) => {
+      if (!blob) { setCameraError('The captured image could not be created. Please try again.'); return }
+      const file = new File([blob], `menu-${Date.now()}.jpg`, { type: 'image/jpeg' })
+      if (reviewUrl) URL.revokeObjectURL(reviewUrl)
+      setReviewFile(file)
+      setReviewUrl(URL.createObjectURL(file))
+      setReviewing(true)
+      setShowCapturedPages(false)
+    }, 'image/jpeg', 0.9)
+  }
+  const confirmCapture = () => { if (reviewFile) onCapture(reviewFile); setReviewing(false); setReviewFile(null); setShowCapturedPages(false) }
+  const fallbackFileSelected = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; event.target.value = ''; if (file) onFallbackFile(file) }
   const focusViewfinder = () => { setShowCapturedPages(false); document.querySelector<HTMLElement>('.camera-viewport')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
 
   return <div className="page page-narrow page-camera">
     <PageHeader title={t('capture')} kicker="Step 01 · Camera" onBack={onBack} />
-    <div className="camera-intro"><strong>Keep the whole menu in frame</strong><small>OCR boundary detected · ready for the next page</small></div>
+    <div className="camera-intro"><strong>Keep the whole menu in frame</strong><small>{cameraReady ? 'Rear camera ready · the image is sent only for analysis' : 'Requesting rear camera access…'}</small></div>
     <div className={`camera-stage ${reviewing ? 'camera-stage-review' : ''}`}>
       <div className="camera-viewport">
         <div className={`camera-scene ${reviewing ? 'camera-scene-review' : ''}`}>
-          <div className={`camera-menu-sheet ${reviewing ? 'camera-menu-sheet-review' : ''}`}><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span><span>香煎茄子　　 ¥26</span></div>
+          {reviewing && reviewUrl ? <img className="camera-review-image" src={reviewUrl} alt="Captured menu preview" /> : <video ref={videoRef} className="camera-video" playsInline muted aria-label="Live menu camera preview" />}
+          {cameraError && !reviewing && <div className="camera-fallback"><strong>Camera unavailable</strong><small>{cameraError}</small><Button variant="secondary" onClick={() => fallbackInputRef.current?.click()} icon="upload">Choose a photo</Button><input ref={fallbackInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={fallbackFileSelected} hidden /></div>}
+          {!cameraReady && !reviewing && <div className="camera-menu-sheet"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span><span>香煎茄子　　 ¥26</span></div>}
           <div className="camera-boundary"><i /><i /><i /><i /></div>
           {!reviewing && <div className="camera-scan-line" />}
         </div>
@@ -1344,12 +1493,13 @@ function CameraCapture({ t, pages, onCapture, onUndo, onDelete, onDone, onBack }
       </div> : <div className={`camera-controls ${hasPages ? 'camera-controls-ready' : 'camera-controls-first'}`}>
         {hasPages ? <button type="button" className="camera-control camera-undo" aria-label="Undo last captured page" onClick={onUndo}><Icon name="undo" size={23} /><small>Undo</small></button> : <span aria-hidden="true" />}
         <div className="camera-center-control">
-          <button type="button" className="shutter-button" aria-label="Capture menu page" onClick={beginCapture}><span /></button>
+          <button type="button" className="shutter-button" aria-label="Capture menu page" onClick={captureFrame}><span /></button>
         </div>
         {hasPages ? <button type="button" className={`camera-pages-trigger ${showCapturedPages ? 'active' : ''}`} aria-label="Show captured pages" aria-expanded={showCapturedPages} onClick={() => setShowCapturedPages((current) => !current)}><span className="camera-pages-thumb"><span>{pages.length}</span></span><small>Pages</small></button> : <span aria-hidden="true" />}
       </div>}
       {!reviewing && showCapturedPages && hasPages && <section className="captured-pages camera-pages-popover"><div className="captured-heading"><div><strong>Captured pages</strong><small>{pages.length} page{pages.length === 1 ? '' : 's'} · keep scanning</small></div><span>{t('everyPage')}</span></div><div className="page-thumbnails">{pages.map((page) => <div className={`page-thumbnail page-thumbnail-${page.variant}`} key={page.id}><div className="thumbnail-paper"><b>{page.title}</b><span>今日菜单</span><em>¥38</em><em>¥28</em><em>¥22</em></div><button type="button" className="thumbnail-delete" aria-label={`Delete ${page.title}`} onClick={() => onDelete(page.id)}><Icon name="close" size={11} /></button></div>)}<button type="button" className="thumbnail-add" aria-label="Add another page" onClick={focusViewfinder}><Icon name="plus" size={20} /></button></div></section>}
     </div>
+    <canvas ref={canvasRef} className="camera-canvas" aria-hidden="true" />
   </div>
 }
 
@@ -1533,7 +1683,7 @@ function OrderPage({ language, passport, cart, savedOrder, onBack, onComplete, o
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
 function Fact({ title, value }: { title: string; value: string }) { return <div className="fact-card"><span>{title}</span><strong>{value}</strong></div> }
 
-function AskSheet({ t, language, dish, question, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; language: Language; dish: Dish; question: string; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> Step 04 · Ask</div><button className="icon-button soft" onClick={onClose}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>中文 · Show first</strong><p>{question}</p><hr /><strong>{dish.name}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume">{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy">{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">If the restaurant cannot confirm, keep this dish excluded from recommendations. Menu evidence cannot determine kitchen cross-contact.</p></section></div> }
+function AskSheet({ t, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> Step 04 · Ask</div><button className="icon-button soft" onClick={onClose}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>中文 · Show first</strong>{loading ? <p className="assistant-loading"><span className="loader" /> Preparing a restaurant question…</p> : <p>{question}</p>}<hr /><strong>{dish.name}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume" disabled={loading}>{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy" disabled={loading}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">If the restaurant cannot confirm, keep this dish excluded from recommendations. Menu evidence cannot determine kitchen cross-contact.</p></section></div> }
 
 
 function Bill({ t, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
