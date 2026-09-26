@@ -39,7 +39,7 @@ export type AssistantResponse = { answer: string; waiterChinese: string; needsRe
 
 export const MAX_MENU_IMAGE_BYTES = 8 * 1024 * 1024
 export const MENU_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001').replace(/\/$/, '')
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:3001' : '')).replace(/\/$/, '')
 
 export function validateMenuImage(file: File): string | null {
   if (!MENU_IMAGE_TYPES.includes(file.type as typeof MENU_IMAGE_TYPES[number])) return 'Please choose a JPEG, PNG, or WebP image.'

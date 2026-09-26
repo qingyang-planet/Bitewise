@@ -8,6 +8,7 @@
     "dev:full": "concurrently -k \"npm:server\" \"npm:dev\"",
     "server": "tsx watch server/index.ts",
     "server:start": "tsx server/index.ts",
+    "vercel-build": "npm run build && cp -R dist/. public/",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false && tsc --noEmit -p tsconfig.server.json"
