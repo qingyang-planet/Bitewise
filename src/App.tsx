@@ -1,18 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import * as React from 'react'
 import { createPortal } from 'react-dom'
 
 type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
-type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'assistant' | 'order' | 'waiter' | 'bill' | 'find' | 'profile' | 'passport'
+type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
 type Status = 'MATCH' | 'WARNING' | 'CONFLICT' | 'UNKNOWN'
-type Filter = 'all' | 'forMe' | 'vegetarian' | 'notSpicy'
 type BillMode = 'equal' | 'item'
 type AllergySeverity = 'mild' | 'moderate' | 'severe'
 type AllergyProfile = { severity: AllergySeverity; crossContact: boolean }
-type DietStyle = 'none' | 'vegetarian' | 'vegan' | 'pescatarian'
+type DietStyle = 'none' | 'vegetarian' | 'vegan' | 'lacto' | 'ovo' | 'lacto-ovo' | 'pescatarian' | 'flexitarian'
 type FaithDiet = 'none' | 'halal' | 'kosher' | 'other'
 type UserProfile = { username: string; email: string }
+type SavedRestaurant = { id: string; name: string; initials: string; emoji: string; cuisine: string; location: string; why: string; tone: string }
+type Companion = { id: string; name: string; email: string; initials: string; passport: Passport; note: string; inviteId: string }
+type CompanionAddResult = { ok: boolean; message: string }
+type CompanionInvite = { id: string; fromEmail: string; toEmail: string; status: 'pending' | 'accepted' | 'declined' | 'revoked'; createdAt: number }
 type CapturedPage = { id: number; title: string; variant: number }
 
 type Passport = {
@@ -68,6 +71,11 @@ type BillItem = {
   zh: string
   amount: number
   dish: Dish
+}
+
+type CartItem = {
+  dish: Dish
+  quantity: number
 }
 
 const languages: Array<{ code: Language; label: string; native: string }> = [
@@ -300,17 +308,27 @@ const tFor = (language: Language, key: CopyKey): string => (copy[language][key] 
 
 type AccountCopy = {
   registerEyebrow: string; registerTitle: string; registerSubtitle: string; usernameLabel: string; usernamePlaceholder: string; emailLabel: string; emailPlaceholder: string; continueLabel: string
-  loginEyebrow: string; loginTitle: string; loginSubtitle: string; loginEmailPlaceholder: string; loginButton: string; loginError: string
+  loginEyebrow: string; loginTitle: string; loginSubtitle: string; loginEmailPlaceholder: string; loginButton: string; loginError: string; registerNewUser: string
   profileEyebrow: string; profileTitle: string; basicInfo: string; foodPassportTitle: string; foodPassportDesc: string; otherSettings: string; languagePreference: string; languagePreferenceDesc: string; signOut: string; signOutDesc: string; resetDemo: string; resetDemoDesc: string; passportSummary: string
 }
 
 const accountCopy: Record<Language, AccountCopy> = {
-  en: { registerEyebrow: 'CREATE YOUR PROFILE', registerTitle: 'Make the meal yours.', registerSubtitle: 'Save your name and email so your Food Passport stays with you.', usernameLabel: 'Username', usernamePlaceholder: 'e.g. Alex Chen', emailLabel: 'Email', emailPlaceholder: 'you@example.com', continueLabel: 'Continue', loginEyebrow: 'WELCOME BACK', loginTitle: 'Let’s get back to your table.', loginSubtitle: 'Enter your email to continue with your saved Food Passport.', loginEmailPlaceholder: 'you@example.com', loginButton: 'Log in', loginError: 'That email does not match this demo account.', profileEyebrow: 'MY PROFILE', profileTitle: 'Make dining feel more like you.', basicInfo: 'Basic information', foodPassportTitle: 'Food Passport', foodPassportDesc: 'Allergies, dietary rules and everyday preferences', otherSettings: 'Other settings', languagePreference: 'Language preference', languagePreferenceDesc: 'Change the language used across Bitewise', signOut: 'Log out', signOutDesc: 'Return to the login screen', resetDemo: 'Reset demo', resetDemoDesc: 'Clear this demo and start from the welcome page', passportSummary: 'Your personal food safety settings' },
-  ko: { registerEyebrow: '프로필 만들기', registerTitle: '나에게 맞는 식사를 시작하세요.', registerSubtitle: '이름과 이메일을 저장하면 푸드 패스포트를 계속 사용할 수 있어요.', usernameLabel: '사용자 이름', usernamePlaceholder: '예: Alex Chen', emailLabel: '이메일', emailPlaceholder: 'you@example.com', continueLabel: '계속', loginEyebrow: '다시 오셨군요', loginTitle: '테이블로 돌아가요.', loginSubtitle: '저장된 푸드 패스포트를 사용하려면 이메일을 입력하세요.', loginEmailPlaceholder: '이메일을 입력하세요', loginButton: '로그인', loginError: '이 데모 계정과 일치하지 않는 이메일입니다.', profileEyebrow: '내 프로필', profileTitle: '더 나다운 식사를 만들어 보세요.', basicInfo: '기본 정보', foodPassportTitle: '푸드 패스포트', foodPassportDesc: '알레르기, 식단 규칙과 일상 선호', otherSettings: '기타 설정', languagePreference: '언어 설정', languagePreferenceDesc: 'Bitewise에서 사용할 언어 변경', signOut: '로그아웃', signOutDesc: '로그인 화면으로 돌아가기', resetDemo: '데모 초기화', resetDemoDesc: '데모를 지우고 환영 페이지부터 시작', passportSummary: '개인 음식 안전 설정' },
-  ja: { registerEyebrow: 'プロフィールを作成', registerTitle: '自分らしい食事を始めましょう。', registerSubtitle: '名前とメールを保存すると、フードパスポートを使い続けられます。', usernameLabel: 'ユーザー名', usernamePlaceholder: '例：Alex Chen', emailLabel: 'メール', emailPlaceholder: 'you@example.com', continueLabel: '続ける', loginEyebrow: 'おかえりなさい', loginTitle: 'テーブルに戻りましょう。', loginSubtitle: '保存したフードパスポートを使うにはメールアドレスを入力してください。', loginEmailPlaceholder: 'メールアドレス', loginButton: 'ログイン', loginError: 'このデモアカウントと一致しません。', profileEyebrow: 'マイプロフィール', profileTitle: 'もっと自分らしい食事に。', basicInfo: '基本情報', foodPassportTitle: 'フードパスポート', foodPassportDesc: 'アレルギー、食事ルール、日常の好み', otherSettings: 'その他の設定', languagePreference: '言語設定', languagePreferenceDesc: 'Bitewiseで使う言語を変更', signOut: 'ログアウト', signOutDesc: 'ログイン画面に戻る', resetDemo: 'デモをリセット', resetDemoDesc: 'デモを消去してウェルカム画面から開始', passportSummary: 'あなたの食の安全設定' },
-  ru: { registerEyebrow: 'СОЗДАЙТЕ ПРОФИЛЬ', registerTitle: 'Сделайте ужин своим.', registerSubtitle: 'Сохраните имя и почту, чтобы ваш пищевой паспорт был с вами.', usernameLabel: 'Имя пользователя', usernamePlaceholder: 'например, Alex Chen', emailLabel: 'Электронная почта', emailPlaceholder: 'you@example.com', continueLabel: 'Продолжить', loginEyebrow: 'С ВОЗВРАЩЕНИЕМ', loginTitle: 'Вернёмся к вашему столу.', loginSubtitle: 'Введите электронную почту, чтобы продолжить с сохранённым паспортом.', loginEmailPlaceholder: 'Ваша электронная почта', loginButton: 'Войти', loginError: 'Эта почта не совпадает с демо-аккаунтом.', profileEyebrow: 'МОЙ ПРОФИЛЬ', profileTitle: 'Сделайте питание своим.', basicInfo: 'Основная информация', foodPassportTitle: 'Пищевой паспорт', foodPassportDesc: 'Аллергии, правила питания и предпочтения', otherSettings: 'Другие настройки', languagePreference: 'Язык', languagePreferenceDesc: 'Изменить язык Bitewise', signOut: 'Выйти', signOutDesc: 'Вернуться к экрану входа', resetDemo: 'Сбросить демо', resetDemoDesc: 'Очистить демо и начать с приветствия', passportSummary: 'Ваши настройки пищевой безопасности' },
-  es: { registerEyebrow: 'CREA TU PERFIL', registerTitle: 'Haz tuya la comida.', registerSubtitle: 'Guarda tu nombre y correo para conservar tu pasaporte de comida.', usernameLabel: 'Nombre de usuario', usernamePlaceholder: 'p. ej., Alex Chen', emailLabel: 'Correo electrónico', emailPlaceholder: 'tu@ejemplo.com', continueLabel: 'Continuar', loginEyebrow: 'TE DAMOS LA BIENVENIDA', loginTitle: 'Volvamos a la mesa.', loginSubtitle: 'Introduce tu correo para continuar con tu pasaporte guardado.', loginEmailPlaceholder: 'Tu correo electrónico', loginButton: 'Iniciar sesión', loginError: 'Ese correo no coincide con esta cuenta de demo.', profileEyebrow: 'MI PERFIL', profileTitle: 'Haz que comer se sienta más tuyo.', basicInfo: 'Información básica', foodPassportTitle: 'Pasaporte de comida', foodPassportDesc: 'Alergias, reglas alimentarias y preferencias', otherSettings: 'Otros ajustes', languagePreference: 'Idioma', languagePreferenceDesc: 'Cambia el idioma de Bitewise', signOut: 'Cerrar sesión', signOutDesc: 'Volver a la pantalla de inicio de sesión', resetDemo: 'Restablecer demo', resetDemoDesc: 'Borrar la demo y empezar desde la bienvenida', passportSummary: 'Tus ajustes de seguridad alimentaria' },
-  it: { registerEyebrow: 'CREA IL TUO PROFILO', registerTitle: 'Rendi il pasto più tuo.', registerSubtitle: 'Salva nome ed email per portare con te il passaporto alimentare.', usernameLabel: 'Nome utente', usernamePlaceholder: 'es. Alex Chen', emailLabel: 'Email', emailPlaceholder: 'tu@esempio.com', continueLabel: 'Continua', loginEyebrow: 'BENTORNATO', loginTitle: 'Torniamo al tuo tavolo.', loginSubtitle: 'Inserisci la tua email per usare il passaporto salvato.', loginEmailPlaceholder: 'La tua email', loginButton: 'Accedi', loginError: 'L’email non corrisponde a questo account demo.', profileEyebrow: 'IL MIO PROFILO', profileTitle: 'Rendi il pasto più personale.', basicInfo: 'Informazioni di base', foodPassportTitle: 'Passaporto alimentare', foodPassportDesc: 'Allergie, regole alimentari e preferenze', otherSettings: 'Altre impostazioni', languagePreference: 'Lingua', languagePreferenceDesc: 'Cambia la lingua di Bitewise', signOut: 'Esci', signOutDesc: 'Torna alla schermata di accesso', resetDemo: 'Reimposta demo', resetDemoDesc: 'Cancella la demo e ricomincia dal benvenuto', passportSummary: 'Le tue impostazioni di sicurezza alimentare' },
+  en: { registerEyebrow: 'CREATE YOUR PROFILE', registerTitle: 'Make the meal yours.', registerSubtitle: 'Save your name and email so your Food Passport stays with you.', usernameLabel: 'Username', usernamePlaceholder: 'e.g. Alex Chen', emailLabel: 'Email', emailPlaceholder: 'you@example.com', continueLabel: 'Continue', loginEyebrow: 'WELCOME BACK', loginTitle: 'Let’s get back to your table.', loginSubtitle: 'Enter your email to continue with your saved Food Passport.', loginEmailPlaceholder: 'you@example.com', loginButton: 'Log in', loginError: 'That email does not match this demo account.', registerNewUser: 'Register a new user', profileEyebrow: 'MY PROFILE', profileTitle: 'Make dining feel more like you.', basicInfo: 'Basic information', foodPassportTitle: 'Food Passport', foodPassportDesc: 'Allergies, dietary rules and everyday preferences', otherSettings: 'Other settings', languagePreference: 'Language preference', languagePreferenceDesc: 'Change the language used across Bitewise', signOut: 'Log out', signOutDesc: 'Return to the login screen', resetDemo: 'Reset demo', resetDemoDesc: 'Clear this demo and start from the welcome page', passportSummary: 'Your personal food safety settings' },
+  ko: { registerEyebrow: '프로필 만들기', registerTitle: '나에게 맞는 식사를 시작하세요.', registerSubtitle: '이름과 이메일을 저장하면 푸드 패스포트를 계속 사용할 수 있어요.', usernameLabel: '사용자 이름', usernamePlaceholder: '예: Alex Chen', emailLabel: '이메일', emailPlaceholder: '이메일을 입력하세요', continueLabel: '계속', loginEyebrow: '다시 오셨군요', loginTitle: '테이블로 돌아가요.', loginSubtitle: '저장된 푸드 패스포트를 사용하려면 이메일을 입력하세요.', loginEmailPlaceholder: '이메일을 입력하세요', loginButton: '로그인', loginError: '이 데모 계정과 일치하지 않는 이메일입니다.', registerNewUser: '새 사용자 등록', profileEyebrow: '내 프로필', profileTitle: '더 나다운 식사를 만들어 보세요.', basicInfo: '기본 정보', foodPassportTitle: '푸드 패스포트', foodPassportDesc: '알레르기, 식단 규칙과 일상 선호', otherSettings: '기타 설정', languagePreference: '언어 설정', languagePreferenceDesc: 'Bitewise에서 사용할 언어 변경', signOut: '로그아웃', signOutDesc: '로그인 화면으로 돌아가기', resetDemo: '데모 초기화', resetDemoDesc: '데모를 지우고 환영 페이지부터 시작', passportSummary: '개인 음식 안전 설정' },
+  ja: { registerEyebrow: 'プロフィールを作成', registerTitle: '自分らしい食事を始めましょう。', registerSubtitle: '名前とメールを保存すると、フードパスポートを使い続けられます。', usernameLabel: 'ユーザー名', usernamePlaceholder: '例：Alex Chen', emailLabel: 'メール', emailPlaceholder: 'you@example.com', continueLabel: '続ける', loginEyebrow: 'おかえりなさい', loginTitle: 'テーブルに戻りましょう。', loginSubtitle: '保存したフードパスポートを使うにはメールアドレスを入力してください。', loginEmailPlaceholder: 'メールアドレス', loginButton: 'ログイン', loginError: 'このデモアカウントと一致しません。', registerNewUser: '新しいユーザーを登録', profileEyebrow: 'マイプロフィール', profileTitle: 'もっと自分らしい食事に。', basicInfo: '基本情報', foodPassportTitle: 'フードパスポート', foodPassportDesc: 'アレルギー、食事ルール、日常の好み', otherSettings: 'その他の設定', languagePreference: '言語設定', languagePreferenceDesc: 'Bitewiseで使う言語を変更', signOut: 'ログアウト', signOutDesc: 'ログイン画面に戻る', resetDemo: 'デモをリセット', resetDemoDesc: 'デモを消去してウェルカムページから開始', passportSummary: 'あなたの食の安全設定' },
+  ru: { registerEyebrow: 'СОЗДАЙТЕ ПРОФИЛЬ', registerTitle: 'Сделайте ужин своим.', registerSubtitle: 'Сохраните имя и почту, чтобы ваш пищевой паспорт был с вами.', usernameLabel: 'Имя пользователя', usernamePlaceholder: 'например, Alex Chen', emailLabel: 'Электронная почта', emailPlaceholder: 'you@example.com', continueLabel: 'Продолжить', loginEyebrow: 'С ВОЗВРАЩЕНИЕМ', loginTitle: 'Вернёмся к вашему столу.', loginSubtitle: 'Введите электронную почту, чтобы продолжить с сохранённым паспортом.', loginEmailPlaceholder: 'Ваша электронная почта', loginButton: 'Войти', loginError: 'Эта почта не совпадает с демо-аккаунтом.', registerNewUser: 'Зарегистрировать нового пользователя', profileEyebrow: 'МОЙ ПРОФИЛЬ', profileTitle: 'Сделайте питание своим.', basicInfo: 'Основная информация', foodPassportTitle: 'Пищевой паспорт', foodPassportDesc: 'Аллергии, правила питания и предпочтения', otherSettings: 'Другие настройки', languagePreference: 'Язык', languagePreferenceDesc: 'Изменить язык Bitewise', signOut: 'Выйти', signOutDesc: 'Вернуться к экрану входа', resetDemo: 'Сбросить демо', resetDemoDesc: 'Очистить демо и начать с приветствия', passportSummary: 'Ваши настройки пищевой безопасности' },
+  es: { registerEyebrow: 'CREA TU PERFIL', registerTitle: 'Haz tuya la comida.', registerSubtitle: 'Guarda tu nombre y correo para conservar tu pasaporte de comida.', usernameLabel: 'Nombre de usuario', usernamePlaceholder: 'p. ej., Alex Chen', emailLabel: 'Correo electrónico', emailPlaceholder: 'tu@ejemplo.com', continueLabel: 'Continuar', loginEyebrow: 'TE DAMOS LA BIENVENIDA', loginTitle: 'Volvamos a la mesa.', loginSubtitle: 'Introduce tu correo para continuar con tu pasaporte guardado.', loginEmailPlaceholder: 'Tu correo electrónico', loginButton: 'Iniciar sesión', loginError: 'Ese correo no coincide con esta cuenta de demo.', registerNewUser: 'Registrar nuevo usuario', profileEyebrow: 'MI PERFIL', profileTitle: 'Haz que comer se sienta más tuyo.', basicInfo: 'Información básica', foodPassportTitle: 'Pasaporte de comida', foodPassportDesc: 'Alergias, reglas alimentarias y preferencias', otherSettings: 'Otros ajustes', languagePreference: 'Idioma', languagePreferenceDesc: 'Cambia el idioma de Bitewise', signOut: 'Cerrar sesión', signOutDesc: 'Volver a la pantalla de inicio de sesión', resetDemo: 'Restablecer demo', resetDemoDesc: 'Borrar la demo y empezar desde la bienvenida', passportSummary: 'Tus ajustes de seguridad alimentaria' },
+  it: { registerEyebrow: 'CREA IL TUO PROFILO', registerTitle: 'Rendi il pasto più tuo.', registerSubtitle: 'Salva nome ed email per portare con te il passaporto alimentare.', usernameLabel: 'Nome utente', usernamePlaceholder: 'es. Alex Chen', emailLabel: 'Email', emailPlaceholder: 'tu@esempio.com', continueLabel: 'Continua', loginEyebrow: 'BENTORNATO', loginTitle: 'Torniamo al tuo tavolo.', loginSubtitle: 'Inserisci la tua email per usare il passaporto salvato.', loginEmailPlaceholder: 'La tua email', loginButton: 'Accedi', loginError: 'L’email non corrisponde a questo account demo.', registerNewUser: 'Registra un nuovo utente', profileEyebrow: 'IL MIO PROFILO', profileTitle: 'Rendi il pasto più personale.', basicInfo: 'Informazioni di base', foodPassportTitle: 'Passaporto alimentare', foodPassportDesc: 'Allergie, regole alimentari e preferenze', otherSettings: 'Altre impostazioni', languagePreference: 'Lingua', languagePreferenceDesc: 'Cambia la lingua di Bitewise', signOut: 'Esci', signOutDesc: 'Torna alla schermata di accesso', resetDemo: 'Reimposta demo', resetDemoDesc: 'Cancella la demo e ricomincia dal benvenuto', passportSummary: 'Le tue impostazioni di sicurezza alimentare' },
+}
+
+type OrderCopy = { nav: string; title: string; subtitle: string; current: string; past: string; inProgress: string; completed: string; openTable: string; items: string; total: string; splitBill: string; viewMenu: string; emptyCurrent: string; emptyPast: string }
+const orderCopy: Record<Language, OrderCopy> = {
+  en: { nav: 'Orders', title: 'Your orders', subtitle: 'Keep track of current and past restaurant orders.', current: 'Current order', past: 'Past orders', inProgress: 'In progress', completed: 'Completed', openTable: 'Table is open', items: 'items', total: 'Total', splitBill: 'Split the bill', viewMenu: 'View menu', emptyCurrent: 'No order yet. Scan the menu to start this dining session.', emptyPast: 'Past orders will appear here.' },
+  ko: { nav: '주문', title: '주문 내역', subtitle: '현재 주문과 지난 식당 주문을 한곳에서 확인하세요.', current: '현재 주문', past: '지난 주문', inProgress: '진행 중', completed: '완료됨', openTable: '테이블이 열려 있어요', items: '개 메뉴', total: '합계', splitBill: '계산서 나누기', viewMenu: '메뉴 보기', emptyCurrent: '아직 주문이 없습니다. 메뉴를 스캔해 식사를 시작하세요.', emptyPast: '지난 주문이 여기에 표시됩니다.' },
+  ja: { nav: '注文', title: '注文履歴', subtitle: '現在と過去のレストラン注文を確認できます。', current: '現在の注文', past: '過去の注文', inProgress: '進行中', completed: '完了', openTable: 'テーブルは開いています', items: '品', total: '合計', splitBill: '割り勘する', viewMenu: 'メニューを見る', emptyCurrent: 'まだ注文はありません。メニューをスキャンして食事を始めましょう。', emptyPast: '過去の注文はここに表示されます。' },
+  ru: { nav: 'Заказы', title: 'Ваши заказы', subtitle: 'Следите за текущими и прошлыми заказами в ресторанах.', current: 'Текущий заказ', past: 'Прошлые заказы', inProgress: 'В процессе', completed: 'Завершён', openTable: 'Стол открыт', items: 'позиций', total: 'Итого', splitBill: 'Разделить счёт', viewMenu: 'Открыть меню', emptyCurrent: 'Заказов пока нет. Отсканируйте меню, чтобы начать.', emptyPast: 'Прошлые заказы появятся здесь.' },
+  es: { nav: 'Pedidos', title: 'Tus pedidos', subtitle: 'Consulta tus pedidos actuales y anteriores.', current: 'Pedido actual', past: 'Pedidos anteriores', inProgress: 'En curso', completed: 'Completado', openTable: 'La mesa está abierta', items: 'platos', total: 'Total', splitBill: 'Dividir la cuenta', viewMenu: 'Ver menú', emptyCurrent: 'Aún no hay pedidos. Escanea el menú para empezar.', emptyPast: 'Tus pedidos anteriores aparecerán aquí.' },
+  it: { nav: 'Ordini', title: 'I tuoi ordini', subtitle: 'Tieni sotto controllo gli ordini attuali e passati.', current: 'Ordine attuale', past: 'Ordini passati', inProgress: 'In corso', completed: 'Completato', openTable: 'Il tavolo è aperto', items: 'piatti', total: 'Totale', splitBill: 'Dividi il conto', viewMenu: 'Vedi menu', emptyCurrent: 'Non ci sono ancora ordini. Scansiona il menu per iniziare.', emptyPast: 'Gli ordini passati appariranno qui.' },
 }
 
 const dishes: Dish[] = [
@@ -320,6 +338,38 @@ const dishes: Dish[] = [
   { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: [], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
   { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.png', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
+]
+
+const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
+
+type DiningOrder = { id: string; restaurant: string; initials: string; location: string; time: string; status: 'current' | 'completed'; itemCount: number; total: number; preview: string; tone: string; billItems: BillItem[]; receiptItems: BillItem[]; menuSnapshot?: Dish[]; cartSnapshot?: CartItem[]; passportSnapshot?: Passport; companionNames?: string[]; savedAt?: number }
+
+const sichuanOrderBillItems = [
+  makeBillItem('eggplant', 'eggplant', 'Fish-fragrant eggplant', '鱼香茄子', 42),
+  makeBillItem('lotus', 'lotus', 'Sweet-sour lotus root', '糖醋藕片', 34),
+  makeBillItem('greens', 'greens', 'Seasonal greens', '时蔬', 28),
+  makeBillItem('soup', 'soup', 'Mushroom soup', '菌菇汤', 24),
+]
+const sichuanReceiptItems = [
+  makeBillItem('eggplant', 'eggplant', 'Fish-fragrant eggplant', '鱼香茄子', 45),
+  makeBillItem('lotus', 'lotus', 'Sweet-sour lotus root', '糖醋藕片', 34),
+  makeBillItem('greens', 'greens', 'Seasonal greens', '时蔬', 28),
+  makeBillItem('soup', 'soup', 'Mushroom soup', '菌菇汤', 24),
+]
+const bambooOrderBillItems = [
+  makeBillItem('soup', 'soup', 'Mushroom soup', '菌菇汤', 36),
+  makeBillItem('greens', 'greens', 'Seasonal greens', '时蔬', 28),
+  makeBillItem('lotus', 'lotus', 'Sweet-sour lotus root', '糖醋藕片', 20),
+]
+const bambooReceiptItems = [
+  makeBillItem('soup', 'soup', 'Mushroom soup', '菌菇汤', 38),
+  makeBillItem('greens', 'greens', 'Seasonal greens', '时蔬', 28),
+  makeBillItem('lotus', 'lotus', 'Sweet-sour lotus root', '糖醋藕片', 24),
+]
+
+const pastDiningOrders: DiningOrder[] = [
+  { id: 'sichuan-table-past', restaurant: 'Sichuan Table', initials: 'ST', location: 'Shanghai · Jing’an', time: 'Sep 21 · 7:15 PM', status: 'completed', itemCount: 4, total: 128, preview: 'Eggplant · Lotus root · Seasonal greens · Soup', tone: 'order-tone-green', billItems: sichuanOrderBillItems, receiptItems: sichuanReceiptItems },
+  { id: 'green-bamboo-past', restaurant: 'Green Bamboo House', initials: 'GB', location: 'Shanghai · French Concession', time: 'Sep 18 · 12:40 PM', status: 'completed', itemCount: 3, total: 84, preview: 'Mushroom soup · Seasonal greens · Lotus root', tone: 'order-tone-gold', billItems: bambooOrderBillItems, receiptItems: bambooReceiptItems },
 ]
 
 const allergyOptions = [
@@ -341,9 +391,12 @@ const allergyOptions = [
 const allergenMatchKeys = (id: string) => (id === 'crustacean' || id === 'mollusk' ? [id, 'shellfish'] : [id])
 const dietStyleOptions: Array<{ id: DietStyle; label: string; icon: string; hint: string }> = [
   { id: 'none', label: 'No restriction', icon: '—', hint: 'I eat everything' },
-  { id: 'vegetarian', label: 'Vegetarian', icon: '🥬', hint: 'No meat or seafood' },
   { id: 'vegan', label: 'Vegan', icon: '🌿', hint: 'No animal products' },
-  { id: 'pescatarian', label: 'Pescatarian', icon: '🐟', hint: 'Fish is okay' },
+  { id: 'lacto', label: 'Lacto-vegetarian', icon: '🥛', hint: 'Dairy is okay' },
+  { id: 'ovo', label: 'Ovo-vegetarian', icon: '🥚', hint: 'Eggs are okay' },
+  { id: 'lacto-ovo', label: 'Lacto-ovo vegetarian', icon: '🥬', hint: 'Dairy and eggs are okay' },
+  { id: 'pescatarian', label: 'Pescatarian', icon: '🐟', hint: 'Fish and seafood are okay' },
+  { id: 'flexitarian', label: 'Flexitarian', icon: '🌱', hint: 'Mostly plant-based' },
 ]
 const faithDietOptions: Array<{ id: FaithDiet; label: string; icon: string; hint: string }> = [
   { id: 'none', label: 'None', icon: '—', hint: 'No faith-based rule' },
@@ -369,43 +422,43 @@ const passportOptionTranslations: Record<Language, {
   preference: Record<string, string>
 }> = {
   en: {
-    dietStyle: { none: { label: 'No restriction', hint: 'I eat everything' }, vegetarian: { label: 'Vegetarian', hint: 'No meat or seafood' }, vegan: { label: 'Vegan', hint: 'No animal products' }, pescatarian: { label: 'Pescatarian', hint: 'Fish is okay' } },
+    dietStyle: { none: { label: 'No restriction', hint: 'I eat everything' }, vegetarian: { label: 'Vegetarian', hint: 'No meat or seafood' }, vegan: { label: 'Vegan', hint: 'No animal products' }, lacto: { label: 'Lacto-vegetarian', hint: 'Dairy is okay' }, ovo: { label: 'Ovo-vegetarian', hint: 'Eggs are okay' }, 'lacto-ovo': { label: 'Lacto-ovo vegetarian', hint: 'Dairy and eggs are okay' }, pescatarian: { label: 'Pescatarian', hint: 'Fish and seafood are okay' }, flexitarian: { label: 'Flexitarian', hint: 'Mostly plant-based' } },
     faithDiet: { none: { label: 'None', hint: 'No faith-based rule' }, halal: { label: 'Halal', hint: 'Prepare accordingly' }, kosher: { label: 'Kosher', hint: 'Prepare accordingly' }, other: { label: 'Other', hint: 'Tell us more' } },
     avoidFood: { 'no-pork': 'No pork', 'no-beef': 'No beef', 'no-poultry': 'No poultry', 'no-seafood': 'No seafood', 'no-offal': 'No offal' },
     preference: { 'less-oil': 'Less oil', 'less-salt': 'Less salt', 'less-sugar': 'Less sugar', 'no-cilantro': 'No cilantro', 'no-scallion': 'No scallion', 'no-garlic': 'No garlic', 'no-raw': 'No raw food', 'well-cooked': 'Well-cooked', boneless: 'Prefer boneless' },
   },
   ko: {
-    dietStyle: { none: { label: '제한 없음', hint: '모든 음식을 먹어요' }, vegetarian: { label: '채식', hint: '고기와 해산물 없음' }, vegan: { label: '비건', hint: '동물성 식품 없음' }, pescatarian: { label: '페스코', hint: '생선은 괜찮아요' } },
+    dietStyle: { none: { label: '제한 없음', hint: '모든 음식을 먹어요' }, vegetarian: { label: '채식', hint: '고기와 해산물 없음' }, vegan: { label: '비건', hint: '동물성 식품 없음' }, lacto: { label: '락토 채식', hint: '유제품은 가능' }, ovo: { label: '오보 채식', hint: '달걀은 가능' }, 'lacto-ovo': { label: '락토 오보 채식', hint: '유제품과 달걀 가능' }, pescatarian: { label: '페스코', hint: '생선과 해산물 가능' }, flexitarian: { label: '플렉시테리언', hint: '주로 식물성 식단' } },
     faithDiet: { none: { label: '없음', hint: '종교적 제한 없음' }, halal: { label: '할랄', hint: '기준에 맞게 준비' }, kosher: { label: '코셔', hint: '기준에 맞게 준비' }, other: { label: '기타', hint: '더 알려주세요' } },
     avoidFood: { 'no-pork': '돼지고기 없음', 'no-beef': '소고기 없음', 'no-poultry': '가금류 없음', 'no-seafood': '해산물 없음', 'no-offal': '내장 없음' },
     preference: { 'less-oil': '기름 적게', 'less-salt': '소금 적게', 'less-sugar': '설탕 적게', 'no-cilantro': '고수 없음', 'no-scallion': '파 없음', 'no-garlic': '마늘 없음', 'no-raw': '날것 제외', 'well-cooked': '충분히 익히기', boneless: '뼈 없는 음식' },
   },
   ja: {
-    dietStyle: { none: { label: '制限なし', hint: '何でも食べます' }, vegetarian: { label: 'ベジタリアン', hint: '肉と魚介類なし' }, vegan: { label: 'ヴィーガン', hint: '動物性食品なし' }, pescatarian: { label: 'ペスカタリアン', hint: '魚は大丈夫' } },
+    dietStyle: { none: { label: '制限なし', hint: '何でも食べます' }, vegetarian: { label: 'ベジタリアン', hint: '肉と魚介類なし' }, vegan: { label: 'ヴィーガン', hint: '動物性食品なし' }, lacto: { label: 'ラクト・ベジタリアン', hint: '乳製品は可' }, ovo: { label: 'オボ・ベジタリアン', hint: '卵は可' }, 'lacto-ovo': { label: 'ラクト・オボ・ベジタリアン', hint: '乳製品と卵は可' }, pescatarian: { label: 'ペスカタリアン', hint: '魚介類は可' }, flexitarian: { label: 'フレキシタリアン', hint: '主に植物性' } },
     faithDiet: { none: { label: 'なし', hint: '宗教上の条件なし' }, halal: { label: 'ハラール', hint: '基準に合わせて調理' }, kosher: { label: 'コーシャ', hint: '基準に合わせて調理' }, other: { label: 'その他', hint: '詳しく教えてください' } },
     avoidFood: { 'no-pork': '豚肉なし', 'no-beef': '牛肉なし', 'no-poultry': '鶏肉なし', 'no-seafood': '魚介類なし', 'no-offal': '内臓なし' },
     preference: { 'less-oil': '油少なめ', 'less-salt': '塩分少なめ', 'less-sugar': '砂糖少なめ', 'no-cilantro': 'パクチーなし', 'no-scallion': 'ねぎなし', 'no-garlic': 'にんにくなし', 'no-raw': '生ものなし', 'well-cooked': 'よく火を通す', boneless: '骨なし希望' },
   },
   ru: {
-    dietStyle: { none: { label: 'Без ограничений', hint: 'Ем всё' }, vegetarian: { label: 'Вегетарианское', hint: 'Без мяса и морепродуктов' }, vegan: { label: 'Веганское', hint: 'Без продуктов животного происхождения' }, pescatarian: { label: 'Пескетарианское', hint: 'Рыба разрешена' } },
+    dietStyle: { none: { label: 'Без ограничений', hint: 'Ем всё' }, vegetarian: { label: 'Вегетарианское', hint: 'Без мяса и морепродуктов' }, vegan: { label: 'Веганское', hint: 'Без продуктов животного происхождения' }, lacto: { label: 'Лакто-вегетарианское', hint: 'Молочные продукты разрешены' }, ovo: { label: 'Ово-вегетарианское', hint: 'Яйца разрешены' }, 'lacto-ovo': { label: 'Лакто-ово-вегетарианское', hint: 'Молочные продукты и яйца разрешены' }, pescatarian: { label: 'Пескетарианское', hint: 'Рыба и морепродукты разрешены' }, flexitarian: { label: 'Флекситарианское', hint: 'В основном растительная пища' } },
     faithDiet: { none: { label: 'Нет', hint: 'Нет религиозных правил' }, halal: { label: 'Халяль', hint: 'Готовить по правилам' }, kosher: { label: 'Кошерное', hint: 'Готовить по правилам' }, other: { label: 'Другое', hint: 'Расскажите подробнее' } },
     avoidFood: { 'no-pork': 'Без свинины', 'no-beef': 'Без говядины', 'no-poultry': 'Без птицы', 'no-seafood': 'Без морепродуктов', 'no-offal': 'Без субпродуктов' },
     preference: { 'less-oil': 'Меньше масла', 'less-salt': 'Меньше соли', 'less-sugar': 'Меньше сахара', 'no-cilantro': 'Без кинзы', 'no-scallion': 'Без зелёного лука', 'no-garlic': 'Без чеснока', 'no-raw': 'Без сырого', 'well-cooked': 'Хорошо прожарить', boneless: 'Лучше без костей' },
   },
   es: {
-    dietStyle: { none: { label: 'Sin restricciones', hint: 'Como de todo' }, vegetarian: { label: 'Vegetariano', hint: 'Sin carne ni marisco' }, vegan: { label: 'Vegano', hint: 'Sin productos animales' }, pescatarian: { label: 'Pescetariano', hint: 'El pescado está bien' } },
+    dietStyle: { none: { label: 'Sin restricciones', hint: 'Como de todo' }, vegetarian: { label: 'Vegetariano', hint: 'Sin carne ni marisco' }, vegan: { label: 'Vegano', hint: 'Sin productos animales' }, lacto: { label: 'Lacto-vegetariano', hint: 'Los lácteos están permitidos' }, ovo: { label: 'Ovo-vegetariano', hint: 'Los huevos están permitidos' }, 'lacto-ovo': { label: 'Lacto-ovo vegetariano', hint: 'Lácteos y huevos permitidos' }, pescatarian: { label: 'Pescetariano', hint: 'Pescado y marisco permitidos' }, flexitarian: { label: 'Flexitariano', hint: 'Principalmente vegetal' } },
     faithDiet: { none: { label: 'Ninguno', hint: 'Sin requisito religioso' }, halal: { label: 'Halal', hint: 'Preparar según corresponda' }, kosher: { label: 'Kosher', hint: 'Preparar según corresponda' }, other: { label: 'Otro', hint: 'Cuéntanos más' } },
     avoidFood: { 'no-pork': 'Sin cerdo', 'no-beef': 'Sin ternera', 'no-poultry': 'Sin aves', 'no-seafood': 'Sin marisco', 'no-offal': 'Sin vísceras' },
     preference: { 'less-oil': 'Menos aceite', 'less-salt': 'Menos sal', 'less-sugar': 'Menos azúcar', 'no-cilantro': 'Sin cilantro', 'no-scallion': 'Sin cebolleta', 'no-garlic': 'Sin ajo', 'no-raw': 'Sin alimentos crudos', 'well-cooked': 'Bien cocinado', boneless: 'Preferible sin huesos' },
   },
   it: {
-    dietStyle: { none: { label: 'Nessuna restrizione', hint: 'Mangio tutto' }, vegetarian: { label: 'Vegetariano', hint: 'Niente carne o frutti di mare' }, vegan: { label: 'Vegano', hint: 'Niente prodotti animali' }, pescatarian: { label: 'Pescetariano', hint: 'Il pesce va bene' } },
+    dietStyle: { none: { label: 'Nessuna restrizione', hint: 'Mangio tutto' }, vegetarian: { label: 'Vegetariano', hint: 'Niente carne o frutti di mare' }, vegan: { label: 'Vegano', hint: 'Niente prodotti animali' }, lacto: { label: 'Latto-vegetariano', hint: 'I latticini sono ammessi' }, ovo: { label: 'Ovo-vegetariano', hint: 'Le uova sono ammesse' }, 'lacto-ovo': { label: 'Latto-ovo vegetariano', hint: 'Latticini e uova ammessi' }, pescatarian: { label: 'Pescetariano', hint: 'Pesce e frutti di mare ammessi' }, flexitarian: { label: 'Flexitariano', hint: 'Prevalentemente vegetale' } },
     faithDiet: { none: { label: 'Nessuna', hint: 'Nessuna regola religiosa' }, halal: { label: 'Halal', hint: 'Preparare di conseguenza' }, kosher: { label: 'Kosher', hint: 'Preparare di conseguenza' }, other: { label: 'Altro', hint: 'Dicci di più' } },
     avoidFood: { 'no-pork': 'Senza maiale', 'no-beef': 'Senza manzo', 'no-poultry': 'Senza pollame', 'no-seafood': 'Senza frutti di mare', 'no-offal': 'Senza frattaglie' },
     preference: { 'less-oil': 'Meno olio', 'less-salt': 'Meno sale', 'less-sugar': 'Meno zucchero', 'no-cilantro': 'Senza coriandolo', 'no-scallion': 'Senza cipollotto', 'no-garlic': 'Senza aglio', 'no-raw': 'Niente crudo', 'well-cooked': 'Ben cotto', boneless: 'Preferibilmente senza ossa' },
   },
 }
-const dietStyleIds: string[] = dietStyleOptions.map((item) => item.id).filter((id) => id !== 'none')
+const dietStyleIds: string[] = [...dietStyleOptions.map((item) => item.id).filter((id) => id !== 'none'), 'vegetarian']
 const faithDietIds: string[] = faithDietOptions.map((item) => item.id).filter((id) => id !== 'none' && id !== 'other')
 const avoidFoodIds = avoidFoodOptions.map((item) => item.id)
 
@@ -439,6 +492,72 @@ const removeAllergenLabels: Record<Language, string> = {
 
 const defaultAllergyProfile: AllergyProfile = { severity: 'severe', crossContact: true }
 const initialPassport: Passport = { allergies: [], otherAllergen: '', allergyProfiles: {}, diets: [], dietStyle: 'none', faithDiet: 'none', faithOther: '', avoidFoods: [], otherDietary: '', preferences: [], spiceLevel: null, severity: 'severe', crossContact: true }
+type StoredAccount = { profile: UserProfile; passport: Passport }
+
+const blankPassport = (): Passport => ({ ...initialPassport, allergies: [], allergyProfiles: {}, diets: [], avoidFoods: [], preferences: [] })
+const hydratePassport = (saved?: Partial<Passport> | null): Passport => {
+  if (!saved) return blankPassport()
+  const legacyProfile = { severity: saved.severity || defaultAllergyProfile.severity, crossContact: saved.crossContact ?? defaultAllergyProfile.crossContact }
+  const migratedProfiles = Object.fromEntries((saved.allergies || []).map((id) => [id, legacyProfile]))
+  const storedDietStyle = saved.dietStyle === 'vegetarian' ? 'lacto-ovo' : saved.dietStyle
+  const legacyDietStyle = storedDietStyle || (saved.diets?.includes('vegan') ? 'vegan' : saved.diets?.includes('vegetarian') ? 'lacto-ovo' : 'none')
+  const legacyDiets = (saved.diets || []).map((id) => id === 'vegetarian' ? 'lacto-ovo' : id)
+  const legacyAvoidFoods = saved.avoidFoods || (saved.diets || []).filter((id) => avoidFoodIds.includes(id))
+  const legacySpiceLevel = saved.spiceLevel ?? (saved.preferences?.includes('mild') ? 1 : null)
+  return { ...initialPassport, ...saved, diets: legacyDiets, dietStyle: legacyDietStyle, faithDiet: saved.faithDiet || 'none', faithOther: saved.faithOther || '', avoidFoods: legacyAvoidFoods, otherDietary: saved.otherDietary || '', spiceLevel: legacySpiceLevel, allergyProfiles: { ...migratedProfiles, ...(saved.allergyProfiles || {}) } } as Passport
+}
+const normalizeStoredProfile = (profile?: Partial<UserProfile> | null): UserProfile | null => profile?.username && profile.email ? { username: String(profile.username), email: String(profile.email) } : null
+const readStoredAccounts = (): StoredAccount[] => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('cit:accounts') || '') as Array<{ profile?: Partial<UserProfile>; passport?: Partial<Passport> }>
+    if (Array.isArray(saved)) return saved.flatMap((record) => { const profile = normalizeStoredProfile(record.profile); return profile ? [{ profile, passport: hydratePassport(record.passport) }] : [] })
+  } catch { /* Fall back to the original single-account storage below. */ }
+  try {
+    const profile = normalizeStoredProfile(JSON.parse(localStorage.getItem('cit:account') || 'null') as Partial<UserProfile>)
+    if (!profile) return []
+    return [{ profile, passport: hydratePassport(JSON.parse(localStorage.getItem('cit:passport') || 'null') as Partial<Passport>) }]
+  } catch { return [] }
+}
+const getActiveStoredAccount = (): StoredAccount | null => {
+  const accounts = readStoredAccounts()
+  try {
+    const active = JSON.parse(localStorage.getItem('cit:account') || 'null') as Partial<UserProfile>
+    return accounts.find((record) => record.profile.email.trim().toLowerCase() === active.email?.trim().toLowerCase()) || accounts[0] || null
+  } catch { return accounts[0] || null }
+}
+const normalizeEmail = (email: string) => email.trim().toLowerCase()
+const readStoredInvites = (): CompanionInvite[] => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('cit:companion-invites') || '') as CompanionInvite[]
+    return Array.isArray(saved) ? saved.filter((invite) => invite && typeof invite.id === 'string' && typeof invite.fromEmail === 'string' && typeof invite.toEmail === 'string') : []
+  } catch { return [] }
+}
+const initialsForProfile = (profile: UserProfile) => profile.username.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || profile.email.slice(0, 2).toUpperCase()
+const initialsForRestaurant = (name: string) => name.trim().split(/\s+/).filter(Boolean).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'RS'
+const passportSummary = (passport: Passport) => {
+  const parts: string[] = []
+  if (passport.allergies.length + (passport.otherAllergen ? 1 : 0)) parts.push(`${passport.allergies.length + (passport.otherAllergen ? 1 : 0)} allergen${passport.allergies.length + (passport.otherAllergen ? 1 : 0) === 1 ? '' : 's'}`)
+  if (passport.dietStyle !== 'none') parts.push(passport.dietStyle)
+  if (passport.avoidFoods.length) parts.push(`${passport.avoidFoods.length} food rule${passport.avoidFoods.length === 1 ? '' : 's'}`)
+  if (passport.spiceLevel !== null) parts.push('spice preference')
+  return parts.length ? parts.join(' · ') : 'No restrictions shared'
+}
+const companionViewsFor = (email: string, accounts: StoredAccount[], invites: CompanionInvite[]): Companion[] => {
+  const normalizedEmail = normalizeEmail(email)
+  return invites.filter((invite) => invite.status === 'accepted' && (normalizeEmail(invite.fromEmail) === normalizedEmail || normalizeEmail(invite.toEmail) === normalizedEmail)).flatMap((invite) => {
+    const otherEmail = normalizeEmail(invite.fromEmail) === normalizedEmail ? normalizeEmail(invite.toEmail) : normalizeEmail(invite.fromEmail)
+    const other = accounts.find((record) => normalizeEmail(record.profile.email) === otherEmail)
+    if (!other) return []
+    return [{ id: otherEmail, name: other.profile.username, email: otherEmail, initials: initialsForProfile(other.profile), passport: other.passport, note: passportSummary(other.passport), inviteId: invite.id }]
+  })
+}
+
+const restaurantCatalog: SavedRestaurant[] = [
+  { id: 'old-town-kitchen', name: 'Old Town Kitchen', initials: 'OT', emoji: '🏮', cuisine: 'Local specialties · Vegetarian options', location: 'Shanghai · 1.2 km', why: 'Clear dishes and mild options', tone: 'photo-one' },
+  { id: 'green-bamboo-house', name: 'Green Bamboo House', initials: 'GB', emoji: '🍵', cuisine: 'Tea house · Rice dishes · Quiet', location: 'Shanghai · 1.8 km', why: 'Lighter flavors for your passport', tone: 'photo-two' },
+  { id: 'lotus-table', name: 'Lotus Table', initials: 'LT', emoji: '🥢', cuisine: 'Seasonal Chinese · Small plates', location: 'Shanghai · 2.4 km', why: 'Vegetarian dishes are clearly marked', tone: 'photo-three' },
+]
+const initialSavedRestaurants = restaurantCatalog.slice(0, 2)
 
 function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; stroke?: number }) {
   const paths: Record<string, ReactNode> = {
@@ -470,6 +589,7 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     refresh: <><path d="M20 11a8 8 0 0 0-14.6-4L3 10M3 5v5h5M4 13a8 8 0 0 0 14.6 4L21 14m0 5v-5h-5"/></>,
     users: <><circle cx="9" cy="8" r="3"/><path d="M3 20c.4-3.3 2.4-5 6-5s5.6 1.7 6 5M16 5.5a3 3 0 0 1 0 5.8M18 15c2.2.7 3.4 2.3 3.7 5"/></>,
     wallet: <><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v16H6a2 2 0 0 1-2-2V6.5Z"/><path d="M4 7h16M16 13h4"/><circle cx="16" cy="13" r=".4" fill="currentColor"/></>,
+    cart: <><path d="M4 5h2l1.5 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></>,
     dots: <><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></>,
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
@@ -493,45 +613,88 @@ function Button({ children, onClick, variant = 'primary', icon, className = '', 
 
 function App() {
   const [language, setLanguage] = useState<Language>(() => (localStorage.getItem('cit:language') as Language) || 'en')
-  const [account, setAccount] = useState<UserProfile | null>(() => {
-    try { return JSON.parse(localStorage.getItem('cit:account') || 'null') as UserProfile | null } catch { return null }
-  })
-  const [passport, setPassport] = useState<Passport>(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('cit:passport') || '') as Partial<Passport>
-      const legacyProfile = { severity: saved.severity || defaultAllergyProfile.severity, crossContact: saved.crossContact ?? defaultAllergyProfile.crossContact }
-      const migratedProfiles = Object.fromEntries((saved.allergies || []).map((id) => [id, legacyProfile]))
-      const legacyDietStyle = saved.dietStyle || (saved.diets?.includes('vegan') ? 'vegan' : saved.diets?.includes('vegetarian') ? 'vegetarian' : 'none')
-      const legacyAvoidFoods = saved.avoidFoods || (saved.diets || []).filter((id) => avoidFoodIds.includes(id))
-      const legacySpiceLevel = saved.spiceLevel ?? (saved.preferences?.includes('mild') ? 1 : null)
-      return { ...initialPassport, ...saved, dietStyle: legacyDietStyle, faithDiet: saved.faithDiet || 'none', faithOther: saved.faithOther || '', avoidFoods: legacyAvoidFoods, otherDietary: saved.otherDietary || '', spiceLevel: legacySpiceLevel, allergyProfiles: { ...migratedProfiles, ...(saved.allergyProfiles || {}) } } as Passport
-    } catch { return initialPassport }
-  })
+  const [accounts, setAccounts] = useState<StoredAccount[]>(() => readStoredAccounts())
+  const [account, setAccount] = useState<UserProfile | null>(() => getActiveStoredAccount()?.profile || null)
+  const [passport, setPassport] = useState<Passport>(() => getActiveStoredAccount()?.passport || blankPassport())
   const [ready, setReady] = useState(() => localStorage.getItem('cit:ready') === 'true' && Boolean(localStorage.getItem('cit:account')))
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [screen, setScreen] = useState<Screen>('home')
-  const [filter, setFilter] = useState<Filter>('all')
   const [selectedDish, setSelectedDish] = useState<Dish>(dishes[0])
   const [askSheet, setAskSheet] = useState(false)
   const [scanImage, setScanImage] = useState<string | null>(null)
   const [scanning, setScanning] = useState(false)
   const [capturedPages, setCapturedPages] = useState<CapturedPage[]>([])
-  const [plan, setPlan] = useState<Dish[] | null>(null)
-  const [partySize, setPartySize] = useState(3)
-  const [budget, setBudget] = useState(300)
-  const [tempPreference, setTempPreference] = useState('')
-  const [billReady, setBillReady] = useState(false)
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [sessionMenu, setSessionMenu] = useState<Dish[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cit:session-menu') || '') as Dish[]
+      return Array.isArray(saved) ? saved : []
+    } catch { return [] }
+  })
+  const [sessionRestaurant, setSessionRestaurant] = useState(() => localStorage.getItem('cit:session-restaurant') || '')
+  const [sessionOrders, setSessionOrders] = useState<DiningOrder[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cit:session-orders') || '') as DiningOrder[]
+      return Array.isArray(saved) ? saved : []
+    } catch { return [] }
+  })
+  const [selectedSessionOrder, setSelectedSessionOrder] = useState<DiningOrder | null>(null)
+  const [companionReturnScreen, setCompanionReturnScreen] = useState<Screen>('profile')
   const [billMode, setBillMode] = useState<BillMode>('equal')
-  const [participants, setParticipants] = useState(['You', 'Maya', 'Leo'])
-  const [splitItems, setSplitItems] = useState<Record<string, string>>({ chicken: 'You', tofu: 'Everyone', eggplant: 'Maya', greens: 'Everyone', lotus: 'Everyone' })
+  const [billReturnScreen, setBillReturnScreen] = useState<Screen>('home')
+  const [activeBillOrder, setActiveBillOrder] = useState<DiningOrder | null>(null)
+  const [billSource, setBillSource] = useState<'order' | 'receipt'>('order')
+  const [billReceiptName, setBillReceiptName] = useState('')
+  const [participants, setParticipants] = useState(['You'])
+  const [splitItems, setSplitItems] = useState<Record<string, string>>({ chicken: 'You', tofu: 'Everyone', eggplant: 'Everyone', greens: 'Everyone', lotus: 'Everyone' })
+  const [savedRestaurants, setSavedRestaurants] = useState<SavedRestaurant[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cit:saved-restaurants') || '') as SavedRestaurant[]
+      return Array.isArray(saved) ? saved : initialSavedRestaurants
+    } catch { return initialSavedRestaurants }
+  })
+  const [companionInvites, setCompanionInvites] = useState<CompanionInvite[]>(() => readStoredInvites())
+  const [selectedCompanionEmail, setSelectedCompanionEmail] = useState<string | null>(null)
+  const [activeCompanionIds, setActiveCompanionIds] = useState<string[]>([])
   const [toast, setToast] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const billInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const t = (key: CopyKey) => tFor(language, key)
+  const currentCompanions = account ? companionViewsFor(account.email, accounts, companionInvites) : []
+  const incomingCompanionInvites = account ? companionInvites.filter((invite) => invite.status === 'pending' && normalizeEmail(invite.toEmail) === normalizeEmail(account.email) && accounts.some((record) => normalizeEmail(record.profile.email) === normalizeEmail(invite.fromEmail))) : []
+  const outgoingCompanionInvites = account ? companionInvites.filter((invite) => invite.status === 'pending' && normalizeEmail(invite.fromEmail) === normalizeEmail(account.email) && accounts.some((record) => normalizeEmail(record.profile.email) === normalizeEmail(invite.toEmail))) : []
+  const selectedCompanion = selectedCompanionEmail ? currentCompanions.find((companion) => companion.email === selectedCompanionEmail) || null : null
 
   useEffect(() => { localStorage.setItem('cit:language', language); document.documentElement.lang = language }, [language])
   useEffect(() => { if (account) localStorage.setItem('cit:account', JSON.stringify(account)) }, [account])
   useEffect(() => { localStorage.setItem('cit:passport', JSON.stringify(passport)) }, [passport])
+  useEffect(() => {
+    if (!account) return
+    const email = account.email.trim().toLowerCase()
+    setAccounts((current) => {
+      const next = current.some((record) => record.profile.email.trim().toLowerCase() === email)
+        ? current.map((record) => record.profile.email.trim().toLowerCase() === email ? { profile: account, passport } : record)
+        : [...current, { profile: account, passport }]
+      localStorage.setItem('cit:accounts', JSON.stringify(next))
+      return next
+    })
+  }, [account, passport])
+  useEffect(() => {
+    // The previous prototype stored mock companions under this key. The real
+    // account/invite model below is the only source of truth now.
+    localStorage.removeItem('cit:companions')
+    const syncSharedDemoState = (event: StorageEvent) => {
+      if (event.key === 'cit:accounts') setAccounts(readStoredAccounts())
+      if (event.key === 'cit:companion-invites') setCompanionInvites(readStoredInvites())
+    }
+    window.addEventListener('storage', syncSharedDemoState)
+    return () => window.removeEventListener('storage', syncSharedDemoState)
+  }, [])
+  useEffect(() => { localStorage.setItem('cit:saved-restaurants', JSON.stringify(savedRestaurants)) }, [savedRestaurants])
+  useEffect(() => { localStorage.setItem('cit:companion-invites', JSON.stringify(companionInvites)) }, [companionInvites])
+  useEffect(() => { localStorage.setItem('cit:session-menu', JSON.stringify(sessionMenu)) }, [sessionMenu])
+  useEffect(() => { localStorage.setItem('cit:session-restaurant', sessionRestaurant) }, [sessionRestaurant])
+  useEffect(() => { localStorage.setItem('cit:session-orders', JSON.stringify(sessionOrders)) }, [sessionOrders])
   useEffect(() => { if (toast) { const timer = window.setTimeout(() => setToast(''), 2600); return () => window.clearTimeout(timer) } }, [toast])
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -582,14 +745,28 @@ function App() {
   })
   const finishOnboarding = () => { localStorage.setItem('cit:ready', 'true'); setReady(true); setScreen('home'); track('food_profile_completed') }
   const completeRegistration = (profile: UserProfile) => {
+    const newPassport = blankPassport()
+    setAccounts((current) => {
+      const email = profile.email.trim().toLowerCase()
+      const next = [...current.filter((record) => record.profile.email.trim().toLowerCase() !== email), { profile, passport: newPassport }]
+      localStorage.setItem('cit:accounts', JSON.stringify(next))
+      return next
+    })
     setAccount(profile)
-    localStorage.setItem('cit:account', JSON.stringify(profile))
+    setPassport(newPassport)
     setLanguage('en')
     setOnboardingStep(2)
     track('profile_created')
   }
   const logIn = (email: string) => {
-    if (!account || email.trim().toLowerCase() !== account.email.trim().toLowerCase()) return false
+    const normalizedEmail = email.trim().toLowerCase()
+    const freshAccounts = readStoredAccounts()
+    const matched = freshAccounts.find((record) => record.profile.email.trim().toLowerCase() === normalizedEmail)
+    if (!matched) return false
+    setAccounts(freshAccounts)
+    setCompanionInvites(readStoredInvites())
+    setAccount(matched.profile)
+    setPassport(matched.passport)
     localStorage.setItem('cit:ready', 'true')
     setReady(true)
     setScreen('home')
@@ -612,7 +789,69 @@ function App() {
     setScreen(next)
     track(`${next}_open`)
   }
-  const openCamera = () => { setScreen('camera'); track('camera_open') }
+  const toggleSavedRestaurant = (restaurant: SavedRestaurant) => {
+    setSavedRestaurants((current) => current.some((item) => item.id === restaurant.id) ? current.filter((item) => item.id !== restaurant.id) : [...current, restaurant])
+    setToast(savedRestaurants.some((item) => item.id === restaurant.id) ? 'Restaurant removed from saved' : 'Restaurant saved to your profile')
+    track('restaurant_save_toggled')
+  }
+  const addCompanion = (email: string): CompanionAddResult => {
+    const normalizedEmail = normalizeEmail(email)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return { ok: false, message: 'Enter a valid email address.' }
+    if (!account) return { ok: false, message: 'Log in before inviting a companion.' }
+    if (normalizeEmail(account.email) === normalizedEmail) return { ok: false, message: 'You cannot invite yourself.' }
+    const target = accounts.find((record) => normalizeEmail(record.profile.email) === normalizedEmail)
+    if (!target) return { ok: false, message: 'No registered user uses this email yet.' }
+    if (currentCompanions.some((companion) => companion.email === normalizedEmail)) return { ok: false, message: 'This companion is already connected.' }
+    if (companionInvites.some((invite) => invite.status === 'pending' && ((normalizeEmail(invite.fromEmail) === normalizeEmail(account.email) && normalizeEmail(invite.toEmail) === normalizedEmail) || (normalizeEmail(invite.fromEmail) === normalizedEmail && normalizeEmail(invite.toEmail) === normalizeEmail(account.email))))) return { ok: false, message: 'An invitation is already waiting for this user.' }
+    const invite: CompanionInvite = { id: `invite-${Date.now()}-${normalizedEmail}`, fromEmail: normalizeEmail(account.email), toEmail: normalizedEmail, status: 'pending', createdAt: Date.now() }
+    setCompanionInvites((current) => [...current, invite])
+    setToast(`Invitation sent to ${target.profile.username}`)
+    track('companion_invited')
+    return { ok: true, message: `Invitation sent to ${target.profile.username}. They can accept it from their Profile.` }
+  }
+  const updateInviteStatus = (inviteId: string, status: CompanionInvite['status']) => {
+    setCompanionInvites((current) => current.map((invite) => invite.id === inviteId ? { ...invite, status } : invite))
+    if (status === 'accepted') setToast('Companion connected')
+    if (status === 'declined') setToast('Invitation declined')
+    if (status === 'revoked') setToast('Companion unlinked')
+    track(`companion_${status}`)
+  }
+  const removeCompanion = (inviteId: string) => {
+    setActiveCompanionIds((current) => current.filter((companionId) => currentCompanions.find((companion) => companion.id === companionId)?.inviteId !== inviteId))
+    updateInviteStatus(inviteId, 'revoked')
+  }
+  const toggleCompanion = (id: string) => setActiveCompanionIds((current) => current.includes(id) ? current.filter((companionId) => companionId !== id) : [...current, id])
+  const openCompanions = (returnScreen: Screen) => { setCompanionReturnScreen(returnScreen); openScreen('companions') }
+  const currentSessionOrder = sessionOrders.find((order) => order.status === 'current') || null
+  const pastSessionOrders = [...sessionOrders.filter((order) => order.status === 'completed'), ...pastDiningOrders]
+  const openBill = (order: DiningOrder, returnTo: Screen) => {
+    setActiveBillOrder(order)
+    setBillSource('order')
+    setBillReceiptName('')
+    setBillMode('equal')
+    const tableParticipants = ['You', ...currentCompanions.map((companion) => companion.name)]
+    setParticipants(tableParticipants)
+    setSplitItems(Object.fromEntries(order.billItems.map((item, index) => [item.id, index % 3 === 0 ? 'You' : 'Everyone'])))
+    setBillReturnScreen(returnTo)
+    openScreen('bill')
+  }
+  const handleBillFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    setBillSource('receipt')
+    setBillReceiptName(file.name)
+    setToast('Receipt values applied')
+    track('bill_scan_success')
+    event.target.value = ''
+  }
+  const openCamera = () => {
+    if (!sessionRestaurant.trim()) {
+      setToast('Enter the restaurant name before scanning')
+      return
+    }
+    setScreen('camera')
+    track('camera_open')
+  }
   const addCapturedPage = () => {
     setCapturedPages((current) => {
       const nextNumber = current.length ? Math.max(...current.map((page) => Number(page.title.replace(/\D/g, '')) || 0)) + 1 : 1
@@ -625,29 +864,63 @@ function App() {
     track('camera_page_undone')
   }
   const removeCapturedPage = (id: number) => setCapturedPages((current) => current.filter((page) => page.id !== id))
-  const startScan = (file?: File) => { if (file) setScanImage(URL.createObjectURL(file)); setScanning(true); track('menu_scan_start'); window.setTimeout(() => { setScanning(false); openScreen('menu'); track('menu_scan_success') }, 1100) }
+  const finishMenuScan = () => {
+    const name = sessionRestaurant.trim()
+    if (!name) {
+      setToast('Enter the restaurant name before scanning')
+      openScreen('scan')
+      return
+    }
+    setSessionRestaurant(name)
+    setSessionMenu(dishes)
+    setScanning(false)
+    openScreen('menu')
+    track('menu_scan_success')
+  }
+  const startScan = (file?: File) => {
+    if (!sessionRestaurant.trim()) {
+      setToast('Enter the restaurant name before scanning')
+      return
+    }
+    if (file) setScanImage(URL.createObjectURL(file))
+    setScanning(true)
+    track('menu_scan_start')
+    window.setTimeout(finishMenuScan, 1100)
+  }
   const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (file) startScan(file) }
-  const getStatus = (dish: Dish): Status => {
-    const activeAllergyProfiles = [...passport.allergies.map((id) => passport.allergyProfiles[id] || defaultAllergyProfile), ...(passport.otherAllergen ? [passport.allergyProfiles.other || defaultAllergyProfile] : [])]
+  const getStatusForPassport = (dish: Dish, profile: Passport): Status => {
+    const activeAllergyProfiles = [...profile.allergies.map((id) => profile.allergyProfiles[id] || defaultAllergyProfile), ...(profile.otherAllergen ? [profile.allergyProfiles.other || defaultAllergyProfile] : [])]
     const hasSevereAllergy = activeAllergyProfiles.some((profile) => profile.severity === 'severe')
     const avoidsCrossContact = activeAllergyProfiles.some((profile) => profile.crossContact)
-    const avoidFoods = new Set([...passport.avoidFoods, ...passport.diets.filter((id) => avoidFoodIds.includes(id))])
+    const avoidFoods = new Set([...profile.avoidFoods, ...profile.diets.filter((id) => avoidFoodIds.includes(id))])
     if (dish.confidence < 0.7) return 'UNKNOWN'
-    if (passport.allergies.some((allergen) => allergenMatchKeys(allergen).some((key) => dish.allergens.includes(key)))) return 'CONFLICT'
-    if ((passport.dietStyle === 'vegetarian' || passport.diets.includes('vegetarian')) && !dish.vegetarian) return 'CONFLICT'
-    if ((passport.dietStyle === 'vegan' || passport.diets.includes('vegan')) && !dish.vegan) return 'CONFLICT'
-    if (passport.dietStyle === 'pescatarian' && (dish.hasPork || dish.hasBeef || dish.hasPoultry)) return 'CONFLICT'
+    if (profile.allergies.some((allergen) => allergenMatchKeys(allergen).some((key) => dish.allergens.includes(key)))) return 'CONFLICT'
+    const isVegetarianProfile = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo'].includes(profile.dietStyle) || profile.diets.includes('vegetarian')
+    if (isVegetarianProfile && !dish.vegetarian) return 'CONFLICT'
+    if ((profile.dietStyle === 'vegan' || profile.diets.includes('vegan')) && !dish.vegan) return 'CONFLICT'
+    if (profile.dietStyle === 'lacto' && dish.allergens.includes('egg')) return 'CONFLICT'
+    if (profile.dietStyle === 'ovo' && dish.allergens.includes('milk')) return 'CONFLICT'
+    if (profile.dietStyle === 'pescatarian' && (dish.hasPork || dish.hasBeef || dish.hasPoultry)) return 'CONFLICT'
     if (avoidFoods.has('no-pork') && dish.hasPork) return 'CONFLICT'
     if (avoidFoods.has('no-beef') && dish.hasBeef) return 'CONFLICT'
     if (avoidFoods.has('no-poultry') && dish.hasPoultry) return 'CONFLICT'
     if (avoidFoods.has('no-seafood') && dish.hasSeafood) return 'CONFLICT'
     if (avoidFoods.has('no-offal') && dish.hasOffal) return 'CONFLICT'
-    if ((passport.faithDiet === 'halal' || passport.faithDiet === 'kosher') && dish.hasPork) return 'CONFLICT'
-    if (passport.faithDiet === 'kosher' && dish.hasSeafood) return 'CONFLICT'
-    if (hasSevereAllergy && dish.possibleAllergens?.some((allergen) => passport.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))) return 'WARNING'
+    if ((profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasPork) return 'CONFLICT'
+    if (profile.faithDiet === 'kosher' && dish.hasSeafood) return 'CONFLICT'
+    if (hasSevereAllergy && dish.possibleAllergens?.some((allergen) => profile.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))) return 'WARNING'
     if (avoidsCrossContact && (dish.possibleAllergens?.length || dish.confidence < 0.9)) return 'WARNING'
-    if (passport.preferences.includes('no-cilantro') && dish.hasCilantro) return 'WARNING'
-    if (passport.spiceLevel !== null && dish.spicy > passport.spiceLevel) return 'WARNING'
+    if (profile.preferences.includes('no-cilantro') && dish.hasCilantro) return 'WARNING'
+    if (profile.spiceLevel !== null && dish.spicy > profile.spiceLevel) return 'WARNING'
+    return 'MATCH'
+  }
+  const getStatus = (dish: Dish): Status => getStatusForPassport(dish, passport)
+  const getDiningStatus = (dish: Dish): Status => {
+    const selectedPassports = [passport, ...currentCompanions.filter((companion) => activeCompanionIds.includes(companion.id)).map((companion) => companion.passport)]
+    const statuses = selectedPassports.map((profile) => getStatusForPassport(dish, profile))
+    if (statuses.includes('CONFLICT')) return 'CONFLICT'
+    if (statuses.includes('WARNING')) return 'WARNING'
+    if (statuses.includes('UNKNOWN')) return 'UNKNOWN'
     return 'MATCH'
   }
   const statusInfo = (status: Status) => ({
@@ -656,37 +929,72 @@ function App() {
     CONFLICT: { label: t('conflictLabel'), detail: t('detailsConflict'), color: 'conflict', icon: 'close' },
     UNKNOWN: { label: t('unknownLabel'), detail: t('detailsUnknown'), color: 'unknown', icon: 'alert' },
   }[status])
-  const filteredDishes = useMemo(() => dishes.filter((dish) => {
-    if (filter === 'vegetarian') return dish.vegetarian
-    if (filter === 'notSpicy') return dish.spicy === 0
-    if (filter === 'forMe') return getStatus(dish) !== 'CONFLICT'
-    return true
-  }), [filter, passport, language])
   const dishName = (dish: Dish) => dish.localized[language]
   const questionFor = (dish: Dish) => passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
     ? '我对花生严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。'
     : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`
   const copyQuestion = async () => { await navigator.clipboard?.writeText(questionFor(selectedDish)); setToast('Question copied'); track('ask_restaurant_clicked') }
-  const speak = (text: string) => { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); track('waiter_voice_play') } }
-  const generatePlan = () => {
-    const hasSevereAllergy = passport.allergies.some((id) => (passport.allergyProfiles[id] || defaultAllergyProfile).severity === 'severe') || Boolean(passport.otherAllergen && (passport.allergyProfiles.other || defaultAllergyProfile).severity === 'severe')
-    const candidates = dishes.filter((dish) => getStatus(dish) !== 'CONFLICT' && !(hasSevereAllergy && getStatus(dish) === 'UNKNOWN') && dish.price < budget)
-    const picks: Dish[] = []
-    const target = Math.max(3, Math.min(5, partySize + 1))
-    for (const dish of candidates.sort((a, b) => Number(a.vegetarian) - Number(b.vegetarian) || a.spicy - b.spicy)) {
-      if (!picks.some((pick) => pick.id === dish.id)) picks.push(dish)
-      if (picks.length === target) break
+  const speak = (text: string) => { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); track('question_voice_play') } }
+  const addToCart = (dish: Dish) => {
+    if (getDiningStatus(dish) === 'CONFLICT') {
+      setToast('This dish conflicts with your Food Passport')
+      return
     }
-    setPlan(picks.length >= 2 ? picks : candidates.slice(0, 2)); track('ai_order_generated'); setScreen('order')
+    setCart((current) => {
+      const existing = current.find((item) => item.dish.id === dish.id)
+      return existing
+        ? current.map((item) => item.dish.id === dish.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, { dish, quantity: 1 }]
+    })
+    setSelectedSessionOrder(null)
+    setToast(`${dish.localized[language]} added to cart`)
+    track('dish_added_to_cart')
   }
-  const planTotal = (plan || []).reduce((sum, dish) => sum + dish.price, 0)
-  const billItems: BillItem[] = [
-    { id: 'chicken', label: 'Kung Pao chicken', zh: '宫保鸡丁', amount: 38, dish: dishes.find((dish) => dish.id === 'kung-pao')! },
-    { id: 'tofu', label: 'Mapo tofu', zh: '麻婆豆腐', amount: 28, dish: dishes.find((dish) => dish.id === 'mapo-tofu')! },
-    { id: 'eggplant', label: 'Fish-fragrant eggplant', zh: '鱼香茄子', amount: 32, dish: dishes.find((dish) => dish.id === 'eggplant')! },
-    { id: 'greens', label: 'Garlic seasonal greens', zh: '蒜蓉时蔬', amount: 28, dish: dishes.find((dish) => dish.id === 'greens')! },
-    { id: 'lotus', label: 'Sweet-sour lotus root', zh: '糖醋藕片', amount: 30, dish: dishes.find((dish) => dish.id === 'lotus')! },
-  ]
+  const updateCartQuantity = (dishId: string, quantity: number) => setCart((current) => quantity <= 0
+    ? current.filter((item) => item.dish.id !== dishId)
+    : current.map((item) => item.dish.id === dishId ? { ...item, quantity } : item))
+  const removeFromCart = (dishId: string) => setCart((current) => current.filter((item) => item.dish.id !== dishId))
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const cartTotal = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
+  const openSavedOrder = (order: DiningOrder) => {
+    setSelectedSessionOrder(order)
+    setCart(order.cartSnapshot || [])
+    setSessionMenu(order.menuSnapshot?.length ? order.menuSnapshot : dishes)
+    openScreen('order')
+    track('saved_order_open')
+  }
+  const completeCartOrder = () => {
+    const savedAt = Date.now()
+    const savedRestaurantName = sessionRestaurant.trim() || 'Chengdu Garden'
+    const orderItems = cart.map(({ dish, quantity }) => ({ id: `session-${savedAt}-${dish.id}`, label: dish.name, zh: dish.zh, amount: dish.price * quantity, dish }))
+    const completedOrder: DiningOrder = {
+      id: `session-${savedAt}`,
+      restaurant: savedRestaurantName,
+      initials: initialsForRestaurant(savedRestaurantName),
+      location: 'Shanghai · 1.2 km',
+      time: 'Just now',
+      status: 'current',
+      itemCount: cartItemCount,
+      total: cartTotal,
+      preview: cart.map(({ dish, quantity }) => `${dish.name} ×${quantity}`).join(' · '),
+      tone: 'order-tone-red',
+      billItems: orderItems,
+      receiptItems: orderItems,
+      menuSnapshot: sessionMenu,
+      cartSnapshot: cart,
+      passportSnapshot: passport,
+      companionNames: currentCompanions.filter((companion) => activeCompanionIds.includes(companion.id)).map((companion) => companion.name),
+      savedAt,
+    }
+    setSessionOrders((current) => [{ ...completedOrder }, ...current.map((order) => ({ ...order, status: 'completed' as const }))])
+    setSessionMenu(sessionMenu)
+    setSelectedSessionOrder(completedOrder)
+    setCart([])
+    setToast('Order saved to this dining session')
+    track('order_completed')
+    openScreen('home')
+  }
+  const billItems = activeBillOrder ? (billSource === 'receipt' ? activeBillOrder.receiptItems : activeBillOrder.billItems) : []
   const billTotal = billItems.reduce((sum, item) => sum + item.amount, 0)
   const equalAmount = (billTotal / participants.length).toFixed(2)
   const itemTotals = participants.reduce<Record<string, number>>((acc, person) => { acc[person] = 0; return acc }, {})
@@ -694,8 +1002,8 @@ function App() {
   const resetDemo = () => { localStorage.clear(); window.location.reload() }
 
   if (!ready) {
-    if (account && onboardingStep === 0) return <Login language={language} onLogin={logIn} />
-    return <Onboarding language={language} setLanguage={setLanguage} step={onboardingStep} setStep={setOnboardingStep} passport={passport} updatePassport={updatePassport} finish={finishOnboarding} onRegister={completeRegistration} t={t} />
+    if (account && onboardingStep === 0) return <Login language={language} onLogin={logIn} onRegister={() => setOnboardingStep(1)} />
+    return <Onboarding language={language} setLanguage={setLanguage} step={onboardingStep} setStep={setOnboardingStep} passport={passport} updatePassport={updatePassport} finish={finishOnboarding} onRegister={completeRegistration} existingEmails={accounts.map((record) => record.profile.email)} t={t} />
   }
 
   return <div className="app-root">
@@ -703,36 +1011,48 @@ function App() {
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label="Bitewise 食见 home"><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
-        {screen === 'home' && <Home t={t} passport={passport} dishes={dishes} getStatus={getStatus} openScreen={openScreen} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} plan={plan} />}
-        {screen === 'scan' && <Scan t={t} scanImage={scanImage} scanning={scanning} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
-        {screen === 'camera' && <CameraCapture t={t} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={() => openScreen('menu')} onBack={() => openScreen('scan')} />}
-        {screen === 'menu' && <MenuResults t={t} language={language} filter={filter} setFilter={setFilter} dishes={filteredDishes} allDishes={dishes} getStatus={getStatus} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} onAssistant={() => openScreen('assistant')} />}
-        {screen === 'detail' && <DishDetail t={t} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAdd={() => { setToast('Added to your table plan'); setPlan((current) => [...(current || []), selectedDish]); track('dish_saved') }} />}
-        {screen === 'assistant' && <Assistant t={t} passport={passport} partySize={partySize} setPartySize={setPartySize} budget={budget} setBudget={setBudget} tempPreference={tempPreference} setTempPreference={setTempPreference} onBack={() => openScreen('menu')} onGenerate={generatePlan} />}
-        {screen === 'order' && <OrderPlan t={t} plan={plan || dishes.slice(2, 5)} total={planTotal || dishes.slice(2, 5).reduce((sum, dish) => sum + dish.price, 0)} onBack={() => openScreen('assistant')} onConfirm={() => { track('ai_order_confirm'); setToast('Order saved to this dining session'); openScreen('waiter') }} onRegenerate={generatePlan} />}
-        {screen === 'waiter' && <Waiter t={t} plan={plan || dishes.slice(2, 5)} onBack={() => openScreen('order')} onSpeak={() => speak('请把这些菜做成素食，不要放香菜。如果任何配方无法确认，请先告诉我们。')} />}
-        {screen === 'bill' && <Bill t={t} billReady={billReady} setBillReady={setBillReady} billInputRef={billInputRef} handleFile={(event) => { if (event.target.files?.[0]) setBillReady(true); track('bill_scan_success') }} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} onBack={() => openScreen('home')} onToast={setToast} />}
-        {screen === 'find' && <FindFood t={t} onBack={() => openScreen('home')} onScan={() => openScreen('scan')} />}
-        {screen === 'profile' && account && <Profile t={t} language={language} user={account} passport={passport} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onLogout={logOut} onReset={resetDemo} />}
+        {screen === 'home' && <Home t={t} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
+        {screen === 'scan' && <Scan t={t} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
+        {screen === 'camera' && <CameraCapture t={t} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
+        {screen === 'menu' && <MenuResults t={t} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
+        {screen === 'detail' && <DishDetail t={t} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
+        {screen === 'cart' && <Cart t={t} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onRemove={removeFromCart} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
+        {screen === 'order' && <OrderPage language={language} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onViewMenu={() => { setSessionMenu(selectedSessionOrder?.menuSnapshot?.length ? selectedSessionOrder.menuSnapshot : sessionMenu); openScreen('menu') }} onHome={() => openScreen('home')} />}
+        {screen === 'bill' && activeBillOrder && <Bill t={t} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
+        {screen === 'find' && <FindFood t={t} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} onScan={() => openScreen('scan')} />}
+        {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
+        {screen === 'profile' && account && <Profile t={t} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
+        {screen === 'savedRestaurants' && <SavedRestaurantsPage restaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onOpenFind={() => openScreen('find')} onBack={() => openScreen('profile')} />}
+        {screen === 'companions' && account && <CompanionsPage account={account} accounts={accounts} companions={currentCompanions} incomingInvites={incomingCompanionInvites} outgoingInvites={outgoingCompanionInvites} onAddCompanion={addCompanion} onAcceptInvite={(inviteId) => updateInviteStatus(inviteId, 'accepted')} onDeclineInvite={(inviteId) => updateInviteStatus(inviteId, 'declined')} onRemoveCompanion={removeCompanion} onOpenCompanion={(email) => { setSelectedCompanionEmail(email); openScreen('companionDetail') }} onBack={() => openScreen(companionReturnScreen)} />}
+        {screen === 'companionDetail' && selectedCompanion && <CompanionDetailPage companion={selectedCompanion} onUnlink={() => { removeCompanion(selectedCompanion.inviteId); openScreen('companions') }} onBack={() => openScreen('companions')} />}
       </main>
-      {(['home', 'find', 'profile'].includes(screen)) && <BottomNav screen={screen} openScreen={openScreen} t={t} />}
+      {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
     {askSheet && <AskSheet t={t} language={language} dish={selectedDish} question={questionFor(selectedDish)} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
 
-function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; t: (key: CopyKey) => string }) {
+function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
   const text = onboardingCopy[language]
-  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div>{step > 0 && <span className="onboarding-step">{stepLabel(language, step)}</span>}</div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <RegisterPage onBack={() => setStep(0)} onContinue={onRegister} /> : step === 2 ? <section className="onboarding-card"><div className="eyebrow"><span className="orange-dot" /> {text.languageEyebrow}</div><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(3)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
+  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div>{step > 0 && <span className="onboarding-step">{stepLabel(language, step)}</span>}</div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(0)} onContinue={onRegister} /> : step === 2 ? <section className="onboarding-card"><div className="eyebrow"><span className="orange-dot" /> {text.languageEyebrow}</div><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(3)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
 }
 
-function RegisterPage({ onBack, onContinue }: { onBack: () => void; onContinue: (profile: UserProfile) => void }) {
-  const text = accountCopy.en
+function RegisterPage({ language, existingEmails, onBack, onContinue }: { language: Language; existingEmails: string[]; onBack: () => void; onContinue: (profile: UserProfile) => void }) {
+  const text = accountCopy[language]
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
-  const canContinue = username.trim().length > 0 && email.trim().length > 0
+  const [emailTaken, setEmailTaken] = useState(false)
+  const canContinue = username.trim().length > 0 && email.trim().length > 0 && !emailTaken
+  const submit = () => {
+    const normalizedEmail = normalizeEmail(email)
+    if (existingEmails.some((storedEmail) => normalizeEmail(storedEmail) === normalizedEmail)) {
+      setEmailTaken(true)
+      return
+    }
+    onContinue({ username: username.trim(), email: email.trim() })
+  }
   return <section className="onboarding-card auth-card">
     <button className="back-link" onClick={onBack}><Icon name="back" size={18} /> Back</button>
     <div className="eyebrow"><span className="orange-dot" /> {text.registerEyebrow}</div>
@@ -741,17 +1061,18 @@ function RegisterPage({ onBack, onContinue }: { onBack: () => void; onContinue: 
     <label className="field-label" htmlFor="register-username">{text.usernameLabel}</label>
     <input className="auth-input" id="register-username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder={text.usernamePlaceholder} autoComplete="name" autoFocus />
     <label className="field-label" htmlFor="register-email">{text.emailLabel}</label>
-    <input className="auth-input" id="register-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={text.emailPlaceholder} autoComplete="email" />
-    <Button className="full-button" disabled={!canContinue} onClick={() => onContinue({ username: username.trim(), email: email.trim() })} icon="arrow">{text.continueLabel}</Button>
+    <input className={`auth-input ${emailTaken ? 'has-error' : ''}`} id="register-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setEmailTaken(false) }} placeholder={text.emailPlaceholder} autoComplete="email" />
+    {emailTaken && <p className="auth-error">This email is already registered in this demo. Log in instead.</p>}
+    <Button className="full-button" disabled={!canContinue} onClick={submit} icon="arrow">{text.continueLabel}</Button>
   </section>
 }
 
-function Login({ language, onLogin }: { language: Language; onLogin: (email: string) => boolean }) {
+function Login({ language, onLogin, onRegister }: { language: Language; onLogin: (email: string) => boolean; onRegister: () => void }) {
   const text = accountCopy[language]
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
   const submit = () => { const ok = onLogin(email); setError(!ok) }
-  return <div className="onboarding-root"><div className="onboarding-frame"><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div><span className="onboarding-step">{language.toUpperCase()}</span></div><section className="onboarding-card auth-card"><div className="eyebrow"><span className="orange-dot" /> {text.loginEyebrow}</div><h1>{text.loginTitle}</h1><p className="lead">{text.loginSubtitle}</p><label className="field-label" htmlFor="login-email">{text.emailLabel}</label><input className={`auth-input ${error ? 'has-error' : ''}`} id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(false) }} placeholder={text.loginEmailPlaceholder} autoComplete="email" autoFocus onKeyDown={(event) => { if (event.key === 'Enter') submit() }} />{error && <p className="auth-error">{text.loginError}</p>}<Button className="full-button" disabled={!email.trim()} onClick={submit} icon="arrow">{text.loginButton}</Button></section></div></div>
+  return <div className="onboarding-root"><div className="onboarding-frame"><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div><span className="onboarding-step">{language.toUpperCase()}</span></div><section className="onboarding-card auth-card"><div className="eyebrow"><span className="orange-dot" /> {text.loginEyebrow}</div><h1>{text.loginTitle}</h1><p className="lead">{text.loginSubtitle}</p><label className="field-label" htmlFor="login-email">{text.emailLabel}</label><input className={`auth-input ${error ? 'has-error' : ''}`} id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(false) }} placeholder={text.loginEmailPlaceholder} autoComplete="email" autoFocus onKeyDown={(event) => { if (event.key === 'Enter') submit() }} />{error && <p className="auth-error">{text.loginError}</p>}<Button className="full-button" disabled={!email.trim()} onClick={submit} icon="arrow">{text.loginButton}</Button><button type="button" className="auth-register-link" onClick={onRegister}><Icon name="plus" size={15} /> {text.registerNewUser}</button></section></div></div>
 }
 
 function WelcomePage({ onContinue }: { onContinue: () => void }) {
@@ -981,13 +1302,19 @@ function PassportEditor({ language, t, passport, updatePassport, onBack, onFinis
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><div className="eyebrow"><span className="orange-dot" /> {text.passportEyebrow}</div><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><div className="assistant-note"><span className="assistant-face">•ᴗ•</span><span>{text.assistantNote}</span></div><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
-function Home({ t, passport, dishes, getStatus, openScreen, setSelectedDish, setAskSheet, plan }: { t: (key: CopyKey) => string; passport: Passport; dishes: Dish[]; getStatus: (dish: Dish) => Status; openScreen: (screen: Screen) => void; setSelectedDish: (dish: Dish) => void; setAskSheet: (open: boolean) => void; plan: Dish[] | null }) {
+function Home({ t, passport, dishes, sessionRestaurant, currentOrder, getStatus, openScreen, openBill, onOpenOrder, setSelectedDish, setAskSheet, cart }: { t: (key: CopyKey) => string; passport: Passport; dishes: Dish[]; sessionRestaurant: string; currentOrder: DiningOrder | null; getStatus: (dish: Dish) => Status; openScreen: (screen: Screen) => void; openBill: () => void; onOpenOrder: (order: DiningOrder) => void; setSelectedDish: (dish: Dish) => void; setAskSheet: (open: boolean) => void; cart: CartItem[] }) {
   const flagged = dishes.filter((dish) => getStatus(dish) === 'CONFLICT').length
-  return <div className="page page-home"><section className="welcome-row"><div><div className="eyebrow"><span className="orange-dot" /> Your AI dining companion in China</div><h1>{t('hello')}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div><div className="passport-avatar" onClick={() => openScreen('profile')}><span>{passport.allergies.length ? passport.allergies.length : '—'}</span><small>{passport.allergies.length ? 'flags' : 'passport'}</small></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">Decision-first dining</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />Scan, understand and ask with confidence.</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} conflict${flagged > 1 ? 's' : ''} flagged` : 'Evidence-aware'}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {dishes.length} dishes ready</div></div></section><div className="quick-grid single-card"><button className="quick-card bill-card" onClick={() => openScreen('bill')}><span className="quick-icon"><Icon name="receipt" size={20} /></span><span><strong>{t('splitBill')}</strong><small>Equal or by item</small></span><Icon name="arrow" size={18} /></button></div><section className="session-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {t('recentSession')}</span><h2>Chengdu Garden</h2></div><span className="status-chip match"><span className="status-dot" /> {t('menuReady')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">CG</span><span><strong>Tonight · 7:42 PM</strong><small>42 menu dishes · {passport.diets.includes('vegetarian') ? 'Vegetarian' : 'Food Passport active'}</small></span><button className="more-button"><Icon name="dots" size={20} /></button></div><div className="progress-line"><span style={{ width: plan ? '82%' : '45%' }} /></div><div className="session-actions"><button onClick={() => openScreen('menu')}><Icon name="menu" size={17} /> {t('openSession')}</button><button onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> Review flags</button></div></div></section><section className="intent-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> Explore by intent</span><h2>{t('findFood')}</h2></div><button className="text-link" onClick={() => openScreen('find')}>View all <Icon name="arrow" size={15} /></button></div><div className="intent-row"><button onClick={() => openScreen('find')}>🥟 <span>Dumplings</span></button><button onClick={() => openScreen('find')}>🌶️ <span>Not spicy</span></button><button onClick={() => openScreen('find')}>🌿 <span>Vegetarian</span></button><button onClick={() => openScreen('find')}>✨ <span>Surprise me</span></button></div></section></div>
+  const hasSavedOrder = Boolean(currentOrder?.cartSnapshot?.length)
+  const hasScannedMenu = dishes.length > 0
+  const savedMenuCount = currentOrder?.menuSnapshot?.length || dishes.length
+  const restaurantName = currentOrder?.restaurant || sessionRestaurant
+  const restaurantInitials = currentOrder?.initials || initialsForRestaurant(sessionRestaurant)
+  return <div className="page page-home"><section className="welcome-row"><div><div className="eyebrow"><span className="orange-dot" /> Evidence-aware dining in China</div><h1>{t('hello')}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">Decision-first dining</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />Scan, understand and choose with confidence.</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} conflict${flagged > 1 ? 's' : ''} flagged` : 'Evidence-aware'}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} dishes ready</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {t('recentSession')}</span><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? 'Order saved' : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span><strong>{hasSavedOrder && currentOrder ? currentOrder.time : 'Tonight · 7:42 PM'}</strong><small>{hasSavedOrder && currentOrder ? `${currentOrder.itemCount} dishes ordered · ¥${currentOrder.total}` : hasScannedMenu ? `${savedMenuCount} menu dishes · ${passport.diets.includes('vegetarian') ? 'Vegetarian' : 'Food Passport active'}` : t('scanMenu')}</small></span><button className="more-button"><Icon name="dots" size={20} /></button></div><div className="progress-line"><span style={{ width: hasSavedOrder ? '100%' : hasScannedMenu ? (cart.length ? '82%' : '45%') : '0%' }} /></div><div className="session-actions">{hasScannedMenu ? <><button onClick={() => openScreen('menu')}><Icon name="menu" size={17} /> {hasSavedOrder ? 'View menu' : t('openSession')}</button>{hasSavedOrder && currentOrder ? <><button onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> View order</button></> : <button onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> Review flags</button>}</> : <button onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}</div></div></section>}</div>
 }
 
-function Scan({ t, scanImage, scanning, fileInputRef, handleFile, startScan, onOpenCamera, onBack }: { t: (key: CopyKey) => string; scanImage: string | null; scanning: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void; onOpenCamera: () => void; onBack: () => void }) {
-  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker="Step 01 · Capture" onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt="Uploaded menu preview" /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera">{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload">{scanImage ? 'Choose another photo' : t('upload')}</Button><button className="demo-link" onClick={() => startScan()}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
+function Scan({ t, restaurantName, setRestaurantName, scanImage, scanning, fileInputRef, handleFile, startScan, onOpenCamera, onBack }: { t: (key: CopyKey) => string; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void; onOpenCamera: () => void; onBack: () => void }) {
+  const hasRestaurantName = restaurantName.trim().length > 0
+  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker="Step 01 · Capture" onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">Where are you eating today?</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder="e.g. Chengdu Garden" disabled={scanning} required /><small>We’ll use this name to record today’s dining session.</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt="Uploaded menu preview" /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? 'Choose another photo' : t('upload')}</Button><button className="demo-link" onClick={() => startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
 }
 
 function CameraCapture({ t, pages, onCapture, onUndo, onDelete, onDone, onBack }: { t: (key: CopyKey) => string; pages: CapturedPage[]; onCapture: () => void; onUndo: () => void; onDelete: (id: number) => void; onDone: () => void; onBack: () => void }) {
@@ -1026,15 +1353,18 @@ function CameraCapture({ t, pages, onCapture, onUndo, onDelete, onDone, onBack }
   </div>
 }
 
-function PageHeader({ title, kicker, onBack, action }: { title: string; kicker?: string; onBack?: () => void; action?: ReactNode }) { return <div className="page-header"><button className="icon-button soft" onClick={onBack}><Icon name="back" size={20} /></button><div className="page-title"><span><span className="orange-dot" /> {kicker || 'BITEWISE · 食见'}</span><strong>{title}</strong></div>{action || <span className="header-spacer" />}</div> }
+function PageHeader({ title, kicker, hideKicker, onBack, action }: { title: string; kicker?: string; hideKicker?: boolean; onBack?: () => void; action?: ReactNode }) { return <div className="page-header"><button className="icon-button soft" onClick={onBack}><Icon name="back" size={20} /></button><div className="page-title">{!hideKicker && <span><span className="orange-dot" /> {kicker || 'BITEWISE · 食见'}</span>}<strong>{title}</strong></div>{action || <span className="header-spacer" />}</div> }
 
-function MenuResults({ t, language, filter, setFilter, dishes: visibleDishes, allDishes, getStatus, onBack, onDetail, onAssistant }: { t: (key: CopyKey) => string; language: Language; filter: Filter; setFilter: (filter: Filter) => void; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; onBack: () => void; onDetail: (dish: Dish) => void; onAssistant: () => void }) {
-  return <div className="page page-narrow page-menu"><PageHeader title={t('menuResults')} kicker="Step 02 · Decide" onBack={onBack} action={<button className="icon-button soft"><Icon name="dots" size={20} /></button>} /><div className="menu-notice"><Icon name="shield" size={19} /><span>{t('checking')}<small>{allDishes.filter((dish) => getStatus(dish) === 'CONFLICT').length ? ' Clear conflicts are excluded from AI recommendations.' : ' Unknown information stays visible and uncertain.'}</small></span></div><div className="filter-tabs">{([['all', t('all')], ['forMe', t('forMe')], ['vegetarian', t('vegetarian')], ['notSpicy', t('notSpicy')]] as Array<[Filter, string]>).map(([value, label]) => <button key={value} className={filter === value ? 'active' : ''} onClick={() => { setFilter(value); }}><span>{label}</span></button>)}</div><div className="menu-list">{visibleDishes.map((dish) => <DishCard key={dish.id} dish={dish} language={language} status={getStatus(dish)} t={t} onDetail={onDetail} />)}</div><div className="sticky-cta"><Button className="full-button" onClick={onAssistant} icon="spark">{t('helpOrder')}</Button></div></div>
+function MenuResults({ t, language, dishes: visibleDishes, allDishes, getStatus, cart, onAddToCart, onOpenCart, onBack, onDetail }: { t: (key: CopyKey) => string; language: Language; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; cart: CartItem[]; onAddToCart: (dish: Dish) => void; onOpenCart: () => void; onBack: () => void; onDetail: (dish: Dish) => void }) {
+  const conflictCount = allDishes.filter((dish) => getStatus(dish) === 'CONFLICT').length
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const cartTotal = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
+  return <div className="page page-narrow page-menu"><PageHeader title={t('menuResults')} kicker="Step 02 · Decide" onBack={onBack} /><div className="menu-notice"><Icon name="shield" size={19} /><span>{t('checking')}<small>{conflictCount ? ' Clear conflicts are excluded from the cart.' : ' Unknown information stays visible and uncertain.'}</small></span></div><div className="menu-list">{visibleDishes.map((dish) => <DishCard key={dish.id} dish={dish} language={language} status={getStatus(dish)} t={t} onDetail={onDetail} onAddToCart={onAddToCart} cartQuantity={cart.find((item) => item.dish.id === dish.id)?.quantity || 0} />)}</div><div className={`sticky-cta ${cartCount ? 'has-items' : 'empty'}`}><button type="button" className="cart-floating-button" onClick={onOpenCart}><span className="cart-floating-icon"><Icon name="cart" size={19} />{cartCount > 0 && <b>{cartCount}</b>}</span><span className="cart-floating-copy"><strong>{cartCount ? 'View cart' : 'Cart'}</strong><small>{cartCount ? `${cartCount} ${cartCount === 1 ? 'dish' : 'dishes'} selected` : 'Choose dishes as you browse'}</small></span><strong className="cart-floating-total">{cartCount ? `¥${cartTotal}` : '¥0'}</strong><Icon name="arrow" size={17} /></button></div></div>
 }
 
 function DishVisual({ dish, small = false }: { dish: Dish; small?: boolean }) { return <div className={`dish-visual ${dish.className} ${small ? 'dish-visual-small' : ''}`}><img className="dish-photo" src={dish.imageSrc} alt={dish.name} loading="lazy" /></div> }
 function StatusBadge({ status, t }: { status: Status; t: (key: CopyKey) => string }) { const map = { MATCH: ['match', t('matchLabel'), 'check'], WARNING: ['warning', t('warningLabel'), 'alert'], CONFLICT: ['conflict', t('conflictLabel'), 'close'], UNKNOWN: ['unknown', t('unknownLabel'), 'alert'] } as const; const [color, label, icon] = map[status]; return <span className={`status-badge ${color}`}><Icon name={icon} size={14} /> {label}</span> }
-function DishCard({ dish, language, status, t, onDetail }: { dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void }) { const info = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('detailsUnknown') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch'); return <article className={`dish-card card-status-${status.toLowerCase()}`}><button className="dish-card-main" onClick={() => onDetail(dish)}><DishVisual dish={dish} /><div className="dish-card-content"><div className="dish-card-title"><div><h3>{dish.localized[language]}</h3><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div><div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{tag}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? 'Mild' : dish.spicy === 2 ? 'Medium' : 'Spicy' : 'Mild'}</span></div><div className="status-line"><StatusBadge status={status} t={t} /><span>{info}</span></div></div></button><button className="dish-detail-button" onClick={() => onDetail(dish)}>{t('viewDetails')} <Icon name="arrow" size={16} /></button></article> }
+function DishCard({ dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) { const info = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('detailsUnknown') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch'); const inCart = cartQuantity > 0; return <article className={`dish-card card-status-${status.toLowerCase()}`}><button className="dish-card-main" onClick={() => onDetail(dish)}><DishVisual dish={dish} /><div className="dish-card-content"><div className="dish-card-title"><div><h3>{dish.localized[language]}</h3><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div><div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{tag}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? 'Mild' : dish.spicy === 2 ? 'Medium' : 'Spicy' : 'Mild'}</span></div><div className="status-line"><StatusBadge status={status} t={t} /><span>{info}</span></div></div></button><div className="dish-card-actions"><button className="dish-detail-button" onClick={() => onDetail(dish)}>{t('viewDetails')} <Icon name="arrow" size={16} /></button><button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} disabled={status === 'CONFLICT'} aria-pressed={inCart} onClick={() => onAddToCart(dish)}>{status === 'CONFLICT' ? <><Icon name="close" size={15} /> Excluded</> : inCart ? <><span className="cart-button-check"><Icon name="check" size={13} /></span><span>In cart</span><b className="cart-button-count">{cartQuantity}</b></> : <><Icon name="plus" size={15} /> Add to cart</>}</button></div></article> }
 
 type IngredientRisk = 'clear' | 'conflict' | 'possible' | 'unknown'
 type IngredientCheck = { label: string; risk: IngredientRisk }
@@ -1066,8 +1396,11 @@ function ingredientDietConflict(label: string, dish: Dish, passport: Passport) {
   const lower = label.toLowerCase()
   const avoidFoods = new Set([...passport.avoidFoods, ...passport.diets.filter((id) => avoidFoodIds.includes(id))])
   const has = (...terms: string[]) => terms.some((term) => lower.includes(term))
-  if ((passport.dietStyle === 'vegetarian' || passport.diets.includes('vegetarian')) && !dish.vegetarian) return has('pork', 'beef', 'chicken', 'duck', 'fish', 'seafood', 'meat', 'poultry')
+  const isVegetarianProfile = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo'].includes(passport.dietStyle) || passport.diets.includes('vegetarian')
+  if (isVegetarianProfile && !dish.vegetarian) return has('pork', 'beef', 'chicken', 'duck', 'fish', 'seafood', 'meat', 'poultry')
   if ((passport.dietStyle === 'vegan' || passport.diets.includes('vegan')) && !dish.vegan) return has('pork', 'beef', 'chicken', 'duck', 'fish', 'seafood', 'meat', 'poultry', 'stock', 'dairy', 'egg')
+  if (passport.dietStyle === 'lacto' && dish.allergens.includes('egg')) return has('egg', 'eggs')
+  if (passport.dietStyle === 'ovo' && dish.allergens.includes('milk')) return has('milk', 'dairy', 'cheese', 'cream', 'butter')
   if (passport.dietStyle === 'pescatarian') return has('pork', 'beef', 'chicken', 'duck', 'meat', 'poultry')
   if (avoidFoods.has('no-pork') && dish.hasPork) return has('pork')
   if (avoidFoods.has('no-beef') && dish.hasBeef) return has('beef')
@@ -1109,7 +1442,7 @@ function ingredientRiskLabel(risk: IngredientRisk, t: (key: CopyKey) => string) 
   return t('matchLabel')
 }
 
-function DishDetail({ t, language, dish, passport, status, onBack, onAsk, onAdd }: { t: (key: CopyKey) => string; language: Language; dish: Dish; passport: Passport; status: Status; onBack: () => void; onAsk: () => void; onAdd: () => void }) {
+function DishDetail({ t, language, dish, passport, status, onBack, onAsk, onAddToCart }: { t: (key: CopyKey) => string; language: Language; dish: Dish; passport: Passport; status: Status; onBack: () => void; onAsk: () => void; onAddToCart: () => void }) {
   const ingredientChecks = buildIngredientChecks(dish, passport, status)
   const statusDetail = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' || status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')
   return <div className="page page-narrow page-detail">
@@ -1133,21 +1466,77 @@ function DishDetail({ t, language, dish, passport, status, onBack, onAsk, onAdd 
     <SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><p>{dish.culture}</p></div>
     <div className="comparison-card"><Icon name="spark" size={18} /><p><strong>Helpful context</strong><br />This is a short cultural explanation to make the dish easier to decide on, not a promise that recipes are identical everywhere.</p></div>
     <div className="why-card"><span>{t('whySeeing')}</span><p>{statusDetail}</p></div>
-    <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button onClick={onAdd} icon="plus">Add to table plan</Button></div>
+    <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? 'Excluded' : 'Add to cart'}</Button></div>
   </div>
 }
+function Cart({ t, language, cart, itemCount, total, getStatus, onBack, onIncrease, onDecrease, onRemove, onClear, onConfirm }: { t: (key: CopyKey) => string; language: Language; cart: CartItem[]; itemCount: number; total: number; getStatus: (dish: Dish) => Status; onBack: () => void; onIncrease: (dishId: string) => void; onDecrease: (dishId: string) => void; onRemove: (dishId: string) => void; onClear: () => void; onConfirm: () => void }) {
+  return <div className="page page-narrow page-cart">
+    <PageHeader title="Your cart" kicker="Step 03 · Choose" onBack={onBack} action={cart.length ? <button type="button" className="text-link" onClick={onClear}>Clear</button> : undefined} />
+    {!cart.length ? <div className="cart-empty"><div className="cart-empty-icon"><Icon name="cart" size={28} /></div><h1>Your cart is empty</h1><p>Select dishes from your matched menu and they’ll appear here.</p><Button className="full-button" onClick={onBack} icon="menu">Back to menu</Button></div> : <>
+      <div className="cart-safety-note"><Icon name="shield" size={18} /><span><strong>Passport checks stay visible</strong><small>Only dishes without a clear conflict can be added. Warnings and unknowns stay attached to each dish.</small></span></div>
+      <div className="cart-list">{cart.map(({ dish, quantity }) => <article className="cart-item" key={dish.id}><div className="cart-item-main"><DishVisual dish={dish} small /><div className="cart-item-copy"><strong>{dish.localized[language]}</strong><small>{dish.zh} · ¥{dish.price} each</small></div><div className="cart-item-aside"><b className="cart-item-price">¥{dish.price * quantity}</b><StatusBadge status={getStatus(dish)} t={t} /></div></div><div className="cart-item-footer"><div className="cart-quantity"><button type="button" onClick={() => onDecrease(dish.id)} aria-label={`Decrease ${dish.name}`}><Icon name="minus" size={13} /></button><strong>{quantity}</strong><button type="button" onClick={() => onIncrease(dish.id)} aria-label={`Increase ${dish.name}`}><Icon name="plus" size={13} /></button></div><button type="button" className="cart-remove" onClick={() => onRemove(dish.id)}>Remove dish</button><span className="cart-item-subtotal">{quantity > 1 ? `${quantity} × ¥${dish.price}` : 'Single dish'}</span></div></article>)}</div>
+      <div className="cart-total"><span>Total · {itemCount} {itemCount === 1 ? 'dish' : 'dishes'}</span><strong>¥{total}</strong></div>
+      <Button className="full-button" onClick={onConfirm} icon="check">Confirm selections</Button>
+    </>}
+  </div>
+}
+
+type OrderRequirement = { user: string; chinese: string; tone?: 'alert' | 'note' }
+
+const chineseRequirementLabels: Record<string, string> = {
+  wheat: '含麸质谷物', crustacean: '甲壳类', egg: '鸡蛋', soy: '大豆', milk: '牛奶 / 乳制品', 'tree-nut': '坚果', celery: '芹菜', fish: '鱼类', peanut: '花生', mustard: '芥末', sesame: '芝麻', sulphites: '二氧化硫 / 亚硫酸盐', lupin: '羽扇豆', mollusk: '软体动物',
+  'no-pork': '不含猪肉', 'no-beef': '不含牛肉', 'no-poultry': '不含禽肉', 'no-seafood': '不含海鲜', 'no-offal': '不含内脏',
+  'less-oil': '少油', 'less-salt': '少盐', 'less-sugar': '少糖', 'no-cilantro': '不加香菜', 'no-scallion': '不加葱', 'no-garlic': '不加蒜', 'no-raw': '不吃生食', 'well-cooked': '充分加热', boneless: '优先去骨',
+}
+
+const chineseDietLabels: Record<DietStyle, string> = { none: '', vegetarian: '素食', vegan: '纯素', lacto: '奶素', ovo: '蛋素', 'lacto-ovo': '蛋奶素', pescatarian: '鱼素', flexitarian: '弹性素食' }
+const chineseFaithLabels: Record<FaithDiet, string> = { none: '', halal: '清真', kosher: '犹太洁食', other: '宗教饮食要求' }
+const chineseSeverityLabels: Record<AllergySeverity, string> = { mild: '轻度', moderate: '中度', severe: '严重' }
+
+function orderRequirements(passport: Passport, language: Language, t: (key: CopyKey) => string): OrderRequirement[] {
+  const requirements: OrderRequirement[] = []
+  passport.allergies.forEach((id) => {
+    const profile = passport.allergyProfiles[id] || defaultAllergyProfile
+    requirements.push({ user: `${allergenLabel(language, id, id)} allergy · ${t(profile.severity)}`, chinese: `${chineseRequirementLabels[id] || id}过敏 · ${chineseSeverityLabels[profile.severity]}过敏`, tone: 'alert' })
+  })
+  if (passport.otherAllergen.trim()) {
+    const profile = passport.allergyProfiles.other || defaultAllergyProfile
+    requirements.push({ user: `${passport.otherAllergen.trim()} allergy · ${t(profile.severity)}`, chinese: `${passport.otherAllergen.trim()}过敏 · ${chineseSeverityLabels[profile.severity]}过敏`, tone: 'alert' })
+  }
+  if (passport.dietStyle !== 'none') requirements.push({ user: passportOptionTranslations[language].dietStyle[passport.dietStyle].label, chinese: chineseDietLabels[passport.dietStyle], tone: 'note' })
+  if (passport.faithDiet !== 'none') requirements.push({ user: passportOptionTranslations[language].faithDiet[passport.faithDiet].label, chinese: passport.faithDiet === 'other' && passport.faithOther.trim() ? passport.faithOther.trim() : chineseFaithLabels[passport.faithDiet], tone: 'note' })
+  passport.avoidFoods.forEach((id) => requirements.push({ user: passportOptionTranslations[language].avoidFood[id] || choiceLabel(language, id, id), chinese: chineseRequirementLabels[id] || id, tone: 'note' }))
+  passport.preferences.forEach((id) => requirements.push({ user: passportOptionTranslations[language].preference[id] || choiceLabel(language, id, id), chinese: chineseRequirementLabels[id] || id, tone: 'note' }))
+  if (passport.otherDietary.trim()) requirements.push({ user: passport.otherDietary.trim(), chinese: passport.otherDietary.trim(), tone: 'note' })
+  if (passport.spiceLevel !== null) requirements.push({ user: `Spice level ${passport.spiceLevel} or below`, chinese: `辣度不超过${passport.spiceLevel}级`, tone: 'note' })
+  const needsCrossContactCare = (passport.crossContact && (passport.allergies.length > 0 || Boolean(passport.otherAllergen))) || passport.allergies.some((id) => (passport.allergyProfiles[id] || defaultAllergyProfile).crossContact) || Boolean(passport.otherAllergen)
+  if (needsCrossContactCare) requirements.push({ user: 'Avoid cross-contact', chinese: '请避免交叉接触', tone: 'alert' })
+  return requirements
+}
+
+function OrderPage({ language, passport, cart, savedOrder, onBack, onComplete, onViewMenu, onHome }: { language: Language; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onViewMenu: () => void; onHome: () => void }) {
+  const t = (key: CopyKey) => tFor(language, key)
+  const isSavedOrder = Boolean(savedOrder)
+  const requirements = orderRequirements(passport, language, t)
+  const total = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0)
+  return <div className="page page-narrow page-order-brief">
+    <PageHeader title="Order brief" kicker="Step 04 · Order" onBack={isSavedOrder ? onHome : onBack} />
+    <div className="order-brief-heading"><span className="eyebrow"><span className="orange-dot" /> Bilingual order page</span><h1>Show this to your waiter.</h1><p>Your selected dishes and Food Passport requirements are kept together in your language and Chinese.</p></div>
+    <section className="order-brief-card order-brief-user"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">For you</span><h2>Your selected dishes</h2></div><span className="order-brief-language">{count} {count === 1 ? 'dish' : 'dishes'}</span></div><div className="order-brief-dishes">{cart.map(({ dish, quantity }) => <div className="order-brief-dish" key={dish.id}><DishVisual dish={dish} small /><div><strong>{dish.localized[language]}</strong><small>{dish.zh} · ×{quantity}</small></div><b>¥{dish.price * quantity}</b></div>)}</div><div className="order-brief-total"><span>Total</span><strong>¥{total}</strong></div><div className="order-brief-translation order-brief-user-notes"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">Dietary notes</span><h2>Your requirements</h2></div><Icon name="shield" size={20} /></div>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.user}-${requirement.chinese}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.user}</span></div>)}</div> : <p className="order-no-requirements">No additional dietary requirements.</p>}</div></section>
+    <section className="order-brief-card order-brief-waiter"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">For waiter</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div></section>
+    <div className="order-brief-actions">{isSavedOrder ? <><Button className="full-button" onClick={onViewMenu} icon="menu">View scanned menu</Button><Button variant="secondary" className="full-button" onClick={onHome} icon="home">Back to home</Button></> : <><Button className="full-button" onClick={onBack} icon="cart">返回购物车继续修改</Button><Button variant="secondary" className="full-button" onClick={onComplete} icon="check">完成点单返回主页</Button></>}</div>
+    <p className="order-brief-disclaimer"><Icon name="alert" size={14} /> This page translates your saved requirements for communication. The restaurant must still confirm ingredients and cross-contact.</p>
+  </div>
+}
+
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
 function Fact({ title, value }: { title: string; value: string }) { return <div className="fact-card"><span>{title}</span><strong>{value}</strong></div> }
 
 function AskSheet({ t, language, dish, question, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; language: Language; dish: Dish; question: string; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> Step 04 · Ask</div><button className="icon-button soft" onClick={onClose}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>中文 · Show first</strong><p>{question}</p><hr /><strong>{dish.name}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume">{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy">{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">If the restaurant cannot confirm, keep this dish excluded from recommendations. Menu evidence cannot determine kitchen cross-contact.</p></section></div> }
 
-function Assistant({ t, passport, partySize, setPartySize, budget, setBudget, tempPreference, setTempPreference, onBack, onGenerate }: { t: (key: CopyKey) => string; passport: Passport; partySize: number; setPartySize: (value: number) => void; budget: number; setBudget: (value: number) => void; tempPreference: string; setTempPreference: (value: string) => void; onBack: () => void; onGenerate: () => void }) { return <div className="page page-narrow page-assistant"><PageHeader title={t('assistant')} kicker="Step 04 · Compose" onBack={onBack} action={<button className="icon-button soft"><Icon name="dots" size={20} /></button>} /><div className="assistant-heading"><span className="assistant-spark">✦</span><h1>{t('planTitle')}</h1><p>{t('planSub')}</p></div><div className="inherited-card"><div className="inherited-title"><Icon name="shield" size={18} /> <strong>Inherited from this Dining Session</strong></div><div className="session-tags"><span>🏮 Chengdu Garden</span><span>▤ 42 menu dishes</span>{passport.diets.map((diet) => <span className="green" key={diet}>◌ {diet === 'vegetarian' ? 'Vegetarian' : diet}</span>)}<span>♡ {passport.allergies.length} food flags</span></div></div><label className="form-label"><span>{t('people')}</span><small>Required</small></label><div className="stepper"><button onClick={() => setPartySize(Math.max(1, partySize - 1))}><Icon name="minus" size={20} /></button><strong>{partySize} people</strong><button onClick={() => setPartySize(Math.min(12, partySize + 1))}><Icon name="plus" size={20} /></button></div><label className="form-label"><span>{t('budget')}</span><small>Required</small></label><div className="budget-options">{[200, 300, 400].map((value) => <button key={value} className={budget === value ? 'active' : ''} onClick={() => setBudget(value)}>Up to ¥{value}</button>)}</div><label className="form-label"><span>{t('temporary')}</span><small>Optional</small></label><div className="preference-options">{['No cilantro', 'Not too oily', 'One soup'].map((value) => <button key={value} className={tempPreference === value ? 'active' : ''} onClick={() => setTempPreference(tempPreference === value ? '' : value)}>{value}</button>)}</div><div className="safety-callout"><Icon name="shield" size={18} /><div><strong>Hard constraints first</strong><p>Allergens and strict diets are filtered before the assistant composes a table. Unknown dishes remain uncertain.</p></div></div><Button className="full-button" onClick={onGenerate} icon="spark">{t('planMeal')}</Button></div> }
 
-function OrderPlan({ t, plan, total, onBack, onConfirm, onRegenerate }: { t: (key: CopyKey) => string; plan: Dish[]; total: number; onBack: () => void; onConfirm: () => void; onRegenerate: () => void }) { return <div className="page page-narrow page-order"><PageHeader title={t('tablePlan')} kicker="Step 05 · Validate" onBack={onBack} action={<button className="icon-button soft"><Icon name="dots" size={20} /></button>} /><div className="rule-checked"><Icon name="shield" size={20} /><span><strong>{t('ruleChecked')}</strong><small>Quantity, price, total and dietary constraints were verified.</small></span></div><div className="order-stats"><div><strong>3</strong><small>people</small></div><div><strong>{plan.length}</strong><small>dishes</small></div><div><strong>¥{total}</strong><small>budget used</small></div></div><div className="plan-heading"><div><h2>Balanced table plan</h2><p>Enough variety without ordering too much</p></div><span className="plan-label">Plan A</span></div><div className="order-list">{plan.map((dish) => <div className="order-item" key={dish.id}><DishVisual dish={dish} small /><div><strong>{dish.name}</strong><span>{dish.zh} · {dish.reason}</span></div><b>¥{dish.price}</b></div>)}</div><div className="order-total"><span>{t('total')} · {plan.length} dishes</span><strong>¥{total}</strong></div><div className="order-actions"><Button variant="secondary" onClick={onBack} icon="edit">{t('edit')}</Button><Button variant="secondary" onClick={onRegenerate} icon="refresh">{t('regenerate')}</Button><Button onClick={onConfirm} icon="check">{t('orderThese')}</Button></div></div> }
-
-function Waiter({ t, plan, onBack, onSpeak }: { t: (key: CopyKey) => string; plan: Dish[]; onBack: () => void; onSpeak: () => void }) { return <div className="page page-narrow page-waiter"><PageHeader title={t('showWaiter')} kicker="Step 06 · Speak" onBack={onBack} action={<button className="icon-button soft"><Icon name="volume" size={18} /></button>} /><div className="waiter-card"><span className="safety-label"><Icon name="shield" size={15} /> {t('specialRequest')}</span><h1>请给服务员看</h1><p className="waiter-request">请把这些菜做成素食，不要放香菜。如果任何配方无法确认，请先告诉我们。</p><p className="waiter-translation">{t('waiterText')}</p><div className="waiter-divider" /><h3>Order · {plan.length} dishes</h3><div className="waiter-order">{plan.map((dish) => <div key={dish.id}><span>{dish.zh}</span><b>×1</b></div>)}</div><Button className="full-button" onClick={onSpeak} icon="volume">{t('play')}</Button><p className="waiter-note"><Icon name="alert" size={15} /> {t('waiterSub')}</p></div></div> }
-
-function Bill({ t, billReady, setBillReady, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, onBack, onToast }: { t: (key: CopyKey) => string; billReady: boolean; setBillReady: (ready: boolean) => void; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; onBack: () => void; onToast: (toast: string) => void }) {
+function Bill({ t, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
   const [editingParticipant, setEditingParticipant] = useState<number | null>(null)
   const [draftParticipant, setDraftParticipant] = useState('')
   const editParticipant = (index: number) => { setEditingParticipant(index); setDraftParticipant(participants[index]) }
@@ -1169,15 +1558,37 @@ function Bill({ t, billReady, setBillReady, billInputRef, handleFile, billMode, 
   }
 
   return <div className="page page-narrow page-bill">
-    <PageHeader title={t('billTitle')} kicker="Step 07 · Settle" onBack={onBack} action={<button className="icon-button soft"><Icon name="share" size={18} /></button>} />
-    {!billReady ? <><div className="bill-intro"><div className="receipt-illustration"><Icon name="receipt" size={42} /></div><h1>{t('billTitle')}</h1><p>{t('billSub')}</p></div><div className="receipt-scan-box"><div className="scan-corners" /><Icon name="camera" size={30} /><strong>Photograph the full receipt</strong><small>Keep the total and every line item in frame.</small></div><input ref={billInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden /><Button className="full-button" onClick={() => billInputRef.current?.click()} icon="camera">{t('scanReceipt')}</Button><Button className="full-button" variant="secondary" onClick={() => setBillReady(true)} icon="receipt">{t('useReceipt')}</Button><p className="bill-demo-note">Local demo receipt · ¥156.00 · 5 items</p></> : <><div className="bill-summary"><div><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div><span className="status-chip match"><span className="status-dot" /> {t('matchLabel')}</span></div>
+    <PageHeader title={t('billTitle')} hideKicker onBack={onBack} action={<button className="icon-button soft"><Icon name="share" size={18} /></button>} />
+    <div className="bill-context-card"><span className="bill-context-icon"><Icon name="receipt" size={20} /></span><div><strong>{order.restaurant}</strong><small>{order.time} · {billItems.length} items</small></div><span className={`bill-source-badge ${billSource === 'receipt' ? 'is-receipt' : ''}`}>{billSource === 'receipt' ? 'Receipt updated' : 'From order'}</span></div>
+    <div className="bill-source-actions"><input ref={billInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden /><Button variant="secondary" onClick={() => billInputRef.current?.click()} icon="camera">{billSource === 'receipt' ? 'Replace receipt' : 'Upload receipt to update'}</Button>{billSource === 'receipt' && <button className="text-link" onClick={() => { setBillSource('order'); onToast('Using order totals again') }}>Use order totals</button>}</div>
+    <p className="bill-source-note"><Icon name="shield" size={14} /> {billSource === 'receipt' ? `Line items and total updated from ${billReceiptName || 'the uploaded receipt'}.` : 'Using the prices captured when this order was placed. Upload a receipt if the final bill changed.'}</p>
+    <div className="bill-summary"><div><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div><span className="status-chip match"><span className="status-dot" /> {billSource === 'receipt' ? 'Receipt total' : 'Order total'}</span></div>
     <div className="bill-tabs segmented">{([['equal', t('equal')], ['item', t('byItem')]] as Array<[BillMode, string]>).map(([value, label]) => <button key={value} className={billMode === value ? 'active' : ''} onClick={() => setBillMode(value)}>{label}</button>)}</div>
     <div className="bill-section"><div className="section-heading compact-heading"><h2>{t('participants')}</h2><span className="muted-small">Names are editable</span><button className="text-link" onClick={addParticipant}><Icon name="plus" size={14} /> Add</button></div><div className="participant-row">{participants.map((person, index) => { const isEditing = editingParticipant === index; return <div className={`participant-chip ${isEditing ? 'is-editing' : ''}`} key={`${index}-${person}`}>{isEditing ? <input className="participant-name-input" value={draftParticipant} onChange={(event) => setDraftParticipant(event.target.value)} onBlur={() => commitParticipant(index)} onKeyDown={(event) => { if (event.key === 'Enter') commitParticipant(index); if (event.key === 'Escape') { setDraftParticipant(person); setEditingParticipant(null) } }} autoFocus aria-label={`Edit participant ${person}`} /> : <><button className="participant-name" onClick={() => editParticipant(index)} aria-label={`Edit participant ${person}`}><span>{person.trim().charAt(0).toUpperCase() || '?'}</span>{person}</button><button className="participant-edit" onClick={() => editParticipant(index)} aria-label={`Edit participant ${person}`}><Icon name="edit" size={11} /></button></>}{index > 0 && <button className="participant-remove" onClick={() => removeParticipant(index)} aria-label={`Remove participant ${person}`}><Icon name="close" size={12} /></button>}</div> })}</div></div>
     {billMode !== 'equal' && <div className="bill-section"><div className="section-heading compact-heading"><h2>{t('billItems')}</h2><span className="muted-small">Tap an item to assign</span></div><div className="bill-item-list">{billItems.map((item) => <div className="bill-item" key={item.id}><DishVisual dish={item.dish} small /><span><strong>{item.label}</strong><small>{item.zh}</small></span><select value={splitItems[item.id] || 'Everyone'} onChange={(event) => setSplitItems({ ...splitItems, [item.id]: event.target.value })}>{['Everyone', ...participants].map((person) => <option key={person}>{person}</option>)}</select><b>¥{item.amount.toFixed(2)}</b></div>)}</div></div>}
-    <div className="split-result"><div className="result-heading"><h2>Everyone pays</h2><span>Exact total check <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{person.trim().charAt(0).toUpperCase() || '?'}</span>{person}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{person.trim().charAt(0).toUpperCase() || '?'}</span>{person}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast('Share sheet ready'); navigator.share?.({ title: 'Bitewise bill split', text: `Everyone pays from ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button><button className="reset-bill" onClick={() => setBillReady(false)}>Scan another receipt</button></>}</div>
+    <div className="split-result"><div className="result-heading"><h2>Everyone pays</h2><span>Exact total check <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{person.trim().charAt(0).toUpperCase() || '?'}</span>{person}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{person.trim().charAt(0).toUpperCase() || '?'}</span>{person}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast('Share sheet ready'); navigator.share?.({ title: 'Bitewise bill split', text: `Everyone pays from ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast('Using order totals again') }}>Use order totals</button>}</div>
 }
 
-function FindFood({ t, onBack, onScan }: { t: (key: CopyKey) => string; onBack: () => void; onScan: () => void }) { return <div className="page page-narrow page-find"><PageHeader title={t('findFood')} kicker="P1 · Explore" onBack={onBack} action={<button className="icon-button soft"><Icon name="compass" size={19} /></button>} /><div className="find-heading"><h1>{t('findTitle')}</h1><p>{t('findSub')}</p></div><div className="intent-grid">{[['🥟', 'Dumplings'], ['🍜', 'Noodles'], ['🌿', 'Vegetarian'], ['🌶️', 'Not spicy'], ['🍲', 'Hot pot'], ['✨', 'Surprise me']].map(([emoji, label]) => <button key={label} onClick={onScan}><span>{emoji}</span><strong>{label}</strong><small>{t('whyFits')} · Food Passport</small></button>)}</div><div className="nearby-heading"><h2>{t('nearby')}</h2><span>Shanghai · 1.2 km radius</span></div><div className="restaurant-card"><div className="restaurant-photo photo-one">🏮</div><div><div className="restaurant-top"><strong>Old Town Kitchen</strong><span>4.8</span></div><p>Local specialties · Vegetarian options</p><small><Icon name="shield" size={14} /> Why it fits: clear dishes and mild options</small></div></div><div className="restaurant-card"><div className="restaurant-photo photo-two">🍵</div><div><div className="restaurant-top"><strong>Green Bamboo House</strong><span>4.6</span></div><p>Tea house · Rice dishes · Quiet</p><small><Icon name="shield" size={14} /> Why it fits: lighter flavors for your passport</small></div></div></div> }
+function FindFood({ t, restaurants, savedRestaurants, onToggleRestaurant, onBack, onScan }: { t: (key: CopyKey) => string; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void; onScan: () => void }) { return <div className="page page-narrow page-find"><PageHeader title={t('findFood')} kicker="P1 · Explore" onBack={onBack} action={<button className="icon-button soft"><Icon name="compass" size={19} /></button>} /><div className="find-heading"><h1>{t('findTitle')}</h1><p>{t('findSub')}</p></div><div className="intent-grid">{[['🥟', 'Dumplings'], ['🍜', 'Noodles'], ['🌿', 'Vegetarian'], ['🌶️', 'Not spicy'], ['🍲', 'Hot pot'], ['✨', 'Surprise me']].map(([emoji, label]) => <button key={label} onClick={onScan}><span>{emoji}</span><strong>{label}</strong><small>{t('whyFits')} · Food Passport</small></button>)}</div><div className="nearby-heading"><h2>{t('nearby')}</h2><span>{savedRestaurants.length} saved · Shanghai · 1.2 km radius</span></div><div className="restaurant-list">{restaurants.map((restaurant, index) => { const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.emoji}</div><div><div className="restaurant-top"><strong>{restaurant.name}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-label={saved ? `Remove ${restaurant.name} from saved restaurants` : `Save ${restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={17} /></button></div><p>{restaurant.cuisine}</p><small><Icon name="shield" size={14} /> Why it fits: {restaurant.why}</small><div className="restaurant-meta"><span>{restaurant.location}</span><span>{index === 0 ? '4.8' : index === 1 ? '4.6' : '4.7'} ★</span></div></div></article> })}</div></div> }
+
+function Orders({ language, currentOrder, pastOrders, onOpenOrder, onSplitBill }: { language: Language; currentOrder: DiningOrder | null; pastOrders: DiningOrder[]; onOpenOrder: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void }) {
+  const text = orderCopy[language]
+  return <div className="page page-narrow page-orders">
+    <div className="orders-heading"><div><span className="eyebrow"><span className="orange-dot" /> {text.nav}</span><h1>{text.title}</h1><p>{text.subtitle}</p></div><span className="orders-count"><Icon name="receipt" size={17} /> {pastOrders.length + (currentOrder ? 1 : 0)}</span></div>
+    <section className="orders-section"><div className="orders-section-heading"><h2>{text.current}</h2>{currentOrder && <span className="status-chip match"><span className="status-dot" /> {text.inProgress}</span>}</div>{currentOrder ? <OrderCard text={text} order={currentOrder} onOpenOrder={onOpenOrder} onSplitBill={onSplitBill} /> : <div className="orders-empty"><Icon name="receipt" size={22} /><span>{text.emptyCurrent}</span></div>}</section>
+    <section className="orders-section"><div className="orders-section-heading"><h2>{text.past}</h2><span className="muted-small">{pastOrders.length} {text.items}</span></div><div className="past-order-list">{pastOrders.length ? pastOrders.map((order) => <OrderCard key={order.id} text={text} order={order} onOpenOrder={onOpenOrder} onSplitBill={onSplitBill} />) : <div className="orders-empty"><Icon name="receipt" size={22} /><span>{text.emptyPast}</span></div>}</div></section>
+  </div>
+}
+
+function OrderCard({ text, order, onOpenOrder, onSplitBill }: { text: OrderCopy; order: DiningOrder; onOpenOrder?: (order: DiningOrder) => void; onSplitBill?: (order: DiningOrder) => void }) {
+  const isCurrent = order.status === 'current'
+  return <article className={`order-record ${isCurrent ? 'order-record-current' : 'order-record-past'}`}>
+    <div className="order-record-top"><span className={`order-restaurant-mark ${order.tone}`}>{order.initials}</span><div className="order-record-restaurant"><div className="order-record-name"><strong>{order.restaurant}</strong><span className={`order-status ${isCurrent ? 'order-status-active' : 'order-status-complete'}`}><span className="status-dot" /> {isCurrent ? text.inProgress : text.completed}</span></div><small>{order.location}</small><span className="order-record-time">{order.time}</span></div><strong className="order-record-total">¥{order.total}</strong></div>
+    <div className="order-record-divider" />
+    <div className="order-record-summary"><span>{order.itemCount} {text.items}</span><span>{text.total} <strong>¥{order.total}</strong></span></div><p className="order-record-preview">{order.preview}</p>
+    {(onOpenOrder && order.cartSnapshot?.length || onSplitBill) && <div className={`order-record-actions ${onOpenOrder && order.cartSnapshot?.length ? '' : 'single'}`}>{onOpenOrder && order.cartSnapshot?.length ? <Button variant="secondary" onClick={() => onOpenOrder(order)} icon="menu">View order</Button> : null}{onSplitBill && <Button className="full-button" onClick={() => onSplitBill(order)} icon="receipt">{text.splitBill}</Button>}</div>}
+  </article>
+}
 
 function PassportPage({ language, t, passport, updatePassport, onBack }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void }) {
   return <div className="page page-narrow page-profile profile-passport-page">
@@ -1187,16 +1598,62 @@ function PassportPage({ language, t, passport, updatePassport, onBack }: { langu
   </div>
 }
 
-function Profile({ t, language, user, passport, onOpenPassport, onLanguageChange, onLogout, onReset }: { t: (key: CopyKey) => string; language: Language; user: UserProfile; passport: Passport; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onLogout: () => void; onReset: () => void }) {
+function SavedRestaurantsPage({ restaurants, onToggleRestaurant, onOpenFind, onBack }: { restaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onOpenFind: () => void; onBack: () => void }) {
+  return <div className="page page-narrow page-profile profile-subpage">
+    <PageHeader title="Saved restaurants" kicker="Profile · Find food" onBack={onBack} action={<button type="button" className="icon-button soft" onClick={onOpenFind} aria-label="Open Find food"><Icon name="compass" size={19} /></button>} />
+    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> Find food</span><h1>Places worth coming back to.</h1><p>Your saved restaurants stay here, ready for the next meal.</p></div>
+    <div className="subpage-summary"><span><Icon name="bookmark" size={16} /> {restaurants.length} saved {restaurants.length === 1 ? 'restaurant' : 'restaurants'}</span><button type="button" className="text-link" onClick={onOpenFind}>Explore Find food <Icon name="arrow" size={15} /></button></div>
+    <div className="saved-restaurant-grid saved-restaurant-grid-full">{restaurants.length ? restaurants.map((restaurant) => <article className="saved-restaurant-card" key={restaurant.id}><div className={`saved-restaurant-photo ${restaurant.tone}`}>{restaurant.emoji}</div><div className="saved-restaurant-body"><div className="saved-restaurant-top"><strong>{restaurant.name}</strong><button type="button" className="saved-restaurant-remove" aria-label={`Remove ${restaurant.name} from saved restaurants`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="close" size={15} /></button></div><span>{restaurant.cuisine}</span><small>{restaurant.location}</small><p className="saved-restaurant-why"><Icon name="shield" size={13} /> {restaurant.why}</p></div></article>) : <div className="profile-empty-card"><Icon name="bookmark" size={21} /><span>No saved restaurants yet.</span></div>}<button type="button" className="profile-explore-card" onClick={onOpenFind}><span className="profile-explore-icon"><Icon name="plus" size={18} /></span><span><strong>Explore Find food</strong><small>Save a restaurant from the feed</small></span><Icon name="arrow" size={17} /></button></div>
+  </div>
+}
+
+function CompanionsPage({ account, accounts, companions, incomingInvites, outgoingInvites, onAddCompanion, onAcceptInvite, onDeclineInvite, onRemoveCompanion, onOpenCompanion, onBack }: { account: UserProfile; accounts: StoredAccount[]; companions: Companion[]; incomingInvites: CompanionInvite[]; outgoingInvites: CompanionInvite[]; onAddCompanion: (email: string) => CompanionAddResult; onAcceptInvite: (id: string) => void; onDeclineInvite: (id: string) => void; onRemoveCompanion: (id: string) => void; onOpenCompanion: (email: string) => void; onBack: () => void }) {
+  const [companionEmail, setCompanionEmail] = useState('')
+  const [companionNotice, setCompanionNotice] = useState('')
+  const connectedCompanions = companions
+  const profileForEmail = (email: string) => accounts.find((record) => normalizeEmail(record.profile.email) === normalizeEmail(email))?.profile
+  const submitCompanion = () => {
+    const result = onAddCompanion(companionEmail)
+    setCompanionNotice(result.message)
+    if (result.ok) setCompanionEmail('')
+  }
+  return <div className="page page-narrow page-profile profile-subpage">
+    <PageHeader title="Companions" kicker="Profile · At the table" onBack={onBack} />
+    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> At the table</span><h1>Make the menu work for everyone.</h1><p>Connect a friend’s Food Passport once, then use it whenever you share a table.</p></div>
+    <div className="subpage-summary"><span><Icon name="users" size={16} /> {connectedCompanions.length} connected</span><span className="subpage-summary-muted">{incomingInvites.length ? `${incomingInvites.length} invitation${incomingInvites.length === 1 ? '' : 's'} to review` : 'Private food settings stay with each person.'}</span></div>
+    {incomingInvites.length > 0 && <section className="companion-inbox"><div className="companion-section-heading"><div><span className="eyebrow"><span className="orange-dot" /> New invitation</span><h2>Someone wants to dine with you.</h2></div><span className="companion-count-badge">{incomingInvites.length}</span></div><div className="companion-inbox-list">{incomingInvites.map((invite) => { const sender = profileForEmail(invite.fromEmail); if (!sender) return null; return <article className="companion-inbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(sender)}</span><div className="companion-copy"><strong>{sender.username}</strong><small>{sender.email}</small><p>They want to share their Food Passport connection with you.</p></div><div className="companion-inbox-actions"><Button variant="primary" onClick={() => onAcceptInvite(invite.id)} icon="check">Accept</Button><button type="button" className="text-link companion-decline" onClick={() => onDeclineInvite(invite.id)}>Decline</button></div></article> })}</div></section>}
+    {outgoingInvites.length > 0 && <section className="companion-outbox"><div className="companion-section-heading"><div><span className="eyebrow"><span className="orange-dot" /> Waiting for them</span><h2>Invitations you sent</h2></div></div><div className="companion-outbox-list">{outgoingInvites.map((invite) => { const recipient = profileForEmail(invite.toEmail); if (!recipient) return null; return <article className="companion-outbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(recipient)}</span><div className="companion-copy"><strong>{recipient.username}</strong><small>{recipient.email}</small></div><span className="companion-status companion-status-pending">Pending</span></article> })}</div></section>}
+    <div className="companion-add-card"><div className="companion-add-heading"><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="users" size={20} /></span><div><strong>Add a companion</strong><small>Invite someone who has registered with Bitewise</small></div></div><form className="companion-add-form" onSubmit={(event) => { event.preventDefault(); submitCompanion() }}><input aria-label="Companion email" type="email" value={companionEmail} onChange={(event) => setCompanionEmail(event.target.value)} placeholder="friend@example.com" /><Button type="submit" icon="plus" disabled={!companionEmail.trim()}>Invite</Button></form><p className="companion-add-hint"><Icon name="shield" size={14} /> Only registered accounts can receive an invitation. Their Food Passport stays private until they accept.</p>{companionNotice && <p className={`companion-notice ${companionNotice.includes('valid') || companionNotice.includes('already') || companionNotice.includes('registered') || companionNotice.includes('cannot') ? 'error' : ''}`}>{companionNotice}</p>}</div>
+    <div className="companion-list">{connectedCompanions.length ? connectedCompanions.map((companion) => <article className="companion-card" key={companion.id}><span className="companion-avatar companion-avatar-connected">{companion.initials}</span><div className="companion-copy"><div className="companion-name-row"><strong>{companion.name}</strong><span className="companion-status companion-status-connected">Connected</span></div><small>{companion.email}</small><p>{companion.note}</p></div><div className="companion-card-actions"><Button variant="secondary" onClick={() => onOpenCompanion(companion.email)}>View Food Passport</Button></div></article>) : <div className="companion-empty-state"><Icon name="users" size={22} /><strong>No companions yet.</strong><span>Invite a registered user to build a shared table profile.</span></div>}</div>
+    {connectedCompanions.length > 0 && <div className="companion-flow-note"><Icon name="check" size={16} /><span>After scanning a menu, choose companions to filter dishes for the whole table.</span></div>}
+  </div>
+}
+
+function CompanionDetailPage({ companion, onUnlink, onBack }: { companion: Companion; onUnlink: () => void; onBack: () => void }) {
+  const passport = companion.passport
+  const allergyText = [...passport.allergies, ...(passport.otherAllergen ? [passport.otherAllergen] : [])].join(', ') || 'None shared'
+  const dietText = passport.dietStyle !== 'none' ? passport.dietStyle : 'No dietary style shared'
+  const avoidText = passport.avoidFoods.length ? passport.avoidFoods.join(', ') : 'No food rules shared'
+  const preferenceText = passport.preferences.length ? passport.preferences.join(', ') : 'No everyday preferences shared'
+  const crossContactText = Object.values(passport.allergyProfiles).some((profile) => profile.crossContact) || passport.crossContact ? 'Avoid cross-contact' : 'Not specified'
+  return <div className="page page-narrow page-profile profile-subpage companion-detail-page">
+    <PageHeader title={companion.name} kicker="Companion · Read only" onBack={onBack} />
+    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> Shared Food Passport</span><h1>{companion.name}’s table profile.</h1><p>{companion.email} · You can use these settings to filter a scanned menu, but only {companion.name} can edit them.</p></div>
+    <section className="companion-readonly-card"><div className="companion-readonly-heading"><span className="companion-avatar companion-avatar-connected">{companion.initials}</span><div><strong>{companion.name}</strong><small>{companion.note}</small></div><span className="companion-status companion-status-connected">Read only</span></div><div className="readonly-passport-grid"><div className="readonly-passport-row"><span>Allergens</span><strong>{allergyText}</strong></div><div className="readonly-passport-row"><span>Dietary style</span><strong>{dietText}</strong></div><div className="readonly-passport-row"><span>Foods to avoid</span><strong>{avoidText}</strong></div><div className="readonly-passport-row"><span>Everyday preferences</span><strong>{preferenceText}</strong></div><div className="readonly-passport-row"><span>Spice preference</span><strong>{passport.spiceLevel === null ? 'Not set' : `Up to level ${passport.spiceLevel}`}</strong></div><div className="readonly-passport-row"><span>Kitchen safety</span><strong>{crossContactText}</strong></div></div><div className="companion-detail-note"><Icon name="shield" size={16} /><span>This is a read-only view. The account owner remains in control of their Food Passport.</span></div></section>
+    <Button variant="danger" className="full-button" onClick={onUnlink} icon="close">Unlink companion</Button>
+  </div>
+}
+
+function Profile({ t, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onLogout, onReset }: { t: (key: CopyKey) => string; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onLogout: () => void; onReset: () => void }) {
   const text = accountCopy[language]
   const [languageOpen, setLanguageOpen] = useState(false)
   const passportCount = passport.allergies.length + (passport.otherAllergen ? 1 : 0) + passport.avoidFoods.length + (passport.dietStyle !== 'none' ? 1 : 0)
+  const connectedCompanions = companions.length
   return <div className="page page-narrow page-profile profile-dashboard">
-    <div className="profile-heading"><div><span className="eyebrow"><span className="orange-dot" /> {text.profileEyebrow}</span><h1>{text.profileTitle}</h1></div></div>
+    <div className="profile-heading"><div><span className="eyebrow"><span className="orange-dot" /> {text.profileEyebrow}</span><h1>{text.profileTitle}</h1><p className="profile-heading-subtitle">Keep your passport, saved places and table companions in one place.</p></div></div>
     <section className="profile-section profile-section-spaced"><div className="profile-section-label">{text.basicInfo}</div><div className="profile-info-row"><span className="profile-info-icon"><Icon name="user" size={19} /></span><div><strong>{user.username}</strong><small>{user.email}</small></div></div></section>
-
-    <section className="profile-section"><div className="profile-section-label">{text.foodPassportTitle}</div><button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{text.foodPassportTitle}</strong><small>{text.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{text.passportSummary}</small></span><Icon name="arrow" size={18} /></button></section>
-
+    <section className="profile-section"><div className="profile-section-label">Your food profile</div><div className="profile-entry-list"><button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{text.foodPassportTitle}</strong><small>{text.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{text.passportSummary}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>My companions</strong><small>Shared Food Passports for the table</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} new` : 'connected'}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button></div></section>
+    <section className="profile-section"><div className="profile-section-label">Your table toolkit</div><div className="profile-entry-list"><button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>Saved restaurants</strong><small>Places you want to try next</small></span><span className="profile-setting-meta">{restaurants.length}<small>saved</small></span><Icon name="arrow" size={18} /></button></div></section>
     <section className="profile-section"><div className="profile-section-label">{text.otherSettings}</div>
       <button className="profile-setting-card" onClick={() => setLanguageOpen((open) => !open)}><span className="profile-setting-icon"><Icon name="compass" size={20} /></span><span className="profile-setting-copy"><strong>{text.languagePreference}</strong><small>{text.languagePreferenceDesc}</small></span><span className="profile-language-value">{language.toUpperCase()}</span><Icon name="chevron" size={17} /></button>
       {languageOpen && <div className="profile-language-panel"><div className="language-select-grid">{languages.map((item) => <button key={item.code} className={language === item.code ? 'active' : ''} onClick={() => { onLanguageChange(item.code); setLanguageOpen(false) }}><strong>{item.label}</strong><span>{item.native}</span></button>)}</div></div>}
@@ -1206,6 +1663,6 @@ function Profile({ t, language, user, passport, onOpenPassport, onLanguageChange
   </div>
 }
 
-function BottomNav({ screen, openScreen, t }: { screen: Screen; openScreen: (screen: Screen) => void; t: (key: CopyKey) => string }) { return <nav className="bottom-nav"><button className={screen === 'home' ? 'active' : ''} onClick={() => openScreen('home')}><Icon name="home" size={19} /><span>{t('home')}</span></button><button className={screen === 'find' ? 'active' : ''} onClick={() => openScreen('find')}><Icon name="compass" size={19} /><span>{t('findFood')}</span></button><button className="scan-nav" onClick={() => openScreen('scan')}><span><Icon name="scan" size={21} /></span><small>{t('scan')}</small></button><button className={screen === 'profile' || screen === 'passport' ? 'active' : ''} onClick={() => openScreen('profile')}><Icon name="user" size={19} /><span>{t('profile')}</span></button></nav> }
+function BottomNav({ language, screen, openScreen, t }: { language: Language; screen: Screen; openScreen: (screen: Screen) => void; t: (key: CopyKey) => string }) { return <nav className="bottom-nav"><button className={screen === 'home' ? 'active' : ''} onClick={() => openScreen('home')}><Icon name="home" size={19} /><span>{t('home')}</span></button><button className={screen === 'find' ? 'active' : ''} onClick={() => openScreen('find')}><Icon name="compass" size={19} /><span>{t('findFood')}</span></button><button className={screen === 'orders' ? 'active' : ''} onClick={() => openScreen('orders')}><Icon name="receipt" size={19} /><span>{orderCopy[language].nav}</span></button><button className={screen === 'profile' || screen === 'passport' || screen === 'savedRestaurants' || screen === 'companions' || screen === 'companionDetail' ? 'active' : ''} onClick={() => openScreen('profile')}><Icon name="user" size={19} /><span>{t('foodPassport')}</span></button></nav> }
 
 export default App
