@@ -28,6 +28,8 @@ npm run dev:full
 
 `npm run dev:full` starts Vite on `http://localhost:5173` and the local API on `http://localhost:3001`. To start them separately, use `npm run dev` and `npm run server`.
 
+For the current architecture, branch status, API contracts, menu-analysis rules, model prompts, and handoff checklist, see [`docs/PROJECT_HANDOFF.md`](docs/PROJECT_HANDOFF.md).
+
 Copy `.env.example` to `.env` only when configuring the backend. With `LLM_API_KEY` and `LLM_MODEL` empty, the API uses a fixed mock analyzer so the full upload-to-results flow still works. If both are configured, `server/services/llm.ts` sends the image to the configured OpenAI-compatible vision endpoint and validates the returned JSON before it reaches the frontend.
 
 The main endpoints are:
