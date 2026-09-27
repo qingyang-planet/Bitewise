@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import * as React from 'react'
 import { createPortal } from 'react-dom'
+import { analyzeMenuImage, askDiningAssistant, validateMenuImage, type BackendDish, type BackendRisk } from './api'
 
 type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
 type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
@@ -12,7 +13,23 @@ type AllergyProfile = { severity: AllergySeverity; crossContact: boolean }
 type DietStyle = 'none' | 'vegetarian' | 'vegan' | 'lacto' | 'ovo' | 'lacto-ovo' | 'pescatarian' | 'flexitarian'
 type FaithDiet = 'none' | 'halal' | 'kosher' | 'other'
 type UserProfile = { username: string; email: string }
-type SavedRestaurant = { id: string; name: string; initials: string; emoji: string; cuisine: string; location: string; why: string; tone: string }
+type RestaurantIntent = 'dumplings' | 'noodles' | 'vegetarian' | 'not-spicy' | 'hot-pot' | 'surprise'
+type SavedRestaurant = {
+  id: string
+  name: string
+  initials: string
+  emoji: string
+  cuisine: string
+  location: string
+  why: string
+  tone: string
+  intents?: RestaurantIntent[]
+  rating?: number
+  distanceKm?: number
+  address?: string
+  source?: string
+  photoSrc?: string
+}
 type FoodPost = {
   id: string
   restaurantId: string
@@ -528,6 +545,39 @@ const dishes: Dish[] = [
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
 
+const emptyLocalized: Record<Language, string> = { en: '', ko: '', ja: '', ru: '', es: '', it: '' }
+const mapBackendDish = (raw: BackendDish): Dish => {
+  const local = dishes.find((dish) => dish.name.toLowerCase() === raw.name.toLowerCase() || dish.zh === raw.zh)
+  const localized = { ...emptyLocalized, ...(local?.localized || {}), ...(raw.localized || {}), en: raw.localized?.en || raw.name }
+  Object.keys(localized).forEach((key) => { if (!localized[key as Language]) localized[key as Language] = raw.name })
+  return {
+    ...(local || {
+      imageSrc: '/bitewise-icon-192.png', className: 'visual-greens', taste: 'Not provided by the menu', texture: 'Not provided by the menu', cooking: 'Ask the restaurant', bestWith: 'Ask the restaurant', culture: 'No cultural context was returned.', reason: 'This dish was extracted from the uploaded menu and still needs restaurant confirmation.',
+    }),
+    id: raw.id,
+    name: raw.name,
+    zh: raw.zh,
+    localized,
+    price: raw.price ?? local?.price ?? 0,
+    ingredients: raw.ingredients,
+    zhIngredients: local?.zhIngredients || raw.ingredients,
+    allergens: raw.allergens,
+    possibleAllergens: raw.possibleAllergens,
+    tags: raw.tags,
+    spicy: raw.spicy ?? 0,
+    vegetarian: raw.vegetarian ?? local?.vegetarian ?? false,
+    vegan: raw.vegan ?? local?.vegan ?? false,
+    hasPork: raw.hasPork ?? local?.hasPork,
+    hasBeef: raw.hasBeef ?? local?.hasBeef,
+    hasPoultry: raw.hasPoultry ?? local?.hasPoultry,
+    hasSeafood: raw.hasSeafood ?? local?.hasSeafood,
+    hasOffal: raw.hasOffal ?? local?.hasOffal,
+    hasCilantro: raw.hasCilantro ?? local?.hasCilantro,
+    confidence: raw.confidence,
+  }
+}
+const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized })
+
 const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
 
 type DiningOrder = { id: string; restaurant: string; initials: string; location: string; time: string; status: 'current' | 'completed'; itemCount: number; total: number; preview: string; tone: string; billItems: BillItem[]; receiptItems: BillItem[]; menuSnapshot?: Dish[]; cartSnapshot?: CartItem[]; passportSnapshot?: Passport; companionNames?: string[]; savedAt?: number }
@@ -747,6 +797,16 @@ const companionViewsFor = (email: string, accounts: StoredAccount[], invites: Co
 }
 
 const restaurantCatalog: SavedRestaurant[] = [
+  { id: 'zuihuihuang-fudan-zhengli', name: '醉辉皇 · 复旦管院政立院区店', initials: '醉', emoji: '🦐', cuisine: '本帮 / 海鲜 · 商务聚餐', location: '政立院区内 · 约 0.1 km', why: 'Closest option; ask about seafood, stock and shared cookware', tone: 'photo-one', intents: ['not-spicy'], rating: 4.6, distanceKm: 0.1, address: '政立路558号复旦大学管理学院政立院区', source: '百度地图 / Fudan campus listing', photoSrc: '/restaurant-photos/seafood.svg' },
+  { id: 'haerbin-snacks-zhengli', name: '哈尔滨风味小吃（政立路）', initials: '哈', emoji: '🥟', cuisine: '东北菜 · 饺子 / 面食 / 家常菜', location: '政立路499号 · 约 0.3 km', why: 'Dumplings and noodles are easy to inspect ingredient-by-ingredient', tone: 'photo-two', intents: ['dumplings', 'noodles'], rating: 4.3, distanceKm: 0.3, address: '政立路499号（近国定路）', source: '公开餐厅目录 / 大众点评线索', photoSrc: '/restaurant-photos/noodles.svg' },
+  { id: 'he-sheng-hui-fei-dachu', name: '费大厨辣椒炒肉（合生汇店）', initials: '费', emoji: '🌶️', cuisine: '湘菜 · 小炒 / 下饭菜', location: '合生汇商圈 · 约 1.7 km', why: 'Clearly categorized; spice and pork are visible decision points', tone: 'photo-three', intents: ['not-spicy'], rating: 4.5, distanceKm: 1.7, address: '翔殷路1099号合生汇商场内', source: '五角场公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/hotpot.svg' },
+  { id: 'he-xie-bang-cuisine', name: '蟹榭 · 本帮江浙菜（合生汇店）', initials: '蟹', emoji: '🦀', cuisine: '本帮 / 江浙菜 · 蟹粉 / 小笼', location: '合生汇商圈 · 约 1.7 km', why: 'Good test case for crustacean, egg and wheat warnings', tone: 'photo-one', intents: ['dumplings', 'not-spicy'], rating: 4.5, distanceKm: 1.7, address: '翔殷路1099号合生汇商场内', source: '五角场公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/seafood.svg' },
+  { id: 'ruyi-chicken-abalone', name: '如一鸡鲍鱼 · 粤式煲汤（合生汇店）', initials: '如', emoji: '🍲', cuisine: '粤菜 · 汤 / 煲 / 海鲜', location: '合生汇商圈 · 约 1.7 km', why: 'Soup-base ingredients can be surfaced as confirmation points', tone: 'photo-two', intents: ['not-spicy'], rating: 4.7, distanceKm: 1.7, address: '翔殷路1099号合生汇商场内', source: '五角场公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/seafood.svg' },
+  { id: 'haidilao-he-sheng-hui', name: '海底捞火锅（合生汇商圈）', initials: '海', emoji: '🥘', cuisine: '四川火锅 · 火锅 / 聚餐', location: '合生汇商圈 · 约 1.8 km', why: 'Broth, dipping sauce, sesame and cross-contact are easy to explain', tone: 'photo-one', intents: ['hot-pot'], rating: 4.6, distanceKm: 1.8, address: '合生汇商圈内（到店前请核对具体门店）', source: '公开地图餐饮列表 / 大众点评线索', photoSrc: '/restaurant-photos/hotpot.svg' },
+  { id: 'kaijiang-grilled-fish', name: '烤匠川渝烤鱼（五角场）', initials: '烤', emoji: '🐟', cuisine: '川渝菜 · 烤鱼 / 辣味', location: '五角场商圈 · 约 2.0 km', why: 'Useful for fish, soy sauce, sesame and chili checks', tone: 'photo-three', intents: ['not-spicy'], rating: 4.4, distanceKm: 2.0, address: '五角场商圈门店（到店前请核对具体楼层）', source: '五角场公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/seafood.svg' },
+  { id: 'zuoting-youyuan-hotpot', name: '左庭右院鲜牛肉火锅（五角场）', initials: '左', emoji: '🍲', cuisine: '潮汕火锅 · 牛肉 / 火锅', location: '五角场商圈 · 约 2.1 km', why: 'Hot-pot broth and shared utensils need explicit confirmation', tone: 'photo-one', intents: ['hot-pot', 'not-spicy'], rating: 4.5, distanceKm: 2.1, address: '五角场商圈门店（到店前请核对具体楼层）', source: '五角场夜宵公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/hotpot.svg' },
+  { id: 'dongfang-yichuan', name: '东方一串（国定东路店）', initials: '东', emoji: '🍢', cuisine: '烧烤 / 烤鱼 · 夜宵', location: '国定东路 · 约 2.2 km', why: 'Grill oil, seafood and spice are the main confirmation points', tone: 'photo-two', intents: ['not-spicy'], rating: 4.2, distanceKm: 2.2, address: '国定东路附近（到店前请核对具体门牌）', source: '五角场夜宵公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/hotpot.svg' },
+  { id: 'jiejiao-taiwanese', name: '捡角台湾食堂（五角场）', initials: '捡', emoji: '🍜', cuisine: '台湾小吃 · 卤味 / 面 / 小食', location: '五角场商圈 · 约 2.3 km', why: 'Rice, noodles and braised toppings make a clear demo path', tone: 'photo-three', intents: ['noodles', 'not-spicy'], rating: 4.4, distanceKm: 2.3, address: '五角场商圈门店（到店前请核对具体楼层）', source: '五角场公开榜单 / 大众点评线索', photoSrc: '/restaurant-photos/noodles.svg' },
   { id: 'old-town-kitchen', name: 'Old Town Kitchen', initials: 'OT', emoji: '🏮', cuisine: '本帮菜 · Shanghai home-style', location: 'Shanghai · 1.2 km', why: 'Clear dishes and mild options', tone: 'photo-one' },
   { id: 'green-bamboo-house', name: 'Green Bamboo House', initials: 'GB', emoji: '🍵', cuisine: '素食 · Tea house', location: 'Shanghai · 1.8 km', why: 'Lighter flavors for your passport', tone: 'photo-two' },
   { id: 'lotus-table', name: 'Lotus Table', initials: 'LT', emoji: '🥢', cuisine: '粤菜 · Seasonal small plates', location: 'Shanghai · 2.4 km', why: 'Vegetarian dishes are clearly marked', tone: 'photo-three' },
@@ -956,7 +1016,13 @@ function App() {
   const [askSheet, setAskSheet] = useState(false)
   const [scanImage, setScanImage] = useState<string | null>(null)
   const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const [lastScanFile, setLastScanFile] = useState<File | null>(null)
   const [capturedPages, setCapturedPages] = useState<CapturedPage[]>([])
+  const [sessionRisks, setSessionRisks] = useState<Record<string, BackendRisk>>({})
+  const [analysisPassportKey, setAnalysisPassportKey] = useState('')
+  const [assistantAnswer, setAssistantAnswer] = useState('')
+  const [assistantLoading, setAssistantLoading] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
   const [sessionMenu, setSessionMenu] = useState<Dish[]>(() => {
     try {
@@ -999,6 +1065,7 @@ function App() {
   const outgoingCompanionInvites = account ? companionInvites.filter((invite) => invite.status === 'pending' && normalizeEmail(invite.fromEmail) === normalizeEmail(account.email) && accounts.some((record) => normalizeEmail(record.profile.email) === normalizeEmail(invite.toEmail))) : []
   const selectedCompanion = selectedCompanionEmail ? currentCompanions.find((companion) => companion.email === selectedCompanionEmail) || null : null
   const p = pageCopy[language]
+  const passportKey = JSON.stringify(passport)
 
   useEffect(() => { localStorage.setItem('cit:language', language); document.documentElement.lang = language }, [language])
   useEffect(() => { if (account) localStorage.setItem('cit:account', JSON.stringify(account)) }, [account])
@@ -1031,6 +1098,7 @@ function App() {
   useEffect(() => { localStorage.setItem('cit:session-restaurant', sessionRestaurant) }, [sessionRestaurant])
   useEffect(() => { localStorage.setItem('cit:session-orders', JSON.stringify(sessionOrders)) }, [sessionOrders])
   useEffect(() => { if (toast) { const timer = window.setTimeout(() => setToast(''), 2600); return () => window.clearTimeout(timer) } }, [toast])
+  useEffect(() => () => { if (scanImage) URL.revokeObjectURL(scanImage) }, [scanImage])
   useEffect(() => {
     window.scrollTo(0, 0)
     document.documentElement.scrollTop = 0
@@ -1119,7 +1187,11 @@ function App() {
     if (next === 'scan') {
       setScanImage(null)
       setScanning(false)
+      setScanError('')
+      setLastScanFile(null)
       setCapturedPages([])
+      setSessionRisks({})
+      setAnalysisPassportKey('')
     }
     setScreen(next)
     track(`${next}_open`)
@@ -1184,7 +1256,7 @@ function App() {
       setToast(p.toastRestaurantFirst)
       return
     }
-    setScreen('camera')
+    fileInputRef.current?.click()
     track('camera_open')
   }
   const addCapturedPage = () => {
@@ -1212,17 +1284,50 @@ function App() {
     openScreen('menu')
     track('menu_scan_success')
   }
-  const startScan = (file?: File) => {
+  const startScan = async (file?: File) => {
     if (!sessionRestaurant.trim()) {
       setToast(p.toastRestaurantFirst)
       return
     }
-    if (file) setScanImage(URL.createObjectURL(file))
+    setScanError('')
+    if (!file) {
+      setSessionRestaurant(sessionRestaurant.trim())
+      setSessionMenu(dishes)
+      setSessionRisks({})
+      setAnalysisPassportKey('')
+      setScanning(false)
+      setScreen('menu')
+      track('sample_menu_loaded')
+      return
+    }
+    const validationError = validateMenuImage(file)
+    if (validationError) {
+      setScanError(validationError)
+      setToast(validationError)
+      return
+    }
+    setLastScanFile(file)
+    setScanImage(URL.createObjectURL(file))
     setScanning(true)
     track('menu_scan_start')
-    window.setTimeout(finishMenuScan, 1100)
+    try {
+      const result = await analyzeMenuImage(file, { restaurantName: sessionRestaurant.trim(), language, foodPassport: passport })
+      setSessionRestaurant(result.restaurantName || sessionRestaurant.trim())
+      setSessionMenu(result.dishes.map(mapBackendDish))
+      setSessionRisks(result.risks || {})
+      setAnalysisPassportKey(passportKey)
+      setScanning(false)
+      setScreen('menu')
+      track('menu_scan_success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Menu analysis failed. Please retry or use Sample Menu.'
+      setScanning(false)
+      setScanError(message)
+      setToast(message)
+      track('menu_scan_failed')
+    }
   }
-  const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (file) startScan(file) }
+  const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void startScan(file) }
   const getStatusForPassport = (dish: Dish, profile: Passport): Status => {
     const activeAllergyProfiles = [...profile.allergies.map((id) => profile.allergyProfiles[id] || defaultAllergyProfile), ...(profile.otherAllergen ? [profile.allergyProfiles.other || defaultAllergyProfile] : [])]
     const hasSevereAllergy = activeAllergyProfiles.some((profile) => profile.severity === 'severe')
@@ -1249,7 +1354,7 @@ function App() {
     if (profile.spiceLevel !== null && dish.spicy > profile.spiceLevel) return 'WARNING'
     return 'MATCH'
   }
-  const getStatus = (dish: Dish): Status => getStatusForPassport(dish, passport)
+  const getStatus = (dish: Dish): Status => analysisPassportKey === passportKey ? sessionRisks[dish.id]?.status || getStatusForPassport(dish, passport) : getStatusForPassport(dish, passport)
   const getDiningStatus = (dish: Dish): Status => {
     const selectedPassports = [passport, ...currentCompanions.filter((companion) => activeCompanionIds.includes(companion.id)).map((companion) => companion.passport)]
     const statuses = selectedPassports.map((profile) => getStatusForPassport(dish, profile))
@@ -1265,9 +1370,20 @@ function App() {
     UNKNOWN: { label: t('unknownLabel'), detail: t('detailsUnknown'), color: 'unknown', icon: 'alert' },
   }[status])
   const dishName = (dish: Dish) => dish.localized[language]
-  const questionFor = (dish: Dish) => passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
+  useEffect(() => {
+    if (!askSheet || !selectedDish || !sessionMenu.length) return
+    let active = true
+    setAssistantAnswer('')
+    setAssistantLoading(true)
+    askDiningAssistant({ question: `What should I ask the restaurant about ${selectedDish.name}?`, language, dishes: sessionMenu.map(serializeDish), foodPassport: passport })
+      .then((result) => { if (active) setAssistantAnswer(result.waiterChinese) })
+      .catch(() => { if (active) setAssistantAnswer('') })
+      .finally(() => { if (active) setAssistantLoading(false) })
+    return () => { active = false }
+  }, [askSheet, selectedDish, sessionMenu, passport, language])
+  const questionFor = (dish: Dish) => assistantAnswer || (passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
     ? '我对花生严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。'
-    : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`
+    : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`)
   const copyQuestion = async () => { await navigator.clipboard?.writeText(questionFor(selectedDish)); setToast(p.toastQuestionCopied); track('ask_restaurant_clicked') }
   const speak = (text: string) => { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); track('question_voice_play') } }
   const addToCart = (dish: Dish) => {
@@ -1373,7 +1489,7 @@ function App() {
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
         {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
-        {screen === 'scan' && <Scan t={t} p={p} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
+        {screen === 'scan' && <Scan t={t} p={p} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
         {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
@@ -1390,7 +1506,7 @@ function App() {
       </main>
       {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
-    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
+    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
@@ -1681,9 +1797,9 @@ function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, c
   return <div className="page page-home"><section className="welcome-row"><div><div className="eyebrow"><span className="orange-dot" /> {p.homeEvidence}</div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {t('recentSession')}</span><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong><small>{hasSavedOrder && currentOrder ? <><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></> : hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small></span><button className="more-button" aria-label={p.moreOptions || 'More options'}><Icon name="dots" size={20} /></button></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
 }
 
-function Scan({ t, p, restaurantName, setRestaurantName, scanImage, scanning, fileInputRef, handleFile, startScan, onOpenCamera, onBack }: { t: (key: CopyKey) => string; p: PageCopy; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void; onOpenCamera: () => void; onBack: () => void }) {
+function Scan({ t, p, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, fileInputRef, handleFile, startScan, onRetry, onOpenCamera, onBack }: { t: (key: CopyKey) => string; p: PageCopy; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void }) {
   const hasRestaurantName = restaurantName.trim().length > 0
-  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker={`${p.step} 01 · ${t('capture')}`} backLabel={p.back} onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">{p.whereEating}</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder={p.restaurantPlaceholder} disabled={scanning} required /><small>{p.restaurantHelper}</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt={p.uploadedPreview} /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? p.chooseAnotherPhoto : t('upload')}</Button><button className="demo-link" onClick={() => startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
+  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker={`${p.step} 01 · ${t('capture')}`} backLabel={p.back} onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">{p.whereEating}</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder={p.restaurantPlaceholder} disabled={scanning} required /><small>{p.restaurantHelper}</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt={p.uploadedPreview} /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : scanError ? <div className="analysis-error"><strong>Menu analysis failed</strong><p>{scanError}</p><div className="analysis-error-actions"><Button onClick={onRetry} icon="refresh" disabled={!canRetry}>Retry</Button><Button variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload">Choose another photo</Button></div></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? p.chooseAnotherPhoto : t('upload')}</Button><button className="demo-link" onClick={() => void startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
 }
 
 function CameraCapture({ t, p, pages, onCapture, onUndo, onDelete, onDone, onBack }: { t: (key: CopyKey) => string; p: PageCopy; pages: CapturedPage[]; onCapture: () => void; onUndo: () => void; onDelete: (id: number) => void; onDone: () => void; onBack: () => void }) {
@@ -1991,7 +2107,7 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
 function Fact({ title, value }: { title: string; value: string }) { return <div className="fact-card"><span>{title}</span><strong>{value}</strong></div> }
 
-function AskSheet({ t, p, language, dish, question, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> {p.askStep}</div><button className="icon-button soft" onClick={onClose} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>{p.chineseShowFirst}</strong><p>{question}</p><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume">{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy">{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div> }
+function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> {p.askStep}</div><button className="icon-button soft" onClick={onClose} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>{p.chineseShowFirst}</strong>{loading ? <p className="assistant-loading"><span className="loader" /> Preparing a restaurant question…</p> : <p>{question}</p>}<hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume" disabled={loading}>{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy" disabled={loading}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div> }
 
 
 function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
@@ -2047,6 +2163,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
   const selectedRestaurant = historyRestaurants.find((restaurant) => restaurant.id === composerRestaurantId) || historyRestaurants[0]
   const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
   const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
+  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
   const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
   const openComposer = () => {
     const firstRestaurant = historyRestaurants[0]
@@ -2124,6 +2241,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
       </article>
     })}</div>
     {!visiblePosts.length && <div className="feed-empty"><span>🍜</span><strong>{p.noNotes}</strong><small>{p.keepExploring}</small></div>}
+    {nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><span className="eyebrow"><span className="orange-dot" /> Fudan · 3 km</span><h2>Nearby restaurant leads</h2><p>Public discovery data for demo exploration; verify the store and menu before relying on it.</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{restaurant.name}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${restaurant.name}` : `${p.save} ${restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurant.cuisine}</p><small><Icon name="shield" size={14} /> {restaurant.why}</small><div className="restaurant-meta"><span>{restaurant.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">Source: {restaurant.source}</small></div></article> })}</div></section>}
     {composerOpen && createPortal(<div className="sheet-backdrop feed-compose-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false) }}><form className="feed-compose-sheet" role="dialog" aria-modal="true" aria-label={p.createFoodPost} onSubmit={publishPost} onMouseDown={(event) => event.stopPropagation()}>
       <div className="feed-compose-heading"><div><span className="eyebrow"><span className="orange-dot" /> {p.shareYourBite}</span><h2>{p.createFoodNote}</h2><p>{p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>
       <label className="feed-compose-field">{p.visitedRestaurant}<select value={selectedRestaurant?.id || ''} onChange={(event) => changeComposerRestaurant(event.target.value)} disabled={!historyRestaurants.length}>{historyRestaurants.map((restaurant) => <option key={restaurant.id} value={restaurant.id}>{restaurant.name} · {localizedRestaurant(language, restaurant).location}</option>)}</select></label>
