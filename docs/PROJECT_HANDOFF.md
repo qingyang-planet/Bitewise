@@ -53,6 +53,17 @@ git switch -c feature/<task-name>
 
 产品名统一使用 `Bitewise 食见`；不要把界面改回 `CanIEatThis`，仓库名暂时保持不变即可。
 
+### 3.1 课堂版与正式版边界
+
+课堂演示为了让同学拍照后稳定进入已经准备好的电子菜单，原生相机拍摄路径当前是**有意的固定数据快捷路径**：照片通过本地格式/大小校验后，直接使用 `setSessionMenu(dishes)`，不调用菜单分析 API。这个行为只服务于课堂演示，不代表正式产品架构。
+
+- 原生相机拍摄：课堂版直接加载固定六道菜 demo 数据。
+- 相册/文件上传：仍走 `analyzeMenuImage` 和 `POST /api/menus/analyze`。
+- 正式可用版：相机和文件上传都必须恢复为 `图片 → API 分析 → 结构化菜品与风险 → 电子菜单`，不能把固定 `dishes` 当作分析结果。
+- 正式版需要保留 API 返回的菜品、风险、证据、置信度，以及失败后的错误和重试逻辑。
+
+对应的恢复任务已记录在 GitHub issue [#4](https://github.com/qingyang-planet/CanIEatThis/issues/4)。
+
 ## 4. 当前后端实现
 
 `feature/backend-analysis` 已建立以下结构：

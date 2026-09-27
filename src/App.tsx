@@ -12,7 +12,8 @@ type AllergySeverity = 'mild' | 'moderate' | 'severe'
 type AllergyProfile = { severity: AllergySeverity; crossContact: boolean }
 type DietStyle = 'none' | 'vegetarian' | 'vegan' | 'lacto' | 'ovo' | 'lacto-ovo' | 'pescatarian' | 'flexitarian'
 type FaithDiet = 'none' | 'halal' | 'kosher' | 'other'
-type UserProfile = { username: string; email: string }
+type SubscriptionTier = 'free' | 'pro'
+type UserProfile = { username: string; email: string; avatarSrc?: string; subscriptionTier?: SubscriptionTier; subscriptionExpiresAt?: number | null; subscriptionPlanDays?: number }
 type RestaurantIntent = 'dumplings' | 'noodles' | 'vegetarian' | 'not-spicy' | 'hot-pot' | 'surprise'
 type SavedRestaurant = {
   id: string
@@ -48,7 +49,7 @@ type FoodPost = {
   likes: number
   comments: number
 }
-type FoodPostDraft = { title: string; body: string; dish: string; dishMeta: string; category: string }
+type FoodPostDraft = { title: string; body: string; dish: string; dishMeta: string; category: string; imageSrc?: string }
 type Companion = { id: string; name: string; email: string; initials: string; passport: Passport; note: string; inviteId: string }
 type CompanionAddResult = { ok: boolean; message: string }
 type CompanionInvite = { id: string; fromEmail: string; toEmail: string; status: 'pending' | 'accepted' | 'declined' | 'revoked'; createdAt: number }
@@ -64,7 +65,6 @@ type Passport = {
   faithDiet: FaithDiet
   faithOther: string
   avoidFoods: string[]
-  otherDietary: string
   preferences: string[]
   spiceLevel: number | null
   severity: 'mild' | 'moderate' | 'severe'
@@ -364,7 +364,7 @@ type OnboardingCopy = {
 
 const onboardingCopy: Record<Language, OnboardingCopy> = {
   en: {
-    welcomeEyebrow: 'YOUR DINING COMPANION IN CHINA', welcomeTitle: 'Discover Chinese food with confidence.', welcomeSubtitle: 'Understand the menu, find dishes that fit you, and order with confidence—wherever the meal takes you.', welcomeCta: 'Get started', welcomeFootnote: 'Clear answers for a better meal.', welcomeMenuNote: 'Menu, understood', welcomeFitNote: 'Know what fits you', languageEyebrow: 'Welcome to your dining companion', clarityNote: 'Built around clarity, not false certainty.', passportEyebrow: 'Food Passport', back: 'Back', assistantNote: 'I’ll help spot ingredients that may need a closer look.', safetyFlags: 'SAFETY FLAGS', selectAllToAvoid: 'Select all ingredients you need to avoid.', selected: (count) => `${count} selected`, addOne: 'Add one', otherAllergen: 'Other allergen', otherAllergenPlaceholder: 'e.g. mustard', selectedAllergens: 'About each selected allergen', setSeparately: 'Set them separately', personalSettings: 'Personal settings for this allergen', severityQuestion: 'How severe is this allergy?', severityHint: (label) => `Set the risk level for ${label}.`, crossContactHint: (label) => `Only for ${label}; shared oil, wok or utensils.`, profileBuilder: 'PROFILE BUILDER', dietaryProfile: 'Dietary profile', dietaryProfileHint: 'Answer a few broad questions instead of repeating every ingredient.', saved: (count) => `${count} saved`, howDoYouEat: 'How do you eat?', chooseEatingPattern: 'Choose one eating pattern.', faithRequirements: 'Any faith-based requirements?', faithHint: 'We’ll keep this separate from allergies.', faithOtherLabel: 'Tell us what to follow', faithOtherPlaceholder: 'e.g. Jain, Buddhist vegetarian', foodsToLeaveOut: 'Which foods should we leave out?', meatSeafoodHint: 'Select any meat or seafood you avoid.', otherDietRequirement: 'Other dietary requirement', otherDietHint: 'Add anything we should know.', otherRequirementLabel: 'Other requirement', otherRequirementPlaceholder: 'e.g. no alcohol, gluten-free, low sodium', everydayKicker: 'EVERYDAY PREFERENCES', everydayTitle: 'Everyday preferences', everydayHint: 'Fine-tune recommendations without turning every preference into a hard rule.', spiceQuestion: 'How much spice can you handle?', spiceHint: 'Set your tolerance—from cannot handle spice to any spice.', spiceCannot: 'Cannot handle spice', spiceLow: 'Low spice', spiceMedium: 'Medium spice', spiceAny: 'Any spice', otherPreferences: 'What else should we keep in mind?', preferenceHint: 'These help sort recommendations, not block every dish.', saveChanges: 'Save changes',
+    welcomeEyebrow: 'YOUR DINING COMPANION IN CHINA', welcomeTitle: 'Discover Chinese food with confidence.', welcomeSubtitle: 'Understand the menu, find dishes that fit you, and order with confidence—wherever the meal takes you.', welcomeCta: 'Get started', welcomeFootnote: 'Clear answers for a better meal.', welcomeMenuNote: 'Menu, understood', welcomeFitNote: 'Know what fits you', languageEyebrow: 'Welcome to your dining companion', clarityNote: 'Built around clarity, not false certainty.', passportEyebrow: 'Food Passport', back: 'Back', assistantNote: 'I’ll help spot ingredients that may need a closer look.', safetyFlags: 'SAFETY FLAGS', selectAllToAvoid: 'Select all ingredients you need to avoid.', selected: (count) => `${count} selected`, addOne: 'Add one', otherAllergen: 'Other allergen', otherAllergenPlaceholder: 'e.g. mustard', selectedAllergens: 'About each selected allergen', setSeparately: 'Set them separately', personalSettings: 'Personal settings for this allergen', severityQuestion: 'How severe is this allergy?', severityHint: (label) => `Set the risk level for ${label}.`, crossContactHint: (label) => `Only for ${label}; shared oil, wok or utensils.`, profileBuilder: 'PROFILE BUILDER', dietaryProfile: 'Dietary profile', dietaryProfileHint: 'Answer a few broad questions instead of repeating every ingredient.', saved: (count) => `${count} saved`, howDoYouEat: 'How do you eat?', chooseEatingPattern: 'Choose one eating pattern.', faithRequirements: 'Any faith-based requirements?', faithHint: 'We’ll keep this separate from allergies.', faithOtherLabel: 'Tell us what to follow', faithOtherPlaceholder: 'e.g. Jain, Buddhist vegetarian', foodsToLeaveOut: 'Which foods should we leave out?', meatSeafoodHint: 'Select any meat or seafood you avoid.', otherDietRequirement: 'Other dietary requirement', otherDietHint: 'Add anything we should know.', otherRequirementLabel: 'Other requirement', otherRequirementPlaceholder: 'e.g. no alcohol, gluten-free, low sodium', everydayKicker: 'EVERYDAY PREFERENCES', everydayTitle: 'Everyday preferences', everydayHint: 'Fine-tune recommendations without turning every preference into a hard rule.', spiceQuestion: 'How spicy can you handle?', spiceHint: 'Set your tolerance—from cannot handle spicy to any spicy level.', spiceCannot: 'Cannot handle spicy', spiceLow: 'Low spicy', spiceMedium: 'Medium spicy', spiceAny: 'Any spicy', otherPreferences: 'What else should we keep in mind?', preferenceHint: 'These help sort recommendations, not block every dish.', saveChanges: 'Save changes',
   },
   ko: {
     welcomeEyebrow: '중국에서의 당신의 다이닝 동반자', welcomeTitle: '중국 음식을 자신 있게 만나보세요.', welcomeSubtitle: '메뉴를 이해하고, 나에게 맞는 음식을 찾고, 어디서든 자신 있게 주문하세요.', welcomeCta: '시작하기', welcomeFootnote: '더 나은 식사를 위한 명확한 답변.', welcomeMenuNote: '메뉴를 이해해요', welcomeFitNote: '나에게 맞는 음식을 알아보세요', languageEyebrow: '당신의 다이닝 동반자와 함께하세요', clarityNote: '막연한 확신이 아닌 명확한 정보를 바탕으로 합니다.', passportEyebrow: '푸드 패스포트', back: '뒤로', assistantNote: '더 자세히 확인해야 할 재료를 찾아드릴게요.', safetyFlags: '안전 확인', selectAllToAvoid: '피해야 하는 재료를 모두 선택하세요.', selected: (count) => `${count}개 선택됨`, addOne: '추가하기', otherAllergen: '기타 알레르기', otherAllergenPlaceholder: '예: 겨자', selectedAllergens: '선택한 알레르기별 설정', setSeparately: '각각 설정', personalSettings: '이 알레르기에 대한 개인 설정', severityQuestion: '알레르기가 얼마나 심한가요?', severityHint: (label) => `${label}의 위험 수준을 설정하세요.`, crossContactHint: (label) => `${label}에만 적용 · 공용 기름, 웍 또는 조리도구`, profileBuilder: '프로필 만들기', dietaryProfile: '식단 프로필', dietaryProfileHint: '재료를 하나씩 반복해서 고르는 대신 큰 범위의 질문에 답해 주세요.', saved: (count) => `${count}개 저장됨`, howDoYouEat: '어떤 식단을 따르나요?', chooseEatingPattern: '하나의 식습관을 선택하세요.', faithRequirements: '종교적인 식단 기준이 있나요?', faithHint: '알레르기와는 별도로 관리합니다.', faithOtherLabel: '따를 기준을 알려주세요', faithOtherPlaceholder: '예: 자이나교, 불교 채식', foodsToLeaveOut: '어떤 음식을 제외할까요?', meatSeafoodHint: '피하는 육류나 해산물을 모두 선택하세요.', otherDietRequirement: '기타 식단 요구사항', otherDietHint: '알려주실 내용을 추가하세요.', otherRequirementLabel: '기타 요구사항', otherRequirementPlaceholder: '예: 술 제외, 글루텐 프리, 저염', everydayKicker: '일상 선호', everydayTitle: '일상 선호', everydayHint: '모든 선호를 엄격한 규칙으로 만들지 않고 추천을 세밀하게 조정합니다.', spiceQuestion: '얼마나 매운 음식을 먹을 수 있나요?', spiceHint: '매운 음식을 전혀 못 먹는 정도부터 모두 가능한 정도까지 선택하세요.', spiceCannot: '매운 음식 불가', spiceLow: '약간 매운맛', spiceMedium: '중간 매운맛', spiceAny: '모두 가능', otherPreferences: '그 밖에 고려할 점이 있나요?', preferenceHint: '추천 순서를 정하는 데 사용하며 모든 메뉴를 차단하지는 않습니다.', saveChanges: '변경사항 저장',
@@ -383,8 +383,6 @@ const onboardingCopy: Record<Language, OnboardingCopy> = {
   },
 }
 
-const stepLabel = (language: Language, step: number) => ({ en: `${step} of 3`, ko: `${step}단계 / 3`, ja: `${step} / 3`, ru: `${step} из 3`, es: `${step} de 3`, it: `${step} di 3` }[language])
-
 type CopyKey = { [Key in keyof typeof copy.en]: (typeof copy.en)[Key] extends string ? Key : never }[keyof typeof copy.en]
 const tFor = (language: Language, key: CopyKey): string => (copy[language][key] as string).replace(/CanIEatThis/g, 'Bitewise')
 
@@ -402,6 +400,52 @@ const accountCopy: Record<Language, AccountCopy> = {
   es: { registerEyebrow: 'CREA TU PERFIL', registerTitle: 'Haz tuya la comida.', registerSubtitle: 'Guarda tu nombre y correo para conservar tu pasaporte de comida.', usernameLabel: 'Nombre de usuario', usernamePlaceholder: 'p. ej., Alex Chen', emailLabel: 'Correo electrónico', emailPlaceholder: 'tu@ejemplo.com', continueLabel: 'Continuar', loginEyebrow: 'TE DAMOS LA BIENVENIDA', loginTitle: 'Volvamos a la mesa.', loginSubtitle: 'Introduce tu correo para continuar con tu pasaporte guardado.', loginEmailPlaceholder: 'Tu correo electrónico', loginButton: 'Iniciar sesión', loginError: 'Ese correo no coincide con esta cuenta de demo.', registerNewUser: 'Registrar nuevo usuario', profileEyebrow: 'MI PERFIL', profileTitle: 'Haz que comer se sienta más tuyo.', basicInfo: 'Información básica', foodPassportTitle: 'Pasaporte de comida', foodPassportDesc: 'Alergias, reglas alimentarias y preferencias', otherSettings: 'Otros ajustes', languagePreference: 'Idioma', languagePreferenceDesc: 'Cambia el idioma de Bitewise', signOut: 'Cerrar sesión', signOutDesc: 'Volver a la pantalla de inicio de sesión', resetDemo: 'Restablecer demo', resetDemoDesc: 'Borrar la demo y empezar desde la bienvenida', passportSummary: 'Tus ajustes de seguridad alimentaria' },
   it: { registerEyebrow: 'CREA IL TUO PROFILO', registerTitle: 'Rendi il pasto più tuo.', registerSubtitle: 'Salva nome ed email per portare con te il passaporto alimentare.', usernameLabel: 'Nome utente', usernamePlaceholder: 'es. Alex Chen', emailLabel: 'Email', emailPlaceholder: 'tu@esempio.com', continueLabel: 'Continua', loginEyebrow: 'BENTORNATO', loginTitle: 'Torniamo al tuo tavolo.', loginSubtitle: 'Inserisci la tua email per usare il passaporto salvato.', loginEmailPlaceholder: 'La tua email', loginButton: 'Accedi', loginError: 'L’email non corrisponde a questo account demo.', registerNewUser: 'Registra un nuovo utente', profileEyebrow: 'IL MIO PROFILO', profileTitle: 'Rendi il pasto più personale.', basicInfo: 'Informazioni di base', foodPassportTitle: 'Passaporto alimentare', foodPassportDesc: 'Allergie, regole alimentari e preferenze', otherSettings: 'Altre impostazioni', languagePreference: 'Lingua', languagePreferenceDesc: 'Cambia la lingua di Bitewise', signOut: 'Esci', signOutDesc: 'Torna alla schermata di accesso', resetDemo: 'Reimposta demo', resetDemoDesc: 'Cancella la demo e ricomincia dal benvenuto', passportSummary: 'Le tue impostazioni di sicurezza alimentare' },
 }
+
+const subscriptionCopy: Record<Language, { entry: string; entryDesc: string; title: string; subtitle: string; free: string; freeDesc: string; features: string; bestValue: string; choose: string; close: string; selected: string }> = {
+  en: { entry: 'Travel Pass', entryDesc: 'Unlock the full dining companion for your trip', title: 'Choose your Travel Pass', subtitle: 'Freemium for first steps, then a pass that matches your time in China.', free: 'Free', freeDesc: 'Limited scans, dish explanations and basic risk flags', features: 'Unlimited scans · AI dining assistant · Waiter Mode · Split Bill · personalized recommendations', bestValue: 'Core plan', choose: 'Choose', close: 'Close', selected: 'Selected for this demo' },
+  ko: { entry: '트래블 패스', entryDesc: '여행 기간에 맞춰 전체 기능을 이용하세요', title: '트래블 패스를 선택하세요', subtitle: '기본 기능은 무료로 시작하고, 중국 체류 기간에 맞는 패스를 선택하세요.', free: '무료', freeDesc: '제한된 스캔, 메뉴 설명과 기본 위험 알림', features: '무제한 스캔 · AI 다이닝 어시스턴트 · 직원 소통 모드 · 더치페이 · 맞춤 추천', bestValue: '핵심 플랜', choose: '선택', close: '닫기', selected: '이 데모에서 선택됨' },
+  ja: { entry: 'トラベルパス', entryDesc: '旅行中のダイニング機能をすべて使う', title: 'トラベルパスを選択', subtitle: '無料で始めて、中国での滞在期間に合うパスを選べます。', free: '無料', freeDesc: '回数限定のスキャン、料理説明、基本リスク表示', features: '無制限スキャン · AIアシスタント · スタッフとのコミュニケーション · 割り勘 · パーソナル推薦', bestValue: 'おすすめ', choose: '選択', close: '閉じる', selected: 'このデモで選択済み' },
+  ru: { entry: 'Travel Pass', entryDesc: 'Все функции помощника на время поездки', title: 'Выберите Travel Pass', subtitle: 'Начните бесплатно, затем выберите срок, подходящий для поездки по Китаю.', free: 'Бесплатно', freeDesc: 'Ограниченные сканы, описания блюд и базовые предупреждения', features: 'Безлимитные сканы · AI-помощник · режим общения с персоналом · разделение счёта · персональные рекомендации', bestValue: 'Основной план', choose: 'Выбрать', close: 'Закрыть', selected: 'Выбрано в этом демо' },
+  es: { entry: 'Travel Pass', entryDesc: 'Desbloquea el compañero completo durante tu viaje', title: 'Elige tu Travel Pass', subtitle: 'Empieza gratis y elige después el pase que encaje con tu estancia en China.', free: 'Gratis', freeDesc: 'Escaneos limitados, explicaciones y avisos básicos', features: 'Escaneos ilimitados · asistente IA · modo de comunicación con el personal · dividir cuenta · recomendaciones personalizadas', bestValue: 'Plan principal', choose: 'Elegir', close: 'Cerrar', selected: 'Seleccionado en esta demo' },
+  it: { entry: 'Travel Pass', entryDesc: 'Sblocca il compagno completo per il tuo viaggio', title: 'Scegli il tuo Travel Pass', subtitle: 'Inizia gratis, poi scegli il pass adatto alla tua permanenza in Cina.', free: 'Gratis', freeDesc: 'Scansioni limitate, spiegazioni dei piatti e avvisi di base', features: 'Scansioni illimitate · assistente AI · modalità di comunicazione con il personale · conto diviso · suggerimenti personalizzati', bestValue: 'Piano principale', choose: 'Scegli', close: 'Chiudi', selected: 'Selezionato in questa demo' },
+}
+
+const subscriptionDisplayOverrides: Record<Language, { entry: string; entryDesc: string; title: string; subtitle: string; bestValue: string }> = {
+  en: { entry: 'Subscription', entryDesc: 'Choose Free or Pro for your trip', title: 'Choose your subscription', subtitle: 'Start with Free or select a Pro duration for the full dining companion.', bestValue: 'Recommend' },
+  ko: { entry: '구독', entryDesc: '여행에 맞는 Free 또는 Pro를 선택하세요', title: '구독을 선택하세요', subtitle: 'Free로 시작하거나 전체 다이닝 기능을 위한 Pro 기간을 선택하세요.', bestValue: '추천' },
+  ja: { entry: 'サブスクリプション', entryDesc: '旅行に合うFreeまたはProを選択', title: 'サブスクリプションを選択', subtitle: 'Freeで始めるか、すべての機能を使えるPro期間を選べます。', bestValue: 'おすすめ' },
+  ru: { entry: 'Подписка', entryDesc: 'Выберите Free или Pro для поездки', title: 'Выберите подписку', subtitle: 'Начните с Free или выберите срок Pro со всеми функциями помощника.', bestValue: 'Рекомендуем' },
+  es: { entry: 'Suscripción', entryDesc: 'Elige Free o Pro para tu viaje', title: 'Elige tu suscripción', subtitle: 'Empieza con Free o elige una duración Pro con todas las funciones.', bestValue: 'Recomendado' },
+  it: { entry: 'Abbonamento', entryDesc: 'Scegli Free o Pro per il tuo viaggio', title: 'Scegli il tuo abbonamento', subtitle: 'Inizia con Free oppure scegli una durata Pro con tutte le funzioni.', bestValue: 'Consigliato' },
+}
+const subscriptionTextFor = (language: Language) => ({ ...subscriptionCopy[language], ...subscriptionDisplayOverrides[language] })
+const subscriptionTierCopy: Record<Language, { pro: string; proDesc: string; noExpiry: string; expires: string }> = {
+  en: { pro: 'Pro', proDesc: 'Full dining companion for your selected duration', noExpiry: 'No expiry', expires: 'Expires' },
+  ko: { pro: 'Pro', proDesc: '선택한 기간 동안 전체 다이닝 기능', noExpiry: '만료 없음', expires: '만료' },
+  ja: { pro: 'Pro', proDesc: '選択した期間、すべてのダイニング機能', noExpiry: '期限なし', expires: '有効期限' },
+  ru: { pro: 'Pro', proDesc: 'Все функции помощника на выбранный срок', noExpiry: 'Без срока', expires: 'Истекает' },
+  es: { pro: 'Pro', proDesc: 'Todas las funciones durante el periodo elegido', noExpiry: 'Sin caducidad', expires: 'Caduca' },
+  it: { pro: 'Pro', proDesc: 'Tutte le funzioni per la durata scelta', noExpiry: 'Senza scadenza', expires: 'Scade' },
+}
+const subscriptionExpiryLabel = (language: Language, expiresAt: number | null | undefined) => expiresAt
+  ? `${subscriptionTierCopy[language].expires} ${new Intl.DateTimeFormat(language, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(expiresAt))}`
+  : subscriptionTierCopy[language].noExpiry
+
+const subscriptionPlans = [
+  { days: 3, price: '¥12.9' },
+  { days: 7, price: '¥19.9', featured: true },
+  { days: 15, price: '¥29.9' },
+  { days: 30, price: '¥39.9' },
+]
+
+type SubscriptionBenefit = { freeLabel: string; proLabel: string; free: boolean; pro: boolean }
+const subscriptionBenefits: SubscriptionBenefit[] = [
+  { freeLabel: 'Limited scans', proLabel: 'Unlimited scans', free: true, pro: true },
+  { freeLabel: 'Dish explanations', proLabel: 'AI dining assistant', free: true, pro: true },
+  { freeLabel: 'Basic risk flags', proLabel: 'Waiter Mode', free: true, pro: true },
+  { freeLabel: '—', proLabel: 'Split Bill', free: false, pro: true },
+  { freeLabel: '—', proLabel: 'Personalized recommendations', free: false, pro: true },
+]
 
 type OrderCopy = { nav: string; title: string; subtitle: string; current: string; past: string; inProgress: string; completed: string; openTable: string; items: string; total: string; splitBill: string; viewMenu: string; emptyCurrent: string; emptyPast: string }
 const orderCopy: Record<Language, OrderCopy> = {
@@ -426,7 +470,7 @@ const pageCopy: Record<Language, PageCopy> = {
     items: 'items', receiptUpdated: 'Receipt updated', fromOrder: 'From order', replaceReceipt: 'Replace receipt', uploadReceipt: 'Upload receipt to update', useOrderTotals: 'Use order totals', lineItemsUpdated: 'Line items and total updated from', uploadedReceipt: 'the uploaded receipt', usingOrderPrices: 'Using the prices captured when this order was placed. Upload a receipt if the final bill changed.', receiptTotal: 'Receipt total', orderTotal: 'Order total', namesEditable: 'Names are editable', tapAssign: 'Tap an item to assign', everyonePays: 'Everyone pays', exactCheck: 'Exact total check', shareReady: 'Share sheet ready', editParticipant: 'Edit participant', removeParticipant: 'Remove participant', everyone: 'Everyone', guest: 'Guest', you: 'You',
     exploreKicker: 'P1 · Explore', createFoodPost: 'Create a food post', findHeading: 'Find your next favorite bite.', findDescription: 'Real dish notes from people nearby. Save the restaurant when something makes you hungry.', foodCategories: 'Food categories', communityPicks: 'Community picks, passport-aware', communityHint: 'Save a place now and check the menu when you visit.', mustTry: 'MUST TRY', save: 'Save', saved: 'Saved', noNotes: 'No notes in this category yet.', keepExploring: 'Try another cuisine and keep exploring.', shareYourBite: 'Share your bite', createFoodNote: 'Create a food note', historyOnly: 'Only restaurants from your order history can be selected.', visitedRestaurant: 'Visited restaurant', pastVisit: 'Past visit', noHistory: 'No matching historical order found.', postTitle: 'Post title', titlePlaceholder: 'e.g. A quiet favorite near the metro', signatureDish: 'Signature dish', dishName: 'Dish name', dishDetails: 'Dish details', dishDetailsPlaceholder: 'Texture · flavor · ¥ price', cuisineCategory: 'Cuisine category', yourExperience: 'Your experience', experiencePlaceholder: 'What made this meal memorable?', cancel: 'Cancel', publishNote: 'Publish note', closeComposer: 'Close post composer', moreOptions: 'More options for', sharePost: 'Share',
     savedRestaurants: 'Saved restaurants', profileFindFood: 'Profile · Find food', openFindFood: 'Open Find food', findFood: 'Find food', placesWorthReturning: 'Places worth coming back to.', savedRestaurantsHint: 'Your saved restaurants stay here, ready for the next meal.', exploreFindFood: 'Explore Find food', saveFromFeed: 'Save a restaurant from the feed', noSavedRestaurants: 'No saved restaurants yet.', removeFromSaved: 'Remove from saved restaurants',
-    companions: 'Companions', profileAtTable: 'Profile · At the table', atTheTable: 'At the table', makeMenuWork: 'Make the menu work for everyone.', connectPassport: 'Connect a friend’s Food Passport once, then use it whenever you share a table.', connected: 'connected', invitationsToReview: 'invitations to review', privateSettings: 'Private food settings stay with each person.', newInvitation: 'New invitation', wantsToDine: 'Someone wants to dine with you.', shareConnection: 'They want to share their Food Passport connection with you.', accept: 'Accept', decline: 'Decline', waitingForThem: 'Waiting for them', invitationsSent: 'Invitations you sent', pending: 'Pending', addCompanion: 'Add a companion', inviteRegistered: 'Invite someone who has registered with Bitewise', companionEmail: 'Companion email', invite: 'Invite', registeredOnly: 'Only registered accounts can receive an invitation. Their Food Passport stays private until they accept.', noCompanions: 'No companions yet.', buildTableProfile: 'Invite a registered user to build a shared table profile.', viewFoodPassport: 'View Food Passport', companionFlow: 'After scanning a menu, choose companions to filter dishes for the whole table.', companionReadOnly: 'Companion · Read only', sharedPassport: 'Shared Food Passport', tableProfile: 'table profile', useSettings: 'You can use these settings to filter a scanned menu, but only', canEdit: 'can edit them.', readOnly: 'Read only', allergens: 'Allergens', dietaryStyle: 'Dietary style', foodsToAvoid: 'Foods to avoid', everydayPreferences: 'Everyday preferences', spicePreference: 'Spice preference', notSet: 'Not set', upToLevel: 'Up to level', kitchenSafety: 'Kitchen safety', noShared: 'None shared', noDietShared: 'No dietary style shared', noRulesShared: 'No food rules shared', noPreferencesShared: 'No everyday preferences shared', avoidCrossContact: 'Avoid cross-contact', notSpecified: 'Not specified', readonlyNote: 'This is a read-only view. The account owner remains in control of their Food Passport.', unlinkCompanion: 'Unlink companion',
+    companions: 'Companions', profileAtTable: 'Profile · At the table', atTheTable: 'At the table', makeMenuWork: 'Make the menu work for everyone.', connectPassport: 'Connect a friend’s Food Passport once, then use it whenever you share a table.', connected: 'connected', invitationsToReview: 'invitations to review', privateSettings: 'Private food settings stay with each person.', newInvitation: 'New invitation', wantsToDine: 'Someone wants to dine with you.', shareConnection: 'They want to share their Food Passport connection with you.', accept: 'Accept', decline: 'Decline', waitingForThem: 'Waiting for them', invitationsSent: 'Invitations you sent', pending: 'Pending', addCompanion: 'Add a companion', inviteRegistered: 'Invite someone who has registered with Bitewise', companionEmail: 'Companion email', invite: 'Invite', registeredOnly: 'Only registered accounts can receive an invitation. Their Food Passport stays private until they accept.', noCompanions: 'No companions yet.', buildTableProfile: 'Invite a registered user to build a shared table profile.', viewFoodPassport: 'View Food Passport', companionFlow: 'After scanning a menu, choose companions to filter dishes for the whole table.', companionReadOnly: 'Companion · Read only', sharedPassport: 'Shared Food Passport', tableProfile: 'table profile', useSettings: 'You can use these settings to filter a scanned menu, but only', canEdit: 'can edit them.', readOnly: 'Read only', allergens: 'Allergens', dietaryStyle: 'Dietary style', foodsToAvoid: 'Foods to avoid', everydayPreferences: 'Everyday preferences', spicePreference: 'Spicy', notSet: 'Not set', upToLevel: 'Up to level', kitchenSafety: 'Kitchen safety', noShared: 'None shared', noDietShared: 'No dietary style shared', noRulesShared: 'No food rules shared', noPreferencesShared: 'No everyday preferences shared', avoidCrossContact: 'Avoid cross-contact', notSpecified: 'Not specified', readonlyNote: 'This is a read-only view. The account owner remains in control of their Food Passport.', unlinkCompanion: 'Unlink companion',
     profileSubtitle: 'Keep your passport, saved places and table companions in one place.', yourFoodProfile: 'Your food profile', myCompanions: 'My companions', sharedPassports: 'Shared Food Passports for the table', new: 'new', tableToolkit: 'Your table toolkit', savedCountLabel: 'saved', placesTryNext: 'Places you want to try next', emailTaken: 'This email is already registered in this demo. Log in instead.',
     invalidEmail: 'Enter a valid email address.', loginBeforeInvite: 'Log in before inviting a companion.', cannotInviteSelf: 'You cannot invite yourself.', noRegisteredUser: 'No registered user uses this email yet.', alreadyConnected: 'This companion is already connected.', invitationWaiting: 'An invitation is already waiting for this user.', toastReceipt: 'Receipt values applied', toastRestaurantFirst: 'Enter the restaurant name before scanning', toastQuestionCopied: 'Question copied', toastConflict: 'This dish conflicts with your Food Passport', toastAdded: 'added to cart', toastDeleted: 'Dining session deleted', toastOrderSaved: 'Order saved to this dining session', toastUsingOrder: 'Using order totals again', toastCompanionConnected: 'Companion connected', toastInvitationDeclined: 'Invitation declined', toastCompanionUnlinked: 'Companion unlinked', toastInvitationSent: 'Invitation sent to', invitationAcceptHint: 'They can accept it from their Profile.',
   },
@@ -505,6 +549,51 @@ const pageCopy: Record<Language, PageCopy> = {
     profileSubtitle: 'Tieni passaporto, luoghi salvati e commensali del tavolo in un unico posto.', yourFoodProfile: 'Il tuo profilo alimentare', myCompanions: 'I miei commensali', sharedPassports: 'Passaporti alimentari condivisi per il tavolo', new: 'nuovi', tableToolkit: 'Strumenti del tavolo', savedCountLabel: 'salvati', placesTryNext: 'Posti da provare', emailTaken: 'Questa email è già registrata nella demo. Accedi invece.',
     invalidEmail: 'Inserisci un indirizzo email valido.', loginBeforeInvite: 'Accedi per invitare un commensale.', cannotInviteSelf: 'Non puoi invitare te stesso.', noRegisteredUser: 'Non esiste un utente registrato con questa email.', alreadyConnected: 'Questo commensale è già collegato.', invitationWaiting: 'C’è già un invito in attesa per questa persona.', toastReceipt: 'Dati della ricevuta applicati', toastRestaurantFirst: 'Inserisci il nome del ristorante prima di scansionare', toastQuestionCopied: 'Domanda copiata', toastConflict: 'Questo piatto è in conflitto con il tuo Passaporto alimentare', toastAdded: 'aggiunto al carrello', toastDeleted: 'Sessione eliminata', toastOrderSaved: 'Ordine salvato in questa sessione', toastUsingOrder: 'Uso di nuovo il totale dell’ordine', toastCompanionConnected: 'Commensale collegato', toastInvitationDeclined: 'Invito rifiutato', toastCompanionUnlinked: 'Commensale scollegato', toastInvitationSent: 'Invito inviato a', invitationAcceptHint: 'Può accettarlo dal proprio Profilo.',
   },
+}
+
+const uploadSourceCopy: Record<Language, { title: string; subtitle: string; photos: string; files: string; cancel: string }> = {
+  en: { title: 'Choose upload source', subtitle: 'Select a photo from your library or a file from your device.', photos: 'Choose from Photos', files: 'Choose from Files', cancel: 'Cancel' },
+  ko: { title: '업로드 방식 선택', subtitle: '사진 앱 또는 기기 파일에서 메뉴 이미지를 선택하세요.', photos: '사진에서 선택', files: '파일에서 선택', cancel: '취소' },
+  ja: { title: 'アップロード元を選択', subtitle: '写真または端末のファイルからメニュー画像を選択してください。', photos: '写真から選ぶ', files: 'ファイルから選ぶ', cancel: 'キャンセル' },
+  ru: { title: 'Выберите источник', subtitle: 'Выберите фото из галереи или файл на устройстве.', photos: 'Из фотографий', files: 'Из файлов', cancel: 'Отмена' },
+  es: { title: 'Elige el origen', subtitle: 'Selecciona una foto de tu galería o un archivo del dispositivo.', photos: 'Elegir de Fotos', files: 'Elegir de Archivos', cancel: 'Cancelar' },
+  it: { title: 'Scegli la fonte', subtitle: 'Seleziona una foto dalla galleria o un file dal dispositivo.', photos: 'Scegli dalle foto', files: 'Scegli dai file', cancel: 'Annulla' },
+}
+
+const askEditorCopy: Record<Language, { chinese: string; english: string; translate: string; translating: string; pause: string; resume: string; editHint: string; translationHint: string }> = {
+  en: { chinese: 'Chinese', english: 'English', translate: 'Translate', translating: 'Translating…', pause: 'Pause', resume: 'Resume', editHint: 'Edit the Chinese question before showing it to the restaurant.', translationHint: 'Tap Translate after editing to generate a new English version.' },
+  ko: { chinese: '중국어', english: '영어', translate: '번역', translating: '번역 중…', pause: '일시정지', resume: '계속 재생', editHint: '식당에 보여줄 중국어 질문을 수정할 수 있어요.', translationHint: '수정 후 번역을 눌러 새 영어 문장을 만드세요.' },
+  ja: { chinese: '中国語', english: '英語', translate: '翻訳', translating: '翻訳中…', pause: '一時停止', resume: '再開', editHint: 'お店に見せる中国語の質問を編集できます。', translationHint: '編集後に「翻訳」を押すと英語を更新します。' },
+  ru: { chinese: 'Китайский', english: 'Английский', translate: 'Перевести', translating: 'Переводим…', pause: 'Пауза', resume: 'Продолжить', editHint: 'Отредактируйте вопрос на китайском перед показом ресторану.', translationHint: 'После правки нажмите «Перевести», чтобы создать новую английскую версию.' },
+  es: { chinese: 'Chino', english: 'Inglés', translate: 'Traducir', translating: 'Traduciendo…', pause: 'Pausar', resume: 'Reanudar', editHint: 'Edita la pregunta en chino antes de enseñarla al restaurante.', translationHint: 'Después de editar, pulsa Traducir para generar una nueva versión en inglés.' },
+  it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in cinese prima di mostrarla al ristorante.', translationHint: 'Dopo aver modificato il testo, premi Traduci per generare un nuovo inglese.' },
+}
+
+function translateRestaurantQuestion(question: string) {
+  const text = question.trim()
+  const allergyMatch = text.match(/^我对(.+?)严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。$/)
+  if (allergyMatch) return `I have a severe allergy to ${allergyMatch[1].replace(/花生/g, 'peanuts')}. Could you please confirm whether this dish contains peanuts, peanut oil, or peanut sauce? Could it come into contact with peanuts during preparation? If this cannot be confirmed, please do not prepare it for me.`
+  const dishMatch = text.match(/^请问(.+?)是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？$/)
+  if (dishMatch) return `Could you please tell me whether ${dishMatch[1]} contains any unlisted allergens? Is it prepared using shared cookware or frying oil with other ingredients?`
+  const replacements: Array<[RegExp, string]> = [
+    [/如果无法确认，请不要为我制作。?/g, 'If this cannot be confirmed, please do not prepare it for me.'],
+    [/制作时是否会接触花生/g, 'Could it come into contact with peanuts during preparation'],
+    [/制作时会与其他食材共用锅具或炸油吗/g, 'Is it prepared using shared cookware or frying oil with other ingredients'],
+    [/是否含有未列出的过敏原/g, 'whether it contains any unlisted allergens'],
+    [/是否含有/g, 'whether it contains'],
+    [/请问/g, 'Could you please tell me '],
+    [/严重过敏/g, 'have a severe allergy to'],
+    [/我对/g, 'I am allergic to '],
+    [/花生油/g, 'peanut oil'],
+    [/花生酱/g, 'peanut sauce'],
+    [/花生/g, 'peanuts'],
+    [/过敏原/g, 'allergens'],
+    [/这道菜/g, 'this dish'],
+    [/吗[？?]?/g, '?'],
+    [/。/g, '.'],
+  ]
+  const translated = replacements.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text)
+  return translated === text ? `Please confirm this with the restaurant: “${text}”` : translated
 }
 
 const categoryLabels: Record<Language, Record<DishCategory, string>> = {
@@ -678,7 +767,7 @@ const avoidFoodOptions = [
 ]
 const dietOptions = [{ id: 'vegetarian', label: 'Vegetarian' }, { id: 'vegan', label: 'Vegan' }, ...avoidFoodOptions.map(({ id, label }) => ({ id, label }))]
 const preferenceOptions = [
-  { id: 'less-oil', label: 'Less oil', icon: '💧' }, { id: 'less-salt', label: 'Less salt', icon: '🧂' }, { id: 'less-sugar', label: 'Less sugar', icon: '🍬' }, { id: 'no-cilantro', label: 'No cilantro', icon: '🌿' }, { id: 'no-scallion', label: 'No scallion', icon: '🧅' }, { id: 'no-garlic', label: 'No garlic', icon: '🧄' }, { id: 'no-raw', label: 'No raw food', icon: '🍣' }, { id: 'well-cooked', label: 'Well-cooked', icon: '🔥' }, { id: 'boneless', label: 'Prefer boneless', icon: '🍗' },
+  { id: 'less-oil', label: 'Less oil', icon: '💪' }, { id: 'less-salt', label: 'Less salt', icon: '🧂' }, { id: 'less-sugar', label: 'Less sugar', icon: '🍬' }, { id: 'no-cilantro', label: 'No cilantro', icon: '🌿' }, { id: 'no-scallion', label: 'No scallion', icon: '🧅' }, { id: 'no-garlic', label: 'No garlic', icon: '🧄' }, { id: 'no-raw', label: 'No raw food', icon: '🍣' }, { id: 'well-cooked', label: 'Well-cooked', icon: '🔥' }, { id: 'boneless', label: 'Prefer boneless', icon: '🍗' },
 ]
 const passportOptionTranslations: Record<Language, {
   dietStyle: Record<DietStyle, { label: string; hint: string }>
@@ -756,7 +845,7 @@ const removeAllergenLabels: Record<Language, string> = {
 }
 
 const defaultAllergyProfile: AllergyProfile = { severity: 'severe', crossContact: true }
-const initialPassport: Passport = { allergies: [], otherAllergen: '', allergyProfiles: {}, diets: [], dietStyle: 'none', faithDiet: 'none', faithOther: '', avoidFoods: [], otherDietary: '', preferences: [], spiceLevel: null, severity: 'severe', crossContact: true }
+const initialPassport: Passport = { allergies: [], otherAllergen: '', allergyProfiles: {}, diets: [], dietStyle: 'none', faithDiet: 'none', faithOther: '', avoidFoods: [], preferences: [], spiceLevel: null, severity: 'severe', crossContact: true }
 type StoredAccount = { profile: UserProfile; passport: Passport }
 
 const blankPassport = (): Passport => ({ ...initialPassport, allergies: [], allergyProfiles: {}, diets: [], avoidFoods: [], preferences: [] })
@@ -769,9 +858,23 @@ const hydratePassport = (saved?: Partial<Passport> | null): Passport => {
   const legacyDiets = (saved.diets || []).map((id) => id === 'vegetarian' ? 'lacto-ovo' : id)
   const legacyAvoidFoods = saved.avoidFoods || (saved.diets || []).filter((id) => avoidFoodIds.includes(id))
   const legacySpiceLevel = saved.spiceLevel ?? (saved.preferences?.includes('mild') ? 1 : null)
-  return { ...initialPassport, ...saved, diets: legacyDiets, dietStyle: legacyDietStyle, faithDiet: saved.faithDiet || 'none', faithOther: saved.faithOther || '', avoidFoods: legacyAvoidFoods, otherDietary: saved.otherDietary || '', spiceLevel: legacySpiceLevel, allergyProfiles: { ...migratedProfiles, ...(saved.allergyProfiles || {}) } } as Passport
+  const stored = { ...saved } as Partial<Passport> & { otherAvoidFood?: string }
+  delete stored.otherAvoidFood
+  return { ...initialPassport, ...stored, diets: legacyDiets, dietStyle: legacyDietStyle, faithDiet: saved.faithDiet || 'none', faithOther: saved.faithOther || '', avoidFoods: legacyAvoidFoods, spiceLevel: legacySpiceLevel, allergyProfiles: { ...migratedProfiles, ...(saved.allergyProfiles || {}) } } as Passport
 }
-const normalizeStoredProfile = (profile?: Partial<UserProfile> | null): UserProfile | null => profile?.username && profile.email ? { username: String(profile.username), email: String(profile.email) } : null
+const normalizeStoredProfile = (profile?: Partial<UserProfile> | null): UserProfile | null => {
+  if (!profile?.username || !profile.email) return null
+  const expiresAt = typeof profile.subscriptionExpiresAt === 'number' ? profile.subscriptionExpiresAt : null
+  const activePro = profile.subscriptionTier === 'pro' && (!expiresAt || expiresAt > Date.now())
+  return {
+    username: String(profile.username),
+    email: String(profile.email),
+    ...(typeof profile.avatarSrc === 'string' && profile.avatarSrc ? { avatarSrc: profile.avatarSrc } : {}),
+    subscriptionTier: activePro ? 'pro' : 'free',
+    subscriptionExpiresAt: activePro ? expiresAt : null,
+    ...(typeof profile.subscriptionPlanDays === 'number' ? { subscriptionPlanDays: profile.subscriptionPlanDays } : {}),
+  }
+}
 const readStoredAccounts = (): StoredAccount[] => {
   try {
     const saved = JSON.parse(localStorage.getItem('cit:accounts') || '') as Array<{ profile?: Partial<UserProfile>; passport?: Partial<Passport> }>
@@ -861,10 +964,31 @@ const foodPosts: FoodPost[] = [
   { id: 'post-08', restaurantId: 'charcoal-yard', category: 'bbq', categoryLabel: '烧烤', author: 'Rina Ito', initials: 'RI', avatarTone: 'avatar-night', time: 'Yesterday', title: 'Cumin lamb and ember smoke after dark', body: 'The lamb has a proper char and the king oyster mushrooms soak up all the grill flavor. A great late-night order for a table that likes to share.', dish: 'Cumin charcoal lamb skewers', dishMeta: 'Smoky · juicy · ¥48 / 6 skewers', imageSrc: '/dish-photos/charcoal-yard-signature.png', imageTone: 'feed-image-night', likes: 119, comments: 9 },
 ]
 
-type RestaurantText = Pick<SavedRestaurant, 'cuisine' | 'location' | 'why'>
+type RestaurantText = Pick<SavedRestaurant, 'cuisine' | 'location' | 'why'> & { name?: string }
 const restaurantTextTranslations: Record<Language, Record<string, RestaurantText>> = {
-  en: {},
+  en: {
+    'zuihuihuang-fudan-zhengli': { name: 'Zuihuihuang · Fudan School of Management', cuisine: 'Shanghai · seafood · business dining', location: 'Fudan Zhengli campus · about 0.1 km', why: 'Closest option; ask about seafood, stock and shared cookware' },
+    'haerbin-snacks-zhengli': { name: 'Harbin-style Snacks · Zhengli Road', cuisine: 'Northeastern Chinese · dumplings / noodles / home-style', location: 'Zhengli Road · about 0.3 km', why: 'Dumplings and noodles are easy to inspect ingredient by ingredient' },
+    'he-sheng-hui-fei-dachu': { name: 'Fei Dachu Chili Pork · Hopson One', cuisine: 'Hunan cuisine · stir-fries / rice-friendly dishes', location: 'Hopson One · about 1.7 km', why: 'Spice and pork are clear decision points' },
+    'he-xie-bang-cuisine': { name: 'Xiexie · Shanghai & Jiangnan Cuisine', cuisine: 'Shanghai & Jiangnan · crab roe / soup dumplings', location: 'Hopson One · about 1.7 km', why: 'A useful check for crustacean, egg and wheat warnings' },
+    'ruyi-chicken-abalone': { name: 'Ruyi Chicken & Abalone · Cantonese Soup', cuisine: 'Cantonese · soups / clay pots / seafood', location: 'Hopson One · about 1.7 km', why: 'Soup-base ingredients can be surfaced for confirmation' },
+    'haidilao-he-sheng-hui': { name: 'Haidilao Hot Pot · Hopson One', cuisine: 'Sichuan hot pot · hot pot / group dining', location: 'Hopson One · about 1.8 km', why: 'Broth, dipping sauce, sesame and cross-contact need checking' },
+    'kaijiang-grilled-fish': { name: 'Kaijiang Sichuan Grilled Fish · Wujiaochang', cuisine: 'Sichuan-Chongqing · grilled fish / spicy dishes', location: 'Wujiaochang · about 2.0 km', why: 'Useful for fish, soy sauce, sesame and chili checks' },
+    'zuoting-youyuan-hotpot': { name: 'Zuoting Youyuan Fresh Beef Hot Pot', cuisine: 'Chaoshan beef hot pot · beef / hot pot', location: 'Wujiaochang · about 2.1 km', why: 'Hot-pot broth and shared utensils need confirmation' },
+    'dongfang-yichuan': { name: 'Dongfang Yichuan · Guoding East Road', cuisine: 'Barbecue / grilled fish · late-night dining', location: 'Guoding East Road · about 2.2 km', why: 'Grill oil, seafood and spice are the main checks' },
+    'jiejiao-taiwanese': { name: 'Jianjiao Taiwanese Kitchen · Wujiaochang', cuisine: 'Taiwanese snacks · braised dishes / noodles / small bites', location: 'Wujiaochang · about 2.3 km', why: 'Rice, noodles and braised toppings make a clear demo path' },
+  },
   ko: {
+    'zuihuihuang-fudan-zhengli': { name: '쭈이후이황 · 푸단 경영대학 정리 캠퍼스점', cuisine: '상하이 요리 · 해산물 · 비즈니스 식사', location: '푸단 정리 캠퍼스 · 약 0.1km', why: '가장 가까운 선택지예요. 해산물, 육수와 공용 조리도구를 확인하세요' },
+    'haerbin-snacks-zhengli': { name: '하얼빈식 간식 · 정리루', cuisine: '동북 요리 · 만두 / 면 / 가정식', location: '정리루 · 약 0.3km', why: '만두와 면의 재료를 하나씩 확인하기 좋아요' },
+    'he-sheng-hui-fei-dachu': { name: '페이다추 고추 돼지고기 · 허셩후이점', cuisine: '후난 요리 · 볶음 / 밥과 어울리는 요리', location: '허셩후이 · 약 1.7km', why: '매운맛과 돼지고기를 확인하기 좋은 곳이에요' },
+    'he-xie-bang-cuisine': { name: '셰시에 · 상하이·장쑤·저장 요리', cuisine: '상하이·장쑤·저장 요리 · 게알 / 샤오롱바오', location: '허셩후이 · 약 1.7km', why: '갑각류, 달걀과 밀 알레르기를 확인하기 좋아요' },
+    'ruyi-chicken-abalone': { name: '루이 치킨·전복 · 광둥식 탕', cuisine: '광둥 요리 · 탕 / 뚝배기 / 해산물', location: '허셩후이 · 약 1.7km', why: '탕 재료를 확인해야 하는 경우에 적합해요' },
+    'haidilao-he-sheng-hui': { name: '하이디라오 훠궈 · 허셩후이', cuisine: '쓰촨 훠궈 · 훠궈 / 모임 식사', location: '허셩후이 · 약 1.8km', why: '육수, 소스, 참깨와 교차 접촉을 확인하세요' },
+    'kaijiang-grilled-fish': { name: '카이장 쓰촨식 구운 생선 · 우자오창', cuisine: '쓰촨·충칭 요리 · 구운 생선 / 매운 요리', location: '우자오창 · 약 2.0km', why: '생선, 간장, 참깨와 고추를 확인하기 좋아요' },
+    'zuoting-youyuan-hotpot': { name: '쭤팅여우위안 신선 소고기 훠궈', cuisine: '차오산 소고기 훠궈 · 소고기 / 훠궈', location: '우자오창 · 약 2.1km', why: '훠궈 육수와 공용 식기를 꼭 확인하세요' },
+    'dongfang-yichuan': { name: '둥팡이촨 · 궈딩동루점', cuisine: '구이 / 구운 생선 · 야식', location: '궈딩동루 · 약 2.2km', why: '구이용 기름, 해산물과 매운맛이 주요 확인 항목이에요' },
+    'jiejiao-taiwanese': { name: '지엔지아오 대만 식당 · 우자오창', cuisine: '대만 간식 · 루웨이 / 면 / 간단한 요리', location: '우자오창 · 약 2.3km', why: '밥, 면과 조림 토핑을 확인하기 좋아요' },
     'old-town-kitchen': { cuisine: '본방 요리 · 상하이 가정식', location: '상하이 · 1.2km', why: '메뉴가 명확하고 순한 메뉴가 있어요' },
     'green-bamboo-house': { cuisine: '채식 · 차 전문점', location: '상하이 · 1.8km', why: '푸드 패스포트에 맞는 담백한 맛' },
     'lotus-table': { cuisine: '광둥 요리 · 제철 소식', location: '상하이 · 2.4km', why: '채식 메뉴가 명확하게 표시돼요' },
@@ -875,6 +999,16 @@ const restaurantTextTranslations: Record<Language, Record<string, RestaurantText
     'charcoal-yard': { cuisine: '구이 · 야식', location: '상하이 · 4.2km', why: '작은 양이라 함께 나누기 좋아요' },
   },
   ja: {
+    'zuihuihuang-fudan-zhengli': { name: '酔輝皇 · 復旦管理学院政立キャンパス店', cuisine: '上海料理 · シーフード · ビジネス向け', location: '復旦・政立キャンパス · 約0.1km', why: '最寄りの候補。魚介、スープ、共用調理器具を確認してください' },
+    'haerbin-snacks-zhengli': { name: 'ハルビン風軽食 · 政立路', cuisine: '東北料理 · 餃子 / 麺 / 家庭料理', location: '政立路 · 約0.3km', why: '餃子と麺の食材を一つずつ確認しやすい店です' },
+    'he-sheng-hui-fei-dachu': { name: 'フェイ・ダーチュー唐辛子炒め豚肉 · 合生匯店', cuisine: '湖南料理 · 炒め物 / ご飯に合う料理', location: '合生匯 · 約1.7km', why: '辛さと豚肉を確認しやすい候補です' },
+    'he-xie-bang-cuisine': { name: 'シエシエ · 上海・江南料理', cuisine: '上海・江南料理 · 蟹粉 / 小籠包', location: '合生匯 · 約1.7km', why: '甲殻類、卵、小麦の確認に向いています' },
+    'ruyi-chicken-abalone': { name: 'ルーイー鶏とアワビ · 広東スープ', cuisine: '広東料理 · スープ / 土鍋 / シーフード', location: '合生匯 · 約1.7km', why: 'スープの材料を確認したいときに便利です' },
+    'haidilao-he-sheng-hui': { name: '海底撈火鍋 · 合生匯', cuisine: '四川火鍋 · 火鍋 / グループ向け', location: '合生匯 · 約1.8km', why: 'スープ、つけだれ、ごま、交差接触を確認してください' },
+    'kaijiang-grilled-fish': { name: 'カイジャン四川風焼き魚 · 五角場', cuisine: '四川・重慶料理 · 焼き魚 / 辛い料理', location: '五角場 · 約2.0km', why: '魚、醤油、ごま、唐辛子の確認に便利です' },
+    'zuoting-youyuan-hotpot': { name: 'ズォティンヨウユエン新鮮牛肉火鍋', cuisine: '潮汕牛肉火鍋 · 牛肉 / 火鍋', location: '五角場 · 約2.1km', why: '火鍋のスープと共用食器を確認してください' },
+    'dongfang-yichuan': { name: '東方一串 · 国定東路店', cuisine: '焼き物 / 焼き魚 · 夜食', location: '国定東路 · 約2.2km', why: '焼き油、魚介、辛さが主な確認ポイントです' },
+    'jiejiao-taiwanese': { name: 'ジエジャオ台湾食堂 · 五角場', cuisine: '台湾軽食 · 煮込み / 麺 / 小皿', location: '五角場 · 約2.3km', why: 'ご飯、麺、煮込みのトッピングを確認しやすい店です' },
     'old-town-kitchen': { cuisine: '上海料理 · 上海の家庭料理', location: '上海 · 1.2km', why: '料理の説明が明確で辛さも控えめ' },
     'green-bamboo-house': { cuisine: 'ベジタリアン · 茶館', location: '上海 · 1.8km', why: 'パスポートに合う軽やかな味' },
     'lotus-table': { cuisine: '広東料理 · 季節の小皿', location: '上海 · 2.4km', why: 'ベジタリアン料理の表示が明確' },
@@ -885,6 +1019,16 @@ const restaurantTextTranslations: Record<Language, Record<string, RestaurantText
     'charcoal-yard': { cuisine: '串焼き · 夜食', location: '上海 · 4.2km', why: '少量ずつシェアしやすい' },
   },
   ru: {
+    'zuihuihuang-fudan-zhengli': { name: 'Цзуйхуэйхуан · кампус Фудань на Чжэнли', cuisine: 'Шанхайская кухня · морепродукты · деловой ужин', location: 'Кампус Фудань, Чжэнли · около 0,1 км', why: 'Ближайший вариант; уточните морепродукты, бульон и общую посуду' },
+    'haerbin-snacks-zhengli': { name: 'Харбинские закуски · улица Чжэнли', cuisine: 'Северо-восточная кухня · пельмени / лапша / домашние блюда', location: 'Улица Чжэнли · около 0,3 км', why: 'Состав пельменей и лапши легко проверять по ингредиентам' },
+    'he-sheng-hui-fei-dachu': { name: 'Фэй Дачу: свинина с перцем · Hopson One', cuisine: 'Хунаньская кухня · жареные блюда / к рису', location: 'Hopson One · около 1,7 км', why: 'Удобно отдельно проверить остроту и свинину' },
+    'he-xie-bang-cuisine': { name: 'Сесяе · шанхайская и цзяннаньская кухня', cuisine: 'Шанхайская и цзяннаньская кухня · крабовая икра / сяолунбао', location: 'Hopson One · около 1,7 км', why: 'Хороший вариант для проверки ракообразных, яиц и пшеницы' },
+    'ruyi-chicken-abalone': { name: 'Жуи: курица и абалон · кантонский суп', cuisine: 'Кантонская кухня · супы / горшочки / морепродукты', location: 'Hopson One · около 1,7 км', why: 'Ингредиенты основы супа нужно подтвердить' },
+    'haidilao-he-sheng-hui': { name: 'Хайдилао хот-пот · Hopson One', cuisine: 'Сычуаньский хот-пот · хого / для компании', location: 'Hopson One · около 1,8 км', why: 'Проверьте бульон, соус, кунжут и перекрёстный контакт' },
+    'kaijiang-grilled-fish': { name: 'Сычуаньская рыба на гриле Кайцзян · Уцзяочан', cuisine: 'Сычуаньско-чунцинская кухня · рыба на гриле / острые блюда', location: 'Уцзяочан · около 2,0 км', why: 'Удобно проверить рыбу, соевый соус, кунжут и чили' },
+    'zuoting-youyuan-hotpot': { name: 'Чаошаньский хот-пот из свежей говядины Цзотин', cuisine: 'Чаошаньский хот-пот · говядина / хого', location: 'Уцзяочан · около 2,1 км', why: 'Уточните бульон и общую посуду' },
+    'dongfang-yichuan': { name: 'Дунфан Ичуань · улица Годиндун', cuisine: 'Барбекю / рыба на гриле · поздний ужин', location: 'Улица Годиндун · около 2,2 км', why: 'Главные вопросы: масло для гриля, морепродукты и острота' },
+    'jiejiao-taiwanese': { name: 'Тайваньская столовая Цзецзяо · Уцзяочан', cuisine: 'Тайваньские закуски · тушёные блюда / лапша / небольшие блюда', location: 'Уцзяочан · около 2,3 км', why: 'Понятный путь для проверки риса, лапши и тушёных добавок' },
     'old-town-kitchen': { cuisine: 'Шанхайская кухня · домашние блюда', location: 'Шанхай · 1,2 км', why: 'Понятное меню и неострые варианты' },
     'green-bamboo-house': { cuisine: 'Вегетарианское · чайный дом', location: 'Шанхай · 1,8 км', why: 'Лёгкие вкусы для вашего паспорта' },
     'lotus-table': { cuisine: 'Кантонская кухня · сезонные закуски', location: 'Шанхай · 2,4 км', why: 'Вегетарианские блюда отмечены понятно' },
@@ -895,6 +1039,16 @@ const restaurantTextTranslations: Record<Language, Record<string, RestaurantText
     'charcoal-yard': { cuisine: 'Гриль · поздний ужин', location: 'Шанхай · 4,2 км', why: 'Небольшие порции удобно делить' },
   },
   es: {
+    'zuihuihuang-fudan-zhengli': { name: 'Zuihuihuang · campus de Fudan en Zhengli', cuisine: 'Cocina shanghainesa · marisco · comidas de negocios', location: 'Campus Fudan Zhengli · aprox. 0,1 km', why: 'La opción más cercana; confirma marisco, caldo y utensilios compartidos' },
+    'haerbin-snacks-zhengli': { name: 'Aperitivos al estilo de Harbin · Zhengli', cuisine: 'Cocina del noreste · dumplings / fideos / casera', location: 'Zhengli · aprox. 0,3 km', why: 'Es fácil revisar ingrediente por ingrediente en dumplings y fideos' },
+    'he-sheng-hui-fei-dachu': { name: 'Cerdo con chile de Fei Dachu · Hopson One', cuisine: 'Cocina de Hunan · salteados / platos para acompañar con arroz', location: 'Hopson One · aprox. 1,7 km', why: 'Permite comprobar claramente el picante y el cerdo' },
+    'he-xie-bang-cuisine': { name: 'Xiexie · cocina shanghainesa y de Jiangnan', cuisine: 'Cocina shanghainesa y de Jiangnan · huevas de cangrejo / xiaolongbao', location: 'Hopson One · aprox. 1,7 km', why: 'Buen caso para comprobar crustáceos, huevo y trigo' },
+    'ruyi-chicken-abalone': { name: 'Ruyi, pollo y abalón · sopa cantonesa', cuisine: 'Cocina cantonesa · sopas / cazuelas / marisco', location: 'Hopson One · aprox. 1,7 km', why: 'Conviene confirmar los ingredientes de la base de la sopa' },
+    'haidilao-he-sheng-hui': { name: 'Hotpot Haidilao · Hopson One', cuisine: 'Hotpot de Sichuan · hotpot / grupos', location: 'Hopson One · aprox. 1,8 km', why: 'Confirma caldo, salsa, sésamo y contacto cruzado' },
+    'kaijiang-grilled-fish': { name: 'Pescado a la parrilla de Sichuan Kaijiang · Wujiaochang', cuisine: 'Cocina de Sichuan y Chongqing · pescado a la parrilla / picante', location: 'Wujiaochang · aprox. 2,0 km', why: 'Útil para comprobar pescado, soja, sésamo y chile' },
+    'zuoting-youyuan-hotpot': { name: 'Hotpot de ternera fresca Zuoting Youyuan', cuisine: 'Hotpot de ternera de Chaoshan · ternera / hotpot', location: 'Wujiaochang · aprox. 2,1 km', why: 'Confirma el caldo y los utensilios compartidos' },
+    'dongfang-yichuan': { name: 'Dongfang Yichuan · Guoding East Road', cuisine: 'Barbacoa / pescado a la parrilla · cena nocturna', location: 'Guoding East Road · aprox. 2,2 km', why: 'Los puntos clave son el aceite de parrilla, el marisco y el picante' },
+    'jiejiao-taiwanese': { name: 'Comedor taiwanés Jianjiao · Wujiaochang', cuisine: 'Aperitivos taiwaneses · guisos / fideos / platos pequeños', location: 'Wujiaochang · aprox. 2,3 km', why: 'Un recorrido claro para revisar arroz, fideos y toppings guisados' },
     'old-town-kitchen': { cuisine: 'Cocina shanghainesa · casera', location: 'Shanghái · 1,2 km', why: 'Platos claros y opciones suaves' },
     'green-bamboo-house': { cuisine: 'Vegetariana · casa de té', location: 'Shanghái · 1,8 km', why: 'Sabores ligeros para tu pasaporte' },
     'lotus-table': { cuisine: 'Cocina cantonesa · platos de temporada', location: 'Shanghái · 2,4 km', why: 'Los platos vegetarianos están bien señalados' },
@@ -905,6 +1059,16 @@ const restaurantTextTranslations: Record<Language, Record<string, RestaurantText
     'charcoal-yard': { cuisine: 'Barbacoa · bocados nocturnos', location: 'Shanghái · 4,2 km', why: 'Las porciones pequeñas facilitan compartir' },
   },
   it: {
+    'zuihuihuang-fudan-zhengli': { name: 'Zuihuihuang · campus Fudan di Zhengli', cuisine: 'Cucina di Shanghai · frutti di mare · pranzo di lavoro', location: 'Campus Fudan Zhengli · circa 0,1 km', why: 'È l’opzione più vicina; verifica frutti di mare, brodo e utensili condivisi' },
+    'haerbin-snacks-zhengli': { name: 'Snack in stile Harbin · Zhengli', cuisine: 'Cucina del Nord-est · ravioli / noodles / casalinga', location: 'Zhengli · circa 0,3 km', why: 'Ravioli e noodles sono facili da controllare ingrediente per ingrediente' },
+    'he-sheng-hui-fei-dachu': { name: 'Maiale al peperoncino di Fei Dachu · Hopson One', cuisine: 'Cucina dell’Hunan · saltati / piatti da accompagnare al riso', location: 'Hopson One · circa 1,7 km', why: 'Piccante e maiale sono punti facili da verificare' },
+    'he-xie-bang-cuisine': { name: 'Xiexie · cucina di Shanghai e Jiangnan', cuisine: 'Cucina di Shanghai e Jiangnan · uova di granchio / xiaolongbao', location: 'Hopson One · circa 1,7 km', why: 'Utile per controllare crostacei, uova e grano' },
+    'ruyi-chicken-abalone': { name: 'Ruyi, pollo e abalone · zuppa cantonese', cuisine: 'Cucina cantonese · zuppe / tegami / frutti di mare', location: 'Hopson One · circa 1,7 km', why: 'Conviene confermare gli ingredienti della base della zuppa' },
+    'haidilao-he-sheng-hui': { name: 'Hotpot Haidilao · Hopson One', cuisine: 'Hotpot del Sichuan · hotpot / gruppi', location: 'Hopson One · circa 1,8 km', why: 'Verifica brodo, salsa, sesamo e contatto crociato' },
+    'kaijiang-grilled-fish': { name: 'Pesce alla griglia del Sichuan Kaijiang · Wujiaochang', cuisine: 'Cucina del Sichuan e Chongqing · pesce alla griglia / piccante', location: 'Wujiaochang · circa 2,0 km', why: 'Utile per controllare pesce, soia, sesamo e peperoncino' },
+    'zuoting-youyuan-hotpot': { name: 'Hotpot di manzo fresco Zuoting Youyuan', cuisine: 'Hotpot di manzo Chaoshan · manzo / hotpot', location: 'Wujiaochang · circa 2,1 km', why: 'Conferma brodo e utensili condivisi' },
+    'dongfang-yichuan': { name: 'Dongfang Yichuan · Guoding East Road', cuisine: 'Griglia / pesce alla griglia · cena notturna', location: 'Guoding East Road · circa 2,2 km', why: 'I controlli principali sono olio, frutti di mare e piccante' },
+    'jiejiao-taiwanese': { name: 'Mensa taiwanese Jianjiao · Wujiaochang', cuisine: 'Snack taiwanesi · brasati / noodles / piccoli piatti', location: 'Wujiaochang · circa 2,3 km', why: 'Un percorso chiaro per controllare riso, noodles e condimenti brasati' },
     'old-town-kitchen': { cuisine: 'Cucina di Shanghai · casalinga', location: 'Shanghai · 1,2 km', why: 'Piatti chiari e opzioni delicate' },
     'green-bamboo-house': { cuisine: 'Vegetariana · casa da tè', location: 'Shanghai · 1,8 km', why: 'Sapori leggeri per il tuo passaporto' },
     'lotus-table': { cuisine: 'Cucina cantonese · piccoli piatti stagionali', location: 'Shanghai · 2,4 km', why: 'I piatti vegetariani sono indicati chiaramente' },
@@ -915,7 +1079,15 @@ const restaurantTextTranslations: Record<Language, Record<string, RestaurantText
     'charcoal-yard': { cuisine: 'Griglia · assaggi notturni', location: 'Shanghai · 4,2 km', why: 'Le porzioni piccole sono facili da condividere' },
   },
 }
-const localizedRestaurant = (language: Language, restaurant: SavedRestaurant): RestaurantText => restaurantTextTranslations[language][restaurant.id] || { cuisine: restaurant.cuisine, location: restaurant.location, why: restaurant.why }
+const localizedRestaurant = (language: Language, restaurant: SavedRestaurant): RestaurantText => restaurantTextTranslations[language][restaurant.id] || { name: restaurant.name, cuisine: restaurant.cuisine, location: restaurant.location, why: restaurant.why }
+const nearbyCopy: Record<Language, { area: string; title: string; description: string; source: string }> = {
+  en: { area: 'Fudan · 3 km', title: 'Nearby restaurants', description: 'Public discovery leads for demo exploration; verify the store and menu before relying on them.', source: 'Source' },
+  ko: { area: '푸단 · 3km', title: '주변 식당', description: '데모 탐색을 위한 공개 식당 정보입니다. 이용하기 전에 매장과 메뉴를 확인하세요.', source: '출처' },
+  ja: { area: '復旦 · 3km', title: '近くのレストラン', description: 'デモ探索用の公開情報です。利用する前に店舗とメニューを確認してください。', source: '出典' },
+  ru: { area: 'Фудань · 3 км', title: 'Рестораны рядом', description: 'Открытые данные для демонстрации. Перед визитом проверьте ресторан и меню.', source: 'Источник' },
+  es: { area: 'Fudan · 3 km', title: 'Restaurantes cercanos', description: 'Datos públicos para explorar la demo. Confirma el local y el menú antes de confiar en ellos.', source: 'Fuente' },
+  it: { area: 'Fudan · 3 km', title: 'Ristoranti vicini', description: 'Dati pubblici per esplorare la demo. Verifica locale e menu prima di farci affidamento.', source: 'Fonte' },
+}
 type PostText = Pick<FoodPost, 'title' | 'body' | 'dish' | 'dishMeta' | 'time'>
 const postTextTranslations: Record<Language, Record<string, PostText>> = {
   en: {},
@@ -994,6 +1166,7 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     shield: <><path d="M12 3 19 6v5c0 4.8-3 8.2-7 10-4-1.8-7-5.2-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></>,
     upload: <><path d="M12 16V4M8 8l4-4 4 4M5 14v5h14v-5"/></>,
     camera: <><path d="M4 7h3l1.5-2h7L17 7h3v12H4V7Z"/><circle cx="12" cy="13" r="3.5"/></>,
+    image: <><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 4.5-4 3.2 2.7 2.4-2.2L20 18"/></>,
     flash: <path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/>,
     bookmark: <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-3.5L6 22V4Z"/>,
     volume: <><path d="M4 10v4h3l4 3V7L7 10H4Z"/><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7.5 7.5 0 0 1 0 10"/></>,
@@ -1003,6 +1176,7 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     refresh: <><path d="M20 11a8 8 0 0 0-14.6-4L3 10M3 5v5h5M4 13a8 8 0 0 0 14.6 4L21 14m0 5v-5h-5"/></>,
     users: <><circle cx="9" cy="8" r="3"/><path d="M3 20c.4-3.3 2.4-5 6-5s5.6 1.7 6 5M16 5.5a3 3 0 0 1 0 5.8M18 15c2.2.7 3.4 2.3 3.7 5"/></>,
     wallet: <><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v16H6a2 2 0 0 1-2-2V6.5Z"/><path d="M4 7h16M16 13h4"/><circle cx="16" cy="13" r=".4" fill="currentColor"/></>,
+    oil: <><path d="M8 5h8l1 3v12H7V8l1-3Z"/><path d="M8 8h8M10 12h4M10 16h4"/><path d="M10 3h4"/></>,
     cart: <><path d="M4 5h2l1.5 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></>,
     dots: <><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></>,
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
@@ -1017,7 +1191,7 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
   return <svg className="icon" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] ?? paths.spark}</svg>
 }
 
-function LogoMark({ small = false }: { small?: boolean }) { return <img className={`brand-mark-image ${small ? 'brand-mark-small' : ''}`} src="/bitewise-icon-192.png" alt="" /> }
+function LogoMark({ small = false }: { small?: boolean }) { return <span className={`brand-mark-image ${small ? 'brand-mark-small' : ''}`} aria-hidden="true" /> }
 
 function CrossContactIcon({ blocked, size }: { blocked: boolean; size: number }) {
   return <span className={`cross-contact-icon ${blocked ? 'blocked' : ''}`}>
@@ -1086,7 +1260,10 @@ function App() {
   const [selectedCompanionEmail, setSelectedCompanionEmail] = useState<string | null>(null)
   const [activeCompanionIds, setActiveCompanionIds] = useState<string[]>([])
   const [toast, setToast] = useState('')
+  const [showUploadOptions, setShowUploadOptions] = useState(false)
+  const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
+  const cameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const billInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const t = (key: CopyKey) => tFor(language, key)
   const currentCompanions = account ? companionViewsFor(account.email, accounts, companionInvites) : []
@@ -1163,7 +1340,6 @@ function App() {
       const avoidFoods = current.avoidFoods.includes(id) ? current.avoidFoods.filter((item) => item !== id) : [...current.avoidFoods, id]
       return { ...current, avoidFoods, diets: [...current.diets.filter((item) => !avoidFoodIds.includes(item)), ...avoidFoods] }
     }
-    if (key === 'otherDietary') return { ...current, otherDietary: value as string }
     if (key === 'spiceLevel') return { ...current, spiceLevel: value as number | null }
     if (key === 'allergies') {
       const selected = current.allergies.includes(value as string)
@@ -1186,9 +1362,20 @@ function App() {
     })
     setAccount(profile)
     setPassport(newPassport)
-    setLanguage('en')
-    setOnboardingStep(2)
+    setOnboardingStep(3)
     track('profile_created')
+  }
+  const updateAvatar = (avatarSrc: string) => {
+    setAccount((current) => current ? { ...current, avatarSrc } : current)
+    track('profile_avatar_updated')
+  }
+  const updateSubscription = (days: number | null) => {
+    setAccount((current) => {
+      if (!current) return current
+      if (days === null) return { ...current, subscriptionTier: 'free', subscriptionExpiresAt: null, subscriptionPlanDays: undefined }
+      return { ...current, subscriptionTier: 'pro', subscriptionExpiresAt: Date.now() + days * 24 * 60 * 60 * 1000, subscriptionPlanDays: days }
+    })
+    track(days === null ? 'subscription_free_selected' : 'subscription_pro_selected')
   }
   const logIn = (email: string) => {
     const normalizedEmail = email.trim().toLowerCase()
@@ -1285,7 +1472,7 @@ function App() {
       setToast(p.toastRestaurantFirst)
       return
     }
-    fileInputRef.current?.click()
+    cameraInputRef.current?.click()
     track('camera_open')
   }
   const addCapturedPage = () => {
@@ -1356,6 +1543,27 @@ function App() {
       track('menu_scan_failed')
     }
   }
+  const handleCameraFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    const validationError = validateMenuImage(file)
+    if (validationError) {
+      setScanError(validationError)
+      setToast(validationError)
+      return
+    }
+    setScanError('')
+    setLastScanFile(null)
+    setScanImage(URL.createObjectURL(file))
+    setSessionRestaurant(sessionRestaurant.trim())
+    setSessionMenu(dishes)
+    setSessionRisks({})
+    setAnalysisPassportKey('')
+    setScanning(false)
+    setScreen('menu')
+    track('camera_demo_loaded')
+  }
   const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void startScan(file) }
   const getStatusForPassport = (dish: Dish, profile: Passport): Status => {
     const activeAllergyProfiles = [...profile.allergies.map((id) => profile.allergyProfiles[id] || defaultAllergyProfile), ...(profile.otherAllergen ? [profile.allergyProfiles.other || defaultAllergyProfile] : [])]
@@ -1413,15 +1621,17 @@ function App() {
   const questionFor = (dish: Dish) => assistantAnswer || (passport.allergies.includes('peanut') || dish.allergens.includes('peanut')
     ? '我对花生严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。'
     : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`)
-  const copyQuestion = async () => { await navigator.clipboard?.writeText(questionFor(selectedDish)); setToast(p.toastQuestionCopied); track('ask_restaurant_clicked') }
-  const speak = (text: string, eventName = 'question_voice_play') => {
-    if (!('speechSynthesis' in window)) return
+  const copyQuestion = async (text = questionFor(selectedDish)) => { await navigator.clipboard?.writeText(text); setToast(p.toastQuestionCopied); track('ask_restaurant_clicked') }
+  const speak = (text: string, eventName = 'question_voice_play', onEnd?: () => void) => {
+    if (!('speechSynthesis' in window)) { onEnd?.(); return }
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'zh-CN'
     utterance.rate = 0.9
     const voices = window.speechSynthesis.getVoices()
     utterance.voice = voices.find((voice) => voice.lang.toLowerCase() === 'zh-cn') || voices.find((voice) => voice.lang.toLowerCase().startsWith('zh')) || null
+    utterance.onend = onEnd ? () => onEnd() : null
+    utterance.onerror = onEnd ? () => onEnd() : null
     window.speechSynthesis.speak(utterance)
     track(eventName)
   }
@@ -1443,7 +1653,6 @@ function App() {
   const updateCartQuantity = (dishId: string, quantity: number) => setCart((current) => quantity <= 0
     ? current.filter((item) => item.dish.id !== dishId)
     : current.map((item) => item.dish.id === dishId ? { ...item, quantity } : item))
-  const removeFromCart = (dishId: string) => setCart((current) => current.filter((item) => item.dish.id !== dishId))
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
   const cartTotal = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
   const openSavedOrder = (order: DiningOrder) => {
@@ -1528,16 +1737,16 @@ function App() {
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
         {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
-        {screen === 'scan' && <Scan t={t} p={p} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} fileInputRef={fileInputRef} handleFile={handleFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} />}
+        {screen === 'scan' && <Scan t={t} p={p} language={language} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} photoInputRef={photoInputRef} fileInputRef={fileInputRef} cameraInputRef={cameraInputRef} showUploadOptions={showUploadOptions} setShowUploadOptions={setShowUploadOptions} handleFile={handleFile} handleCameraFile={handleCameraFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} onToast={setToast} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
         {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
-        {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onRemove={removeFromCart} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
+        {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
         {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
-        {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onLogout={logOut} onReset={resetDemo} />}
+        {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
         {screen === 'savedRestaurants' && <SavedRestaurantsPage p={p} language={language} restaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onOpenFind={() => openScreen('find')} onBack={() => openScreen('profile')} />}
         {screen === 'companions' && account && <CompanionsPage p={p} account={account} accounts={accounts} companions={currentCompanions} incomingInvites={incomingCompanionInvites} outgoingInvites={outgoingCompanionInvites} onAddCompanion={addCompanion} onAcceptInvite={(inviteId) => updateInviteStatus(inviteId, 'accepted')} onDeclineInvite={(inviteId) => updateInviteStatus(inviteId, 'declined')} onRemoveCompanion={removeCompanion} onOpenCompanion={(email) => { setSelectedCompanionEmail(email); openScreen('companionDetail') }} onBack={() => openScreen(companionReturnScreen)} />}
@@ -1545,14 +1754,14 @@ function App() {
       </main>
       {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
-    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={() => speak(questionFor(selectedDish))} />}
+    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
 
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
   const text = onboardingCopy[language]
-  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div>{step > 0 && <span className="onboarding-step">{stepLabel(language, step)}</span>}</div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(0)} onContinue={onRegister} /> : step === 2 ? <section className="onboarding-card"><div className="eyebrow"><span className="orange-dot" /> {text.languageEyebrow}</div><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(3)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
+  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <section className="onboarding-card"><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button type="button" key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(2)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : step === 2 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(1)} onContinue={onRegister} /> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
 }
 
 function RegisterPage({ language, existingEmails, onBack, onContinue }: { language: Language; existingEmails: string[]; onBack: () => void; onContinue: (profile: UserProfile) => void }) {
@@ -1572,7 +1781,6 @@ function RegisterPage({ language, existingEmails, onBack, onContinue }: { langua
   }
   return <section className="onboarding-card auth-card">
     <button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {onboardingCopy[language].back}</button>
-    <div className="eyebrow"><span className="orange-dot" /> {text.registerEyebrow}</div>
     <h1>{text.registerTitle}</h1>
     <p className="lead">{text.registerSubtitle}</p>
     <label className="field-label" htmlFor="register-username">{text.usernameLabel}</label>
@@ -1589,7 +1797,7 @@ function Login({ language, onLogin, onRegister }: { language: Language; onLogin:
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
   const submit = () => { const ok = onLogin(email); setError(!ok) }
-  return <div className="onboarding-root"><div className="onboarding-frame"><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div><span className="onboarding-step">{language.toUpperCase()}</span></div><section className="onboarding-card auth-card"><div className="eyebrow"><span className="orange-dot" /> {text.loginEyebrow}</div><h1>{text.loginTitle}</h1><p className="lead">{text.loginSubtitle}</p><label className="field-label" htmlFor="login-email">{text.emailLabel}</label><input className={`auth-input ${error ? 'has-error' : ''}`} id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(false) }} placeholder={text.loginEmailPlaceholder} autoComplete="email" autoFocus onKeyDown={(event) => { if (event.key === 'Enter') submit() }} />{error && <p className="auth-error">{text.loginError}</p>}<Button className="full-button" disabled={!email.trim()} onClick={submit} icon="arrow">{text.loginButton}</Button><button type="button" className="auth-register-link" onClick={onRegister}><Icon name="plus" size={15} /> {text.registerNewUser}</button></section></div></div>
+  return <div className="onboarding-root"><div className="onboarding-frame"><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div><section className="onboarding-card auth-card"><h1>{text.loginTitle}</h1><p className="lead">{text.loginSubtitle}</p><label className="field-label" htmlFor="login-email">{text.emailLabel}</label><input className={`auth-input ${error ? 'has-error' : ''}`} id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(false) }} placeholder={text.loginEmailPlaceholder} autoComplete="email" autoFocus onKeyDown={(event) => { if (event.key === 'Enter') submit() }} />{error && <p className="auth-error">{text.loginError}</p>}<Button className="full-button" disabled={!email.trim()} onClick={submit} icon="arrow">{text.loginButton}</Button><button type="button" className="auth-register-link" onClick={onRegister}><Icon name="plus" size={15} /> {text.registerNewUser}</button></section></div></div>
 }
 
 function WelcomePage({ onContinue }: { onContinue: () => void }) {
@@ -1609,7 +1817,6 @@ function WelcomePage({ onContinue }: { onContinue: () => void }) {
       <div className="welcome-note welcome-note-safe"><Icon name="shield" size={16} /><span>{content.welcomeFitNote}</span></div>
     </div>
     <div className="welcome-copy">
-      <div className="eyebrow"><span className="orange-dot" /> {content.welcomeEyebrow}</div>
       <span className="welcome-language" aria-live="polite">{languages[activeIndex].label}</span>
       <h1>{content.welcomeTitle}</h1>
       <p className="lead">{content.welcomeSubtitle}</p>
@@ -1674,7 +1881,6 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
   const [draftOther, setDraftOther] = useState('')
   const text = onboardingCopy[language]
   const otherVisible = Boolean(passport.otherAllergen.trim())
-  const selectedCount = passport.allergies.length + (otherVisible ? 1 : 0)
   const updateProfile = (id: string, key: keyof AllergyProfile, value: AllergyProfile[keyof AllergyProfile]) => updatePassport(`allergyProfile:${id}:${key}`, value as string | boolean)
   const editingOption = editingAllergen ? allergyOptions.find((item) => item.id === editingAllergen) : undefined
   const editingLabel = editingOption ? allergenLabel(language, editingOption.id, editingOption.label) : allergenLabel(language, 'other', 'Other')
@@ -1710,8 +1916,7 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
 
   return <div className="allergen-section">
     <div className="passport-section-heading allergen-heading">
-      <div><span className="passport-section-kicker">{text.safetyFlags}</span><label className="field-label">{t('allergies')}</label><p>{text.selectAllToAvoid}</p></div>
-      <span>{text.selected(selectedCount)}</span>
+      <div><label className="field-label">{t('allergies')}</label><p>{text.selectAllToAvoid}</p></div>
     </div>
     <div className="passport-section-body allergen-section-body">
       <div className="allergen-grid">
@@ -1738,9 +1943,6 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
 }
 
 function DietPreferenceSection({ language, passport, updatePassport }: { language: Language; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void }) {
-  const [showOtherDiet, setShowOtherDiet] = useState(Boolean(passport.otherDietary))
-  const otherDietVisible = showOtherDiet || Boolean(passport.otherDietary)
-  const savedCount = (passport.dietStyle !== 'none' ? 1 : 0) + (passport.faithDiet !== 'none' ? 1 : 0) + passport.avoidFoods.length + (passport.otherDietary ? 1 : 0)
   const text = onboardingCopy[language]
   const localizedDietStyles = dietStyleOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].dietStyle[item.id] }))
   const localizedFaithDiets = faithDietOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].faithDiet[item.id] }))
@@ -1748,8 +1950,7 @@ function DietPreferenceSection({ language, passport, updatePassport }: { languag
 
   return <section className="diet-preference-section">
     <div className="passport-section-heading">
-      <div><span className="passport-section-kicker">{text.profileBuilder}</span><label className="field-label">{text.dietaryProfile}</label><p>{text.dietaryProfileHint}</p></div>
-      <span>{text.saved(savedCount)}</span>
+      <div><label className="field-label">{text.dietaryProfile}</label><p>{text.dietaryProfileHint}</p></div>
     </div>
 
     <div className="passport-section-body dietary-profile-body">
@@ -1779,32 +1980,25 @@ function DietPreferenceSection({ language, passport, updatePassport }: { languag
         </div>
       </div>
 
-      <div className="passport-question passport-other-question">
-        <button type="button" className={`passport-other-button ${otherDietVisible ? 'selected' : ''}`} onClick={() => { if (otherDietVisible) { setShowOtherDiet(false); updatePassport('otherDietary', '') } else setShowOtherDiet(true) }}>
-          <span className="passport-other-icon">＋</span><span><strong>{text.otherDietRequirement}</strong><small>{text.otherDietHint}</small></span><span className="passport-other-mark">{otherDietVisible ? '✓' : '＋'}</span>
-        </button>
-        {otherDietVisible && <div className="passport-inline-input"><label htmlFor="other-dietary">{text.otherRequirementLabel}</label><input id="other-dietary" value={passport.otherDietary} onChange={(event) => updatePassport('otherDietary', event.target.value)} placeholder={text.otherRequirementPlaceholder} autoFocus /></div>}
-      </div>
     </div>
   </section>
 }
 
 function EverydayPreferenceSection({ language, passport, updatePassport }: { language: Language; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void }) {
   const spiceValue = passport.spiceLevel ?? 2
-  const savedCount = (passport.spiceLevel === null ? 0 : 1) + passport.preferences.length
   const text = onboardingCopy[language]
   const localizedPreferences = preferenceOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].preference[item.id] }))
 
   return <section className="everyday-preference-section">
     <div className="passport-section-heading">
-      <div><span className="passport-section-kicker">{text.everydayKicker}</span><label className="field-label">{text.everydayTitle}</label><p>{text.everydayHint}</p></div>
-      <span>{text.saved(savedCount)}</span>
+      <div><label className="field-label">{text.everydayTitle}</label><p>{text.everydayHint}</p></div>
     </div>
 
     <div className="passport-section-body everyday-preference-body">
       <div className="passport-question">
         <div className="passport-question-heading"><strong>{text.spiceQuestion}</strong><small>{text.spiceHint}</small></div>
         <div className="spice-control">
+          <span className="spice-illustration" aria-hidden="true">{spiceValue === 0 ? <Icon name="chili" size={22} /> : '🌶️'.repeat(spiceValue)}</span>
           <input type="range" min="0" max="3" step="1" value={spiceValue} onChange={(event) => updatePassport('spiceLevel', Number(event.target.value))} aria-label={text.spiceQuestion} />
           <div className="spice-scale"><span>{text.spiceCannot}</span><span>{text.spiceLow}</span><span>{text.spiceMedium}</span><span>{text.spiceAny}</span></div>
         </div>
@@ -1822,7 +2016,7 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
 
 function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan' }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string }) {
   const text = onboardingCopy[language]
-  return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><div className="eyebrow"><span className="orange-dot" /> {text.passportEyebrow}</div><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><div className="assistant-note"><span className="assistant-face">•ᴗ•</span><span>{text.assistantNote}</span></div><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
+  return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
 function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, currentOrder, getStatus, openScreen, openBill, onOpenOrder, onAddMore, onDeleteSession, setSelectedDish, setAskSheet, cart }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; userName: string; passport: Passport; dishes: Dish[]; sessionRestaurant: string; currentOrder: DiningOrder | null; getStatus: (dish: Dish) => Status; openScreen: (screen: Screen) => void; openBill: () => void; onOpenOrder: (order: DiningOrder) => void; onAddMore: (order: DiningOrder) => void; onDeleteSession: () => void; setSelectedDish: (dish: Dish) => void; setAskSheet: (open: boolean) => void; cart: CartItem[] }) {
@@ -1833,12 +2027,39 @@ function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, c
   const restaurantName = currentOrder?.restaurant || sessionRestaurant
   const restaurantInitials = currentOrder?.initials || initialsForRestaurant(sessionRestaurant)
   const greeting = { en: `Hello, ${userName}`, ko: `${userName}님, 안녕하세요`, ja: `こんにちは、${userName}さん`, ru: `Здравствуйте, ${userName}`, es: `Hola, ${userName}`, it: `Ciao, ${userName}` }[language]
-  return <div className="page page-home"><section className="welcome-row"><div><div className="eyebrow"><span className="orange-dot" /> {p.homeEvidence}</div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {t('recentSession')}</span><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong><small>{hasSavedOrder && currentOrder ? <><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></> : hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small></span><button className="more-button" aria-label={p.moreOptions || 'More options'}><Icon name="dots" size={20} /></button></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
+  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong><small>{hasSavedOrder && currentOrder ? <><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></> : hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small></span><button className="more-button" aria-label={p.moreOptions || 'More options'}><Icon name="dots" size={20} /></button></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
 }
 
-function Scan({ t, p, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, fileInputRef, handleFile, startScan, onRetry, onOpenCamera, onBack }: { t: (key: CopyKey) => string; p: PageCopy; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; fileInputRef: RefObject<HTMLInputElement>; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void }) {
+function Scan({ t, p, language, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, photoInputRef, fileInputRef, cameraInputRef, showUploadOptions, setShowUploadOptions, handleFile, handleCameraFile, startScan, onRetry, onOpenCamera, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; photoInputRef: RefObject<HTMLInputElement>; fileInputRef: RefObject<HTMLInputElement>; cameraInputRef: RefObject<HTMLInputElement>; showUploadOptions: boolean; setShowUploadOptions: (open: boolean) => void; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; handleCameraFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void; onToast: (message: string) => void }) {
   const hasRestaurantName = restaurantName.trim().length > 0
-  return <div className="page page-narrow page-scan"><PageHeader title={t('scanMenu')} kicker={`${p.step} 01 · ${t('capture')}`} backLabel={p.back} onBack={onBack} action={<button className="icon-button soft"><Icon name="spark" size={18} /></button>} /><div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div><div className="restaurant-name-field"><label htmlFor="restaurant-name">{p.whereEating}</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder={p.restaurantPlaceholder} disabled={scanning} required /><small>{p.restaurantHelper}</small></div><div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt={p.uploadedPreview} /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div><div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div><input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile} hidden />{scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : scanError ? <div className="analysis-error"><strong>Menu analysis failed</strong><p>{scanError}</p><div className="analysis-error-actions"><Button onClick={onRetry} icon="refresh" disabled={!canRetry}>Retry</Button><Button variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload">Choose another photo</Button></div></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera" disabled={!hasRestaurantName}>{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={() => fileInputRef.current?.click()} icon="upload" disabled={!hasRestaurantName}>{scanImage ? p.chooseAnotherPhoto : t('upload')}</Button><button className="demo-link" onClick={() => void startScan()} disabled={!hasRestaurantName}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}</div>
+  const uploadText = uploadSourceCopy[language]
+  const chooseFrom = (inputRef: RefObject<HTMLInputElement>) => {
+    setShowUploadOptions(false)
+    inputRef.current?.click()
+  }
+  const handleSelectedFile = (event: ChangeEvent<HTMLInputElement>) => {
+    setShowUploadOptions(false)
+    handleFile(event)
+  }
+  const requestUpload = () => {
+    if (!hasRestaurantName) {
+      onToast(p.toastRestaurantFirst)
+      return
+    }
+    setShowUploadOptions(true)
+  }
+  return <div className="page page-narrow page-scan">
+    <PageHeader title={t('scanMenu')} kicker={`${p.step} 01 · ${t('capture')}`} backLabel={p.back} onBack={onBack} />
+    <div className="scan-intro"><h1>{t('scanTitle')}</h1><p>{t('scanSubTitle')}</p></div>
+    <div className="restaurant-name-field"><label htmlFor="restaurant-name">{p.whereEating}</label><input id="restaurant-name" value={restaurantName} onChange={(event) => setRestaurantName(event.target.value)} placeholder={p.restaurantPlaceholder} disabled={scanning} required /><small>{p.restaurantHelper}</small></div>
+    <div className={`scan-frame ${scanImage ? 'has-image' : ''}`}>{scanImage ? <img src={scanImage} alt={p.uploadedPreview} /> : <><div className="scan-corners" /><div className="scan-placeholder"><span className="menu-paper"><b>今日菜单</b><span>宫保鸡丁　　 ¥38</span><span>麻婆豆腐　　 ¥28</span><span>清炒时蔬　　 ¥22</span><span>酸辣汤　　　 ¥18</span></span><div className="scan-line" /></div></>}</div>
+    <div className="tip-grid"><div><Icon name="spark" size={17} /><span>{t('avoidGlare')}</span></div><div><Icon name="scan" size={17} /><span>{t('keepFlat')}</span></div><div><Icon name="copy" size={17} /><span>{t('everyPage')}</span></div></div>
+    <input ref={photoInputRef} type="file" accept="image/*" onChange={handleSelectedFile} hidden />
+    <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleSelectedFile} hidden />
+    <input ref={cameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleCameraFile} hidden />
+    {scanning ? <div className="analysis-card"><span className="loader" /><span><strong>{t('analyzing')}</strong><small>{t('analysisSub')}</small></span></div> : scanError ? <div className="analysis-error"><strong>Menu analysis failed</strong><p>{scanError}</p><div className="analysis-error-actions"><Button onClick={onRetry} icon="refresh" disabled={!canRetry}>Retry</Button><Button variant="secondary" onClick={requestUpload} icon="upload">Choose another photo</Button></div></div> : <><Button className="full-button" onClick={onOpenCamera} icon="camera">{t('capture')}</Button><Button className="full-button" variant="secondary" onClick={requestUpload} icon="upload">{scanImage ? p.chooseAnotherPhoto : t('upload')}</Button><button className="demo-link" onClick={() => void startScan()}><Icon name="spark" size={16} /> {t('sampleMenu')}</button></>}
+    {showUploadOptions && createPortal(<div className="upload-source-backdrop" role="presentation" onClick={() => setShowUploadOptions(false)}><section className="upload-source-sheet" role="dialog" aria-modal="true" aria-labelledby="upload-source-title" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><h2 id="upload-source-title">{uploadText.title}</h2><p>{uploadText.subtitle}</p><div className="upload-source-actions"><Button onClick={() => chooseFrom(photoInputRef)} icon="camera">{uploadText.photos}</Button><Button variant="secondary" onClick={() => chooseFrom(fileInputRef)} icon="upload">{uploadText.files}</Button><Button variant="ghost" onClick={() => setShowUploadOptions(false)}>{uploadText.cancel}</Button></div></section></div>, document.body)}
+  </div>
 }
 
 function CameraCapture({ t, p, pages, onCapture, onUndo, onDelete, onDone, onBack }: { t: (key: CopyKey) => string; p: PageCopy; pages: CapturedPage[]; onCapture: () => void; onUndo: () => void; onDelete: (id: number) => void; onDone: () => void; onBack: () => void }) {
@@ -1877,7 +2098,7 @@ function CameraCapture({ t, p, pages, onCapture, onUndo, onDelete, onDone, onBac
   </div>
 }
 
-function PageHeader({ title, kicker, hideKicker, backLabel = 'Back', onBack, action }: { title: string; kicker?: string; hideKicker?: boolean; backLabel?: string; onBack?: () => void; action?: ReactNode }) { return <div className="page-header"><button className="icon-button soft" onClick={onBack} aria-label={backLabel}><Icon name="back" size={20} /></button><div className="page-title">{!hideKicker && <span><span className="orange-dot" /> {kicker || 'BITEWISE · 食见'}</span>}<strong>{title}</strong></div>{action || <span className="header-spacer" />}</div> }
+function PageHeader({ title, backLabel = 'Back', onBack, action }: { title: string; kicker?: string; hideKicker?: boolean; backLabel?: string; onBack?: () => void; action?: ReactNode }) { return <div className="page-header"><button className="icon-button soft" onClick={onBack} aria-label={backLabel}><Icon name="back" size={20} /></button><div className="page-title page-title-no-kicker"><strong>{title}</strong></div>{action || <span className="header-spacer" />}</div> }
 
 function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStatus, cart, onAddToCart, onOpenCart, companions, activeCompanionIds, onToggleCompanion, onOpenCompanions, onBack, onDetail }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; cart: CartItem[]; onAddToCart: (dish: Dish) => void; onOpenCart: () => void; companions: Companion[]; activeCompanionIds: string[]; onToggleCompanion: (id: string) => void; onOpenCompanions: () => void; onBack: () => void; onDetail: (dish: Dish) => void }) {
   const [selectedCategory, setSelectedCategory] = useState<DishCategory | 'all'>('all')
@@ -1900,7 +2121,7 @@ function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStat
       {activeCompanionIds.length > 0 && <p className="menu-companion-note"><Icon name="shield" size={14} /> {p.matchingAgainst} {activeCompanionIds.length} {p.companions}.</p>}
     </section>
     <section className="menu-category-section" aria-label={p.menuCategories}>
-      <div className="menu-category-heading"><div><span className="eyebrow"><span className="orange-dot" /> {p.menuCategories}</span><strong>{p.browseSections}</strong></div><small>{countText(language, visibleDishes.length, p.dish, p.dishes)}</small></div>
+      <div className="menu-category-heading"><div><strong>{p.browseSections}</strong></div><small>{countText(language, visibleDishes.length, p.dish, p.dishes)}</small></div>
       <div className="menu-category-nav" role="tablist" aria-label={p.filterCategories}>
         <button type="button" className={selectedCategory === 'all' ? 'active' : ''} onClick={() => setSelectedCategory('all')}><span>{p.all}</span><b>{visibleDishes.length}</b></button>
         {groups.map(({ category, dishes: groupDishes }) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => setSelectedCategory(category)}><span>{localizedCategories[category]}</span><b>{groupDishes.length}</b></button>)}
@@ -2087,12 +2308,11 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
     <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
   </div>
 }
-function Cart({ t, p, language, cart, itemCount, total, getStatus, onBack, onIncrease, onDecrease, onRemove, onClear, onConfirm }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; cart: CartItem[]; itemCount: number; total: number; getStatus: (dish: Dish) => Status; onBack: () => void; onIncrease: (dishId: string) => void; onDecrease: (dishId: string) => void; onRemove: (dishId: string) => void; onClear: () => void; onConfirm: () => void }) {
+function Cart({ t, p, language, cart, itemCount, total, getStatus, onBack, onIncrease, onDecrease, onClear, onConfirm }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; cart: CartItem[]; itemCount: number; total: number; getStatus: (dish: Dish) => Status; onBack: () => void; onIncrease: (dishId: string) => void; onDecrease: (dishId: string) => void; onClear: () => void; onConfirm: () => void }) {
   return <div className="page page-narrow page-cart">
     <PageHeader title={p.yourCart} kicker={`${p.step} 03 · ${p.selected}`} backLabel={p.back} onBack={onBack} action={cart.length ? <button type="button" className="text-link" onClick={onClear}>{p.clear}</button> : undefined} />
     {!cart.length ? <div className="cart-empty"><div className="cart-empty-icon"><Icon name="cart" size={28} /></div><h1>{p.cartEmpty}</h1><p>{p.cartHint}</p><Button className="full-button" onClick={onBack} icon="menu">{p.backToMenu}</Button></div> : <>
-      <div className="cart-safety-note"><Icon name="shield" size={18} /><span><strong>{p.passportChecks}</strong><small>{p.cartSafety}</small></span></div>
-      <div className="cart-list">{cart.map(({ dish, quantity }) => <article className="cart-item" key={dish.id}><div className="cart-item-main"><DishVisual dish={dish} language={language} small /><div className="cart-item-copy"><strong>{dish.localized[language]}</strong><small>{dish.zh} · ¥{dish.price}</small></div><div className="cart-item-aside"><b className="cart-item-price">¥{dish.price * quantity}</b><StatusBadge status={getStatus(dish)} t={t} /></div></div><div className="cart-item-footer"><div className="cart-quantity"><button type="button" onClick={() => onDecrease(dish.id)} aria-label={`${p.decrease} ${dish.localized[language]}`}><Icon name="minus" size={13} /></button><strong>{quantity}</strong><button type="button" onClick={() => onIncrease(dish.id)} aria-label={`${p.increase} ${dish.localized[language]}`}><Icon name="plus" size={13} /></button></div><button type="button" className="cart-remove" onClick={() => onRemove(dish.id)}>{p.removeDish}</button><span className="cart-item-subtotal">{quantity > 1 ? `${quantity} × ¥${dish.price}` : p.singleDish}</span></div></article>)}</div>
+      <div className="cart-list">{cart.map(({ dish, quantity }) => <article className="cart-item" key={dish.id}><div className="cart-item-main"><DishVisual dish={dish} language={language} small /><div className="cart-item-copy"><strong>{dish.localized[language]}</strong><small>{dish.zh} · ¥{dish.price}</small></div><div className="cart-item-aside"><b className="cart-item-price">¥{dish.price * quantity}</b><StatusBadge status={getStatus(dish)} t={t} /></div></div><div className="cart-item-footer"><div className="cart-quantity"><button type="button" onClick={() => onDecrease(dish.id)} aria-label={`${p.decrease} ${dish.localized[language]}`}><Icon name="minus" size={13} /></button><strong>{quantity}</strong><button type="button" onClick={() => onIncrease(dish.id)} aria-label={`${p.increase} ${dish.localized[language]}`}><Icon name="plus" size={13} /></button></div><span className="cart-item-subtotal">{quantity > 1 ? `${quantity} × ¥${dish.price}` : p.singleDish}</span></div></article>)}</div>
       <div className="cart-total"><span>{p.total} · {countText(language, itemCount, p.dish, p.dishes)}</span><strong>¥{total}</strong></div>
       <Button className="full-button" onClick={onConfirm} icon="check">{p.confirmSelections}</Button>
     </>}
@@ -2126,7 +2346,6 @@ function orderRequirements(passport: Passport, language: Language, t: (key: Copy
   if (passport.faithDiet !== 'none') requirements.push({ user: passportOptionTranslations[language].faithDiet[passport.faithDiet].label, chinese: passport.faithDiet === 'other' && passport.faithOther.trim() ? passport.faithOther.trim() : chineseFaithLabels[passport.faithDiet], tone: 'note' })
   passport.avoidFoods.forEach((id) => requirements.push({ user: passportOptionTranslations[language].avoidFood[id] || choiceLabel(language, id, id), chinese: chineseRequirementLabels[id] || id, tone: 'note' }))
   passport.preferences.forEach((id) => requirements.push({ user: passportOptionTranslations[language].preference[id] || choiceLabel(language, id, id), chinese: chineseRequirementLabels[id] || id, tone: 'note' }))
-  if (passport.otherDietary.trim()) requirements.push({ user: passport.otherDietary.trim(), chinese: passport.otherDietary.trim(), tone: 'note' })
   if (passport.spiceLevel !== null) requirements.push({ user: `${p.spicePreference || 'Spice'} ${passport.spiceLevel} ${p.upToLevel}`, chinese: `辣度不超过${passport.spiceLevel}级`, tone: 'note' })
   const needsCrossContactCare = (passport.crossContact && (passport.allergies.length > 0 || Boolean(passport.otherAllergen))) || passport.allergies.some((id) => (passport.allergyProfiles[id] || defaultAllergyProfile).crossContact) || Boolean(passport.otherAllergen)
   if (needsCrossContactCare) requirements.push({ user: p.avoidCrossContact, chinese: '请避免交叉接触', tone: 'alert' })
@@ -2148,7 +2367,7 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
   ].filter(Boolean).join(' ')
   return <div className="page page-narrow page-order-brief">
     <PageHeader title={p.orderBrief} kicker={p.orderStep} backLabel={p.back} onBack={isSavedOrder ? onHome : onBack} />
-    <div className="order-brief-heading"><span className="eyebrow"><span className="orange-dot" /> {p.bilingualOrder}</span><h1>{p.showWaiter}</h1><p>{p.orderDescription}</p></div>
+    <div className="order-brief-heading"><h1>{p.showWaiter}</h1><p>{p.orderDescription}</p></div>
     <section className="order-brief-card order-brief-user"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forYou}</span><h2>{p.selectedDishes}</h2></div><span className="order-brief-language">{countText(language, count, p.dish, p.dishes)}</span></div><div className="order-brief-dishes">{cart.map(({ dish, quantity }) => <div className="order-brief-dish" key={dish.id}><DishVisual dish={dish} language={language} small /><div><strong>{dish.localized[language]}</strong><small>{dish.zh} · ×{quantity}</small></div><b>¥{dish.price * quantity}</b></div>)}</div><div className="order-brief-total"><span>{p.total}</span><strong>¥{total}</strong></div><div className="order-brief-translation order-brief-user-notes"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.dietaryNotes}</span><h2>{p.requirements}</h2></div><Icon name="shield" size={20} /></div>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.user}-${requirement.chinese}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.user}</span></div>)}</div> : <p className="order-no-requirements">{p.noRequirements}</p>}</div></section>
     <section className="order-brief-card order-brief-waiter"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forWaiter}</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div><Button className="waiter-speak-button" onClick={() => onSpeak(waiterSpeech)} icon="volume">{p.play}</Button><p className="waiter-speak-note"><Icon name="volume" size={13} /> 使用设备的中文语音朗读</p></section>
     <div className={`order-brief-actions ${isSavedOrder ? 'saved-order-actions' : ''}`}>{isSavedOrder ? <><Button className="full-button" onClick={() => savedOrder && onAddMore(savedOrder)} icon="plus">{p.addMore}</Button><Button variant="secondary" className="full-button" onClick={() => savedOrder && onSplitBill(savedOrder)} icon="receipt">{p.splitBill}</Button><Button variant="ghost" className="full-button" onClick={onHome} icon="home">{p.backHome}</Button></> : <><Button className="full-button" onClick={onBack} icon="cart">{p.returnCart}</Button><Button variant="secondary" className="full-button" onClick={onComplete} icon="check">{p.completeOrder}</Button></>}</div>
@@ -2159,7 +2378,55 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
 function Fact({ icon, title, value }: { icon: string; title: string; value: string }) { return <div className="fact-card"><span className="fact-card-label"><Icon name={icon} size={19} stroke={1.8} />{title}</span><strong>{value}</strong></div> }
 
-function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> {p.askStep}</div><button className="icon-button soft" onClick={onClose} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>{p.chineseShowFirst}</strong>{loading ? <p className="assistant-loading"><span className="loader" /> Preparing a restaurant question…</p> : <p>{question}</p>}<hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume" disabled={loading}>{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy" disabled={loading}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div> }
+function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void }) {
+  const text = askEditorCopy[language]
+  const [editedQuestion, setEditedQuestion] = useState(question)
+  const [translation, setTranslation] = useState(() => translateRestaurantQuestion(question))
+  const [translating, setTranslating] = useState(false)
+  const [speechState, setSpeechState] = useState<'idle' | 'playing' | 'paused'>('idle')
+
+  useEffect(() => {
+    setEditedQuestion(question)
+    setTranslation(translateRestaurantQuestion(question))
+    setSpeechState('idle')
+  }, [question])
+  useEffect(() => () => { window.speechSynthesis?.cancel() }, [])
+
+  const stopSpeech = () => {
+    window.speechSynthesis?.cancel()
+    setSpeechState('idle')
+  }
+  const toggleSpeech = () => {
+    if (!('speechSynthesis' in window)) return
+    if (speechState === 'playing') {
+      window.speechSynthesis.pause()
+      setSpeechState('paused')
+      return
+    }
+    if (speechState === 'paused') {
+      window.speechSynthesis.resume()
+      setSpeechState('playing')
+      return
+    }
+    setSpeechState('playing')
+    onSpeak(editedQuestion, () => setSpeechState('idle'))
+  }
+  const updateQuestion = (value: string) => {
+    stopSpeech()
+    setEditedQuestion(value)
+    setTranslation('')
+  }
+  const translate = () => {
+    stopSpeech()
+    setTranslating(true)
+    window.setTimeout(() => {
+      setTranslation(translateRestaurantQuestion(editedQuestion))
+      setTranslating(false)
+    }, 160)
+  }
+  const close = () => { stopSpeech(); onClose() }
+  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span aria-hidden="true" /><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={translate} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
+}
 
 
 function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
@@ -2206,6 +2473,8 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
     } catch { return foodPosts }
   })
   const [composerOpen, setComposerOpen] = useState(false)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
   const [composerRestaurantId, setComposerRestaurantId] = useState('')
   const [draft, setDraft] = useState<FoodPostDraft>({ title: '', body: '', dish: '', dishMeta: '', category: 'local' })
   const historyRestaurants = pastOrders.reduce<SavedRestaurant[]>((items, order) => {
@@ -2216,6 +2485,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
   const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
   const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
   const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const nearbyText = nearbyCopy[language]
   const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
   const openComposer = () => {
     const firstRestaurant = historyRestaurants[0]
@@ -2246,7 +2516,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
       body: draft.body.trim(),
       dish: draft.dish.trim(),
       dishMeta: draft.dishMeta.trim() || localizedPostMeta[language].worthTrying,
-      imageSrc: referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.png',
+      imageSrc: draft.imageSrc || referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.png',
       imageTone: referencePost?.imageTone || 'feed-image-coral',
       likes: 0,
       comments: 0,
@@ -2254,6 +2524,14 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
     setPosts((current) => [nextPost, ...current])
     setActiveCategory('all')
     setComposerOpen(false)
+  }
+  const handleFoodPhoto = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => setDraft((current) => ({ ...current, imageSrc: typeof reader.result === 'string' ? reader.result : current.imageSrc }))
+    reader.readAsDataURL(file)
+    event.target.value = ''
   }
   useEffect(() => { localStorage.setItem('cit:food-posts', JSON.stringify(posts)) }, [posts])
   useEffect(() => {
@@ -2267,7 +2545,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
   }, [composerOpen])
 
   return <div className="page page-narrow page-find">
-    <PageHeader title={t('findFood')} kicker={p.exploreKicker} backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
+    <PageHeader title={t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
     <div className="feed-intro">
       <div><h1>{p.findHeading}</h1><p>{p.findDescription}</p></div>
     </div>
@@ -2287,21 +2565,23 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
           <h2>{postText.title}</h2>
           <p>{postText.body}</p>
           <div className="feed-dish"><small>{p.mustTry}</small><strong>{postText.dish}</strong><span>{postText.dishMeta}</span></div>
-          <div className="feed-restaurant"><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span><button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurant.name}` : `${p.save} ${restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button></div>
+          <div className="feed-restaurant"><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurantText.name || restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span><button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurantText.name || restaurant.name}` : `${p.save} ${restaurantText.name || restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button></div>
           <div className="feed-actions"><button type="button" className={liked ? 'liked' : ''} onClick={() => toggleLike(post.id)}><Icon name="heart" size={15} /> {post.likes + (liked ? 1 : 0)}</button><span><Icon name="dots" size={15} /> {post.comments}</span><button type="button" aria-label={`${p.sharePost} ${postText.title}`}><Icon name="share" size={15} /></button></div>
         </div>
       </article>
     })}</div>
     {!visiblePosts.length && <div className="feed-empty"><span>🍜</span><strong>{p.noNotes}</strong><small>{p.keepExploring}</small></div>}
-    {nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><span className="eyebrow"><span className="orange-dot" /> Fudan · 3 km</span><h2>Nearby restaurant leads</h2><p>Public discovery data for demo exploration; verify the store and menu before relying on it.</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{restaurant.name}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${restaurant.name}` : `${p.save} ${restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurant.cuisine}</p><small><Icon name="shield" size={14} /> {restaurant.why}</small><div className="restaurant-meta"><span>{restaurant.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">Source: {restaurant.source}</small></div></article> })}</div></section>}
+    {nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><h2>{nearbyText.title}</h2><p>{nearbyText.description}</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); const displayName = restaurantText.name || restaurant.name; const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{displayName}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurantText.cuisine}</p><small><Icon name="shield" size={14} /> {restaurantText.why}</small><div className="restaurant-meta"><span>{restaurantText.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">{nearbyText.source}: {restaurant.source}</small></div></article> })}</div></section>}
     {composerOpen && createPortal(<div className="sheet-backdrop feed-compose-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false) }}><form className="feed-compose-sheet" role="dialog" aria-modal="true" aria-label={p.createFoodPost} onSubmit={publishPost} onMouseDown={(event) => event.stopPropagation()}>
-      <div className="feed-compose-heading"><div><span className="eyebrow"><span className="orange-dot" /> {p.shareYourBite}</span><h2>{p.createFoodNote}</h2><p>{p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>
+      <div className="feed-compose-heading"><div><h2>{p.createFoodNote}</h2><p>{p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>
       <label className="feed-compose-field">{p.visitedRestaurant}<select value={selectedRestaurant?.id || ''} onChange={(event) => changeComposerRestaurant(event.target.value)} disabled={!historyRestaurants.length}>{historyRestaurants.map((restaurant) => <option key={restaurant.id} value={restaurant.id}>{restaurant.name} · {localizedRestaurant(language, restaurant).location}</option>)}</select></label>
       <div className="feed-compose-order-note"><Icon name="receipt" size={15} /><span>{selectedRestaurant ? `${p.pastVisit} · ${pastOrders.find((order) => order.restaurant === selectedRestaurant.name)?.time || ''}` : p.noHistory}</span></div>
-      <label className="feed-compose-field">{p.postTitle}<input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder={p.titlePlaceholder} required /></label>
-      <div className="feed-compose-two-col"><label className="feed-compose-field">{p.signatureDish}<input value={draft.dish} onChange={(event) => setDraft({ ...draft, dish: event.target.value })} placeholder={p.dishName} required /></label><label className="feed-compose-field">{p.dishDetails}<input value={draft.dishMeta} onChange={(event) => setDraft({ ...draft, dishMeta: event.target.value })} placeholder={p.dishDetailsPlaceholder} /></label></div>
+      <section className="feed-compose-photo-field"><div className="feed-compose-label">Food photo <span>Optional, but a real plate helps others decide</span></div>{draft.imageSrc ? <div className="feed-compose-photo-preview"><img src={draft.imageSrc} alt="Selected food" /><button type="button" onClick={() => setDraft((current) => ({ ...current, imageSrc: undefined }))}>Remove</button></div> : <div className="feed-compose-photo-actions"><button type="button" onClick={() => cameraInputRef.current?.click()}><Icon name="camera" size={18} /><strong>Take a photo</strong><small>Use your camera</small></button><button type="button" onClick={() => galleryInputRef.current?.click()}><Icon name="image" size={18} /><strong>Choose from gallery</strong><small>Pick from your album</small></button></div>}<input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFoodPhoto} hidden /><input ref={galleryInputRef} type="file" accept="image/*" onChange={handleFoodPhoto} hidden /></section>
+      <label className="feed-compose-field">Post title <span className="feed-compose-helper">Give this meal a memorable one-line takeaway</span><input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder={p.titlePlaceholder} required /></label>
+      <label className="feed-compose-field">What did you order? <span className="feed-compose-helper">Name the dish others should look for</span><input value={draft.dish} onChange={(event) => setDraft({ ...draft, dish: event.target.value })} placeholder={p.dishName} required /></label>
       <label className="feed-compose-field">{p.cuisineCategory}<select value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })}>{foodCategories.filter((category) => category.id !== 'all').map((category) => <option key={category.id} value={category.id}>{foodCategoryLabels[language][category.id]}</option>)}</select></label>
-      <label className="feed-compose-field">{p.yourExperience}<textarea value={draft.body} onChange={(event) => setDraft({ ...draft, body: event.target.value })} placeholder={p.experiencePlaceholder} rows={4} required /></label>
+      <label className="feed-compose-field">Your quick take <span className="feed-compose-helper">Tell people about taste, texture, portion, or who would enjoy it</span><textarea value={draft.body} onChange={(event) => setDraft({ ...draft, body: event.target.value })} placeholder="e.g. Floral and chewy, best shared after a spicy meal." rows={4} required /></label>
+      <label className="feed-compose-field">Extra details <span className="feed-compose-helper">Optional: price, spice level, or a useful ordering tip</span><input value={draft.dishMeta} onChange={(event) => setDraft({ ...draft, dishMeta: event.target.value })} placeholder={p.dishDetailsPlaceholder} /></label>
       <div className="feed-compose-actions"><button type="button" className="button button-secondary" onClick={() => setComposerOpen(false)}>{p.cancel}</button><Button type="submit" icon="plus" disabled={!selectedRestaurant}>{p.publishNote}</Button></div>
     </form></div>, document.body)}
   </div>
@@ -2310,7 +2590,7 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, o
 function Orders({ language, currentOrder, pastOrders, onOpenOrder, onSplitBill }: { language: Language; currentOrder: DiningOrder | null; pastOrders: DiningOrder[]; onOpenOrder: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void }) {
   const text = orderCopy[language]
   return <div className="page page-narrow page-orders">
-    <div className="orders-heading"><div><span className="eyebrow"><span className="orange-dot" /> {text.nav}</span><h1>{text.title}</h1><p>{text.subtitle}</p></div><span className="orders-count"><Icon name="receipt" size={17} /> {pastOrders.length + (currentOrder ? 1 : 0)}</span></div>
+    <div className="orders-heading"><div><h1>{text.title}</h1><p>{text.subtitle}</p></div><span className="orders-count"><Icon name="receipt" size={17} /> {pastOrders.length + (currentOrder ? 1 : 0)}</span></div>
     <section className="orders-section"><div className="orders-section-heading"><h2>{text.current}</h2>{currentOrder && <span className="status-chip match"><span className="status-dot" /> {text.inProgress}</span>}</div>{currentOrder ? <OrderCard language={language} text={text} order={currentOrder} onOpenOrder={onOpenOrder} onSplitBill={onSplitBill} /> : <div className="orders-empty"><Icon name="receipt" size={22} /><span>{text.emptyCurrent}</span></div>}</section>
     <section className="orders-section"><div className="orders-section-heading"><h2>{text.past}</h2><span className="muted-small">{pastOrders.length} {text.items}</span></div><div className="past-order-list">{pastOrders.length ? pastOrders.map((order) => <OrderCard key={order.id} language={language} text={text} order={order} onOpenOrder={onOpenOrder} onSplitBill={onSplitBill} />) : <div className="orders-empty"><Icon name="receipt" size={22} /><span>{text.emptyPast}</span></div>}</div></section>
   </div>
@@ -2338,9 +2618,9 @@ function PassportPage({ language, t, passport, updatePassport, onBack }: { langu
 function SavedRestaurantsPage({ p, language, restaurants, onToggleRestaurant, onOpenFind, onBack }: { p: PageCopy; language: Language; restaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onOpenFind: () => void; onBack: () => void }) {
   return <div className="page page-narrow page-profile profile-subpage">
     <PageHeader title={p.savedRestaurants} kicker={p.profileFindFood} backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={onOpenFind} aria-label={p.openFindFood}><Icon name="compass" size={19} /></button>} />
-    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> {p.findFood}</span><h1>{p.placesWorthReturning}</h1><p>{p.savedRestaurantsHint}</p></div>
+    <div className="subpage-heading"><h1>{p.placesWorthReturning}</h1><p>{p.savedRestaurantsHint}</p></div>
     <div className="subpage-summary"><span><Icon name="bookmark" size={16} /> {restaurants.length} · {p.savedRestaurants}</span><button type="button" className="text-link" onClick={onOpenFind}>{p.exploreFindFood} <Icon name="arrow" size={15} /></button></div>
-    <div className="saved-restaurant-grid saved-restaurant-grid-full">{restaurants.length ? restaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); return <article className="saved-restaurant-card" key={restaurant.id}><div className={`saved-restaurant-photo ${restaurant.tone}`}>{restaurant.emoji}</div><div className="saved-restaurant-body"><div className="saved-restaurant-top"><strong>{restaurant.name}</strong><button type="button" className="saved-restaurant-remove" aria-label={`${p.removeFromSaved} ${restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="close" size={15} /></button></div><span>{restaurantText.cuisine}</span><small>{restaurantText.location}</small><p className="saved-restaurant-why"><Icon name="shield" size={13} /> {restaurantText.why}</p></div></article> }) : <div className="profile-empty-card"><Icon name="bookmark" size={21} /><span>{p.noSavedRestaurants}</span></div>}<button type="button" className="profile-explore-card" onClick={onOpenFind}><span className="profile-explore-icon"><Icon name="plus" size={18} /></span><span><strong>{p.exploreFindFood}</strong><small>{p.saveFromFeed}</small></span><Icon name="arrow" size={17} /></button></div>
+    <div className="saved-restaurant-grid saved-restaurant-grid-full">{restaurants.length ? restaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); const displayName = restaurantText.name || restaurant.name; return <article className="saved-restaurant-card" key={restaurant.id}><div className={`saved-restaurant-photo ${restaurant.tone}`}>{restaurant.emoji}</div><div className="saved-restaurant-body"><div className="saved-restaurant-top"><strong>{displayName}</strong><button type="button" className="saved-restaurant-remove" aria-label={`${p.removeFromSaved} ${displayName}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="close" size={15} /></button></div><span>{restaurantText.cuisine}</span><small>{restaurantText.location}</small><p className="saved-restaurant-why"><Icon name="shield" size={13} /> {restaurantText.why}</p></div></article> }) : <div className="profile-empty-card"><Icon name="bookmark" size={21} /><span>{p.noSavedRestaurants}</span></div>}<button type="button" className="profile-explore-card" onClick={onOpenFind}><span className="profile-explore-icon"><Icon name="plus" size={18} /></span><span><strong>{p.exploreFindFood}</strong><small>{p.saveFromFeed}</small></span><Icon name="arrow" size={17} /></button></div>
   </div>
 }
 
@@ -2356,10 +2636,10 @@ function CompanionsPage({ p, account, accounts, companions, incomingInvites, out
   }
   return <div className="page page-narrow page-profile profile-subpage">
     <PageHeader title={p.companions} kicker={p.profileAtTable} backLabel={p.back} onBack={onBack} />
-    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> {p.atTheTable}</span><h1>{p.makeMenuWork}</h1><p>{p.connectPassport}</p></div>
+    <div className="subpage-heading"><h1>{p.makeMenuWork}</h1><p>{p.connectPassport}</p></div>
     <div className="subpage-summary"><span><Icon name="users" size={16} /> {connectedCompanions.length} {p.connected}</span><span className="subpage-summary-muted">{incomingInvites.length ? `${incomingInvites.length} ${p.invitationsToReview}` : p.privateSettings}</span></div>
-    {incomingInvites.length > 0 && <section className="companion-inbox"><div className="companion-section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {p.newInvitation}</span><h2>{p.wantsToDine}</h2></div><span className="companion-count-badge">{incomingInvites.length}</span></div><div className="companion-inbox-list">{incomingInvites.map((invite) => { const sender = profileForEmail(invite.fromEmail); if (!sender) return null; return <article className="companion-inbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(sender)}</span><div className="companion-copy"><strong>{sender.username}</strong><small>{sender.email}</small><p>{p.shareConnection}</p></div><div className="companion-inbox-actions"><Button variant="primary" onClick={() => onAcceptInvite(invite.id)} icon="check">{p.accept}</Button><button type="button" className="text-link companion-decline" onClick={() => onDeclineInvite(invite.id)}>{p.decline}</button></div></article> })}</div></section>}
-    {outgoingInvites.length > 0 && <section className="companion-outbox"><div className="companion-section-heading"><div><span className="eyebrow"><span className="orange-dot" /> {p.waitingForThem}</span><h2>{p.invitationsSent}</h2></div></div><div className="companion-outbox-list">{outgoingInvites.map((invite) => { const recipient = profileForEmail(invite.toEmail); if (!recipient) return null; return <article className="companion-outbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(recipient)}</span><div className="companion-copy"><strong>{recipient.username}</strong><small>{recipient.email}</small></div><span className="companion-status companion-status-pending">{p.pending}</span></article> })}</div></section>}
+    {incomingInvites.length > 0 && <section className="companion-inbox"><div className="companion-section-heading"><div><h2>{p.wantsToDine}</h2></div><span className="companion-count-badge">{incomingInvites.length}</span></div><div className="companion-inbox-list">{incomingInvites.map((invite) => { const sender = profileForEmail(invite.fromEmail); if (!sender) return null; return <article className="companion-inbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(sender)}</span><div className="companion-copy"><strong>{sender.username}</strong><small>{sender.email}</small><p>{p.shareConnection}</p></div><div className="companion-inbox-actions"><Button variant="primary" onClick={() => onAcceptInvite(invite.id)} icon="check">{p.accept}</Button><button type="button" className="text-link companion-decline" onClick={() => onDeclineInvite(invite.id)}>{p.decline}</button></div></article> })}</div></section>}
+    {outgoingInvites.length > 0 && <section className="companion-outbox"><div className="companion-section-heading"><div><h2>{p.invitationsSent}</h2></div></div><div className="companion-outbox-list">{outgoingInvites.map((invite) => { const recipient = profileForEmail(invite.toEmail); if (!recipient) return null; return <article className="companion-outbox-card" key={invite.id}><span className="companion-avatar companion-avatar-pending">{initialsForProfile(recipient)}</span><div className="companion-copy"><strong>{recipient.username}</strong><small>{recipient.email}</small></div><span className="companion-status companion-status-pending">{p.pending}</span></article> })}</div></section>}
     <div className="companion-add-card"><div className="companion-add-heading"><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="users" size={20} /></span><div><strong>{p.addCompanion}</strong><small>{p.inviteRegistered}</small></div></div><form className="companion-add-form" onSubmit={(event) => { event.preventDefault(); submitCompanion() }}><input aria-label={p.companionEmail} type="email" value={companionEmail} onChange={(event) => setCompanionEmail(event.target.value)} placeholder="friend@example.com" /><Button type="submit" icon="plus" disabled={!companionEmail.trim()}>{p.invite}</Button></form><p className="companion-add-hint"><Icon name="shield" size={14} /> {p.registeredOnly}</p>{companionNotice && <p className="companion-notice">{companionNotice}</p>}</div>
     <div className="companion-list">{connectedCompanions.length ? connectedCompanions.map((companion) => <article className="companion-card" key={companion.id}><span className="companion-avatar companion-avatar-connected">{companion.initials}</span><div className="companion-copy"><div className="companion-name-row"><strong>{companion.name}</strong><span className="companion-status companion-status-connected">{p.connected}</span></div><small>{companion.email}</small><p>{companion.note}</p></div><div className="companion-card-actions"><Button variant="secondary" onClick={() => onOpenCompanion(companion.email)}>{p.viewFoodPassport}</Button></div></article>) : <div className="companion-empty-state"><Icon name="users" size={22} /><strong>{p.noCompanions}</strong><span>{p.buildTableProfile}</span></div>}</div>
     {connectedCompanions.length > 0 && <div className="companion-flow-note"><Icon name="check" size={16} /><span>{p.companionFlow}</span></div>}
@@ -2375,28 +2655,52 @@ function CompanionDetailPage({ p, language, companion, onUnlink, onBack }: { p: 
   const crossContactText = Object.values(passport.allergyProfiles).some((profile) => profile.crossContact) || passport.crossContact ? p.avoidCrossContact : p.notSpecified
   return <div className="page page-narrow page-profile profile-subpage companion-detail-page">
     <PageHeader title={companion.name} kicker={p.companionReadOnly} backLabel={p.back} onBack={onBack} />
-    <div className="subpage-heading"><span className="eyebrow"><span className="orange-dot" /> {p.sharedPassport}</span><h1>{companion.name} · {p.tableProfile}</h1><p>{companion.email} · {p.useSettings} {companion.name} {p.canEdit}</p></div>
+    <div className="subpage-heading"><h1>{companion.name} · {p.tableProfile}</h1><p>{companion.email} · {p.useSettings} {companion.name} {p.canEdit}</p></div>
     <section className="companion-readonly-card"><div className="companion-readonly-heading"><span className="companion-avatar companion-avatar-connected">{companion.initials}</span><div><strong>{companion.name}</strong><small>{companion.note}</small></div><span className="companion-status companion-status-connected">{p.readOnly}</span></div><div className="readonly-passport-grid"><div className="readonly-passport-row"><span>{p.allergens}</span><strong>{allergyText}</strong></div><div className="readonly-passport-row"><span>{p.dietaryStyle}</span><strong>{dietText}</strong></div><div className="readonly-passport-row"><span>{p.foodsToAvoid}</span><strong>{avoidText}</strong></div><div className="readonly-passport-row"><span>{p.everydayPreferences}</span><strong>{preferenceText}</strong></div><div className="readonly-passport-row"><span>{p.spicePreference}</span><strong>{passport.spiceLevel === null ? p.notSet : `${p.upToLevel} ${passport.spiceLevel}`}</strong></div><div className="readonly-passport-row"><span>{p.kitchenSafety}</span><strong>{crossContactText}</strong></div></div><div className="companion-detail-note"><Icon name="shield" size={16} /><span>{p.readonlyNote}</span></div></section>
     <Button variant="danger" className="full-button" onClick={onUnlink} icon="close">{p.unlinkCompanion}</Button>
   </div>
 }
 
-function Profile({ t, p, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onLogout, onReset }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onLogout: () => void; onReset: () => void }) {
-  const text = accountCopy[language]
+function SubscriptionBenefits({ tier }: { tier: 'free' | 'pro' }) {
+  return <ul className="subscription-benefits">{subscriptionBenefits.map((benefit) => { const enabled = tier === 'free' ? benefit.free : benefit.pro; return <li key={`${tier}-${benefit.proLabel}`} className={enabled ? 'is-included' : 'is-excluded'}><Icon name={enabled ? 'check' : 'close'} size={13} /><span>{tier === 'free' ? benefit.freeLabel : benefit.proLabel}</span></li> })}</ul>
+}
+
+function SubscriptionModal({ language, user, onClose, onSelect }: { language: Language; user: UserProfile; onClose: () => void; onSelect: (days: number | null) => void }) {
+  const text = subscriptionTextFor(language)
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(user.subscriptionTier === 'pro' ? user.subscriptionPlanDays || 7 : 7)
+  const selectPlan = (days: number | null) => { setSelectedPlan(days); onSelect(days) }
+  return <div className="subscription-backdrop" onClick={onClose}><section className="subscription-modal" role="dialog" aria-modal="true" aria-labelledby="subscription-title" onClick={(event) => event.stopPropagation()}><div className="subscription-modal-top"><div><span className="eyebrow">{text.entry}</span><h2 id="subscription-title">{text.title}</h2><p>{text.subtitle}</p></div><button type="button" className="icon-button soft" onClick={onClose} aria-label={text.close}><Icon name="close" size={18} /></button></div><div className="subscription-tier-comparison"><button type="button" className={`subscription-tier-card subscription-tier-card-free ${selectedPlan === null ? 'selected' : ''}`} aria-pressed={selectedPlan === null} onClick={() => selectPlan(null)}><span className="subscription-tier-card-heading"><strong>{text.free}</strong><b>¥0</b></span><SubscriptionBenefits tier="free" /></button><button type="button" className={`subscription-tier-card subscription-tier-card-pro ${selectedPlan !== null ? 'selected' : ''}`} aria-pressed={selectedPlan !== null} onClick={() => selectPlan(selectedPlan || subscriptionPlans[1].days)}><span className="subscription-tier-card-heading"><strong>Pro</strong><b>{subscriptionPlans[0].price}+</b></span><SubscriptionBenefits tier="pro" /></button></div><div className="subscription-plan-grid">{subscriptionPlans.map((plan) => { const selected = selectedPlan === plan.days; return <button type="button" key={plan.days} aria-label={`${plan.days} days · ${plan.price}`} className={`subscription-plan ${plan.featured ? 'subscription-plan-featured' : ''} ${selected ? 'selected' : ''}`} aria-pressed={selected} onClick={() => selectPlan(plan.days)}>{plan.featured && <span className="subscription-featured">{text.bestValue}</span>}<strong>{plan.days} days</strong><b>{plan.price}</b>{selected && <span className="subscription-selected-mark"><Icon name="check" size={13} /></span>}</button> })}</div></section></div>
+}
+
+function Profile({ t, p, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onAvatarChange, onSubscriptionChange, onLogout, onReset }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onAvatarChange: (avatarSrc: string) => void; onSubscriptionChange: (days: number | null) => void; onLogout: () => void; onReset: () => void }) {
+  const text = subscriptionTextFor(language)
+  const accountText = accountCopy[language]
   const [languageOpen, setLanguageOpen] = useState(false)
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
   const passportCount = passport.allergies.length + (passport.otherAllergen ? 1 : 0) + passport.avoidFoods.length + (passport.dietStyle !== 'none' ? 1 : 0)
   const connectedCompanions = companions.length
+  const activePro = user.subscriptionTier === 'pro' && (!user.subscriptionExpiresAt || user.subscriptionExpiresAt > Date.now())
+  const tierLabel = activePro ? subscriptionTierCopy[language].pro : text.free
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !file.type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = () => { if (typeof reader.result === 'string') onAvatarChange(reader.result) }
+    reader.readAsDataURL(file)
+    event.target.value = ''
+  }
   return <div className="page page-narrow page-profile profile-dashboard">
-    <div className="profile-heading"><div><span className="eyebrow"><span className="orange-dot" /> {text.profileEyebrow}</span><h1>{text.profileTitle}</h1><p className="profile-heading-subtitle">{p.profileSubtitle}</p></div></div>
-    <section className="profile-section profile-section-spaced"><div className="profile-section-label">{text.basicInfo}</div><div className="profile-info-row"><span className="profile-info-icon"><Icon name="user" size={19} /></span><div><strong>{user.username}</strong><small>{user.email}</small></div></div></section>
-    <section className="profile-section"><div className="profile-section-label">{p.yourFoodProfile}</div><div className="profile-entry-list"><button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{text.foodPassportTitle}</strong><small>{text.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{text.passportSummary}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>{p.myCompanions}</strong><small>{p.sharedPassports}</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} ${p.new}` : p.connected}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button></div></section>
-    <section className="profile-section"><div className="profile-section-label">{p.tableToolkit}</div><div className="profile-entry-list"><button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>{p.savedRestaurants}</strong><small>{p.placesTryNext}</small></span><span className="profile-setting-meta">{restaurants.length}<small>{p.savedCountLabel}</small></span><Icon name="arrow" size={18} /></button></div></section>
-    <section className="profile-section"><div className="profile-section-label">{text.otherSettings}</div>
-      <button className="profile-setting-card" onClick={() => setLanguageOpen((open) => !open)}><span className="profile-setting-icon"><Icon name="compass" size={20} /></span><span className="profile-setting-copy"><strong>{text.languagePreference}</strong><small>{text.languagePreferenceDesc}</small></span><span className="profile-language-value">{language.toUpperCase()}</span><Icon name="chevron" size={17} /></button>
+    <section className="profile-account-card"><input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} hidden /><button type="button" className="profile-avatar" onClick={() => avatarInputRef.current?.click()} aria-label="Change profile photo">{user.avatarSrc ? <img src={user.avatarSrc} alt="" /> : <span>{initialsForProfile(user)}</span>}<span className="profile-avatar-edit"><Icon name="camera" size={14} /></span></button><div className="profile-account-details"><div><strong>{user.username}</strong><small>{user.email}</small></div><div className="profile-subscription-summary"><span className={`profile-tier-badge ${activePro ? 'profile-tier-pro' : 'profile-tier-free'}`}>{tierLabel}</span><span>{subscriptionExpiryLabel(language, activePro ? user.subscriptionExpiresAt : null)}</span></div></div></section>
+    <section className="profile-section"><div className="profile-section-label">{p.yourFoodProfile}</div><div className="profile-entry-list"><button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{accountText.foodPassportTitle}</strong><small>{accountText.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{accountText.passportSummary}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>{p.myCompanions}</strong><small>{p.sharedPassports}</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} ${p.new}` : p.connected}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button></div></section>
+    <section className="profile-section"><div className="profile-section-label">{p.tableToolkit}</div><div className="profile-entry-list"><button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>{p.savedRestaurants}</strong><small>{p.placesTryNext}</small></span><span className="profile-setting-meta">{restaurants.length}<small>{p.savedCountLabel}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card profile-subscription-entry" onClick={() => setSubscriptionOpen(true)}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="wallet" size={20} /></span><span className="profile-setting-copy"><strong>{text.entry}</strong><small>{text.entryDesc}</small></span><Icon name="arrow" size={18} /></button></div></section>
+    <section className="profile-section"><div className="profile-section-label">{accountText.otherSettings}</div>
+      <button className="profile-setting-card" onClick={() => setLanguageOpen((open) => !open)}><span className="profile-setting-icon"><Icon name="compass" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.languagePreference}</strong><small>{accountText.languagePreferenceDesc}</small></span><span className="profile-language-value">{language.toUpperCase()}</span><Icon name="chevron" size={17} /></button>
       {languageOpen && <div className="profile-language-panel"><div className="language-select-grid">{languages.map((item) => <button key={item.code} className={language === item.code ? 'active' : ''} onClick={() => { onLanguageChange(item.code); setLanguageOpen(false) }}><strong>{item.label}</strong><span>{item.native}</span></button>)}</div></div>}
-      <button className="profile-setting-card" onClick={onLogout}><span className="profile-setting-icon"><Icon name="back" size={20} /></span><span className="profile-setting-copy"><strong>{text.signOut}</strong><small>{text.signOutDesc}</small></span><Icon name="arrow" size={18} /></button>
-      <button className="profile-setting-card profile-danger-row" onClick={onReset}><span className="profile-setting-icon"><Icon name="refresh" size={20} /></span><span className="profile-setting-copy"><strong>{text.resetDemo}</strong><small>{text.resetDemoDesc}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card" onClick={onLogout}><span className="profile-setting-icon"><Icon name="back" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.signOut}</strong><small>{accountText.signOutDesc}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card profile-danger-row" onClick={onReset}><span className="profile-setting-icon"><Icon name="refresh" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.resetDemo}</strong><small>{accountText.resetDemoDesc}</small></span><Icon name="arrow" size={18} /></button>
     </section>
+    {subscriptionOpen && <SubscriptionModal language={language} user={user} onSelect={onSubscriptionChange} onClose={() => setSubscriptionOpen(false)} />}
   </div>
 }
 
