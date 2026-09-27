@@ -1526,12 +1526,12 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .passport-flow-option.selected small { color: var(--green-deep); font-weight: 800; }
 .passport-flow-option-check { position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: #fff; }
 .passport-flow-option-severity { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; color: #fff; font: 800 11px 'DM Mono', monospace; box-shadow: 0 2px 5px rgba(52,38,57,.14); }
-.passport-flow-option-severity-mild { background: #b8d66e; }
-.passport-flow-option-severity-moderate { background: #8fba43; }
-.passport-flow-option-severity-severe { background: #628d2d; }
-.passport-flow-allergen-option.allergen-severity-mild.selected { border-color: #bbd67d; }
-.passport-flow-allergen-option.allergen-severity-moderate.selected { border-color: #98be4d; }
-.passport-flow-allergen-option.allergen-severity-severe.selected { border-color: #6e9738; }
+.passport-flow-option-severity-mild { background: #efaaa1; }
+.passport-flow-option-severity-moderate { background: #d65b50; }
+.passport-flow-option-severity-severe { background: #a82e27; }
+.passport-flow-allergen-option.allergen-severity-mild.selected { border-color: #efaaa1; background: #fff0ee; }
+.passport-flow-allergen-option.allergen-severity-moderate.selected { border-color: #d65b50; background: #fbd1cc; }
+.passport-flow-allergen-option.allergen-severity-severe.selected { border-color: #a82e27; background: #f1a39c; }
 .passport-flow-spice-option { min-height: 118px; }
 .passport-flow-spice-option .passport-flow-option-icon { font-size: 18px; letter-spacing: -3px; }
 .passport-flow-other-input { display: grid; gap: 6px; padding: 11px; border: 1px solid #eee9e6; border-radius: 14px; background: #fff; color: var(--brown); font-size: 11px; font-weight: 900; }
