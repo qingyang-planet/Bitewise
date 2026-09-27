@@ -112,6 +112,7 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .session-meta strong { font-size: 13px; }
 .session-meta small { color: var(--muted); font-size: 11px; margin-top: 3px; }
 .session-meta-copy { min-width: 0; flex: 1; }
+.session-meta-copy .session-restaurant-name { display: block; overflow: hidden; margin-bottom: 4px; color: var(--brown); font-size: 14px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
 .session-meta-copy .session-time { color: var(--muted); font-size: 11px; font-weight: 800; }
 .session-meta-copy small { display: flex; align-items: center; gap: 10px; }
 .session-order-summary { width: 100%; justify-content: space-between; align-items: baseline !important; gap: 12px; }
@@ -127,6 +128,67 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .intent-row button { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 17px 10px; display: grid; gap: 8px; place-items: center; font-size: 24px; }
 .intent-row button:hover { border-color: var(--brand); background: var(--cream); }
 .intent-row span { font-size: 11px; font-weight: 800; }
+
+/* Home scan + nearby food */
+.home-welcome { margin: 25px 0 24px; }
+.home-kicker, .home-section-kicker { display: block; color: var(--brand-deep); font: 800 10px 'DM Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
+.home-welcome h1 { margin-top: 12px; }
+.home-scan-card { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 28px; padding: 27px 30px 19px; border: 1px solid #d6e5df; border-radius: 27px; background: linear-gradient(125deg, #f2f4f0 0%, #f7f8f5 51%, #e4f7f4 100%); box-shadow: 0 14px 34px rgba(60, 91, 80, .08); }
+.home-scan-card-minimal { display: block; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.home-scan-card-minimal .home-scan-actions { width: 100%; }
+.home-scan-card-minimal .home-scan-action { min-height: 102px; }
+.home-scan-copy { min-width: 0; }
+.home-scan-copy h2 { max-width: 360px; margin-top: 10px; color: #263a39; font-size: clamp(25px, 3vw, 38px); line-height: 1.06; }
+.home-scan-copy p { max-width: 390px; margin-top: 11px; color: #6c7d7a; font-size: 12px; line-height: 1.55; }
+.home-scan-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+.home-scan-action { min-height: 96px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 16px; border: 1px solid rgba(91, 118, 111, .16); border-radius: 20px; background: rgba(255, 255, 255, .74); color: #30413f; text-align: left; box-shadow: 0 7px 18px rgba(71, 92, 88, .07); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.home-scan-action:hover { transform: translateY(-2px); border-color: #7db6ae; box-shadow: 0 12px 24px rgba(71, 92, 88, .13); }
+.home-scan-action-upload { background: #fff; border-color: rgba(91, 118, 111, .16); color: #30413f; }
+.home-scan-action-upload:hover { border-color: #7db6ae; background: #fff; }
+.home-scan-action-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: #e9eeee; color: #3b504d; }
+.home-scan-action-upload .home-scan-action-icon { background: #e9eeee; color: #3b504d; }
+.home-scan-action strong, .home-scan-action small { display: block; }
+.home-scan-action strong { font-size: 13px; line-height: 1.15; }
+.home-scan-action small { margin-top: 5px; color: #7c8987; font-size: 10px; line-height: 1.25; }
+.home-scan-action > .icon, .home-scan-action-upload > .icon { color: #7c8987; }
+.home-scan-hint { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; margin-top: -3px; color: #71817e; font-size: 10px; }
+.home-scan-hint .icon { color: #3b8b84; flex: 0 0 auto; }
+.home-session-section { margin-top: 32px; margin-bottom: 0; }
+.home-session-section .section-heading { align-items: end; }
+.home-session-section .section-heading h2 { max-width: 560px; overflow: hidden; margin-top: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.home-session-section .section-heading h2, .home-session-section .status-chip { display: none; }
+.home-session-section .section-heading > div { width: 100%; }
+.home-nearby-section { margin-top: 47px; padding-top: 30px; border-top: 1px solid var(--line); }
+.home-nearby-heading { display: flex; align-items: start; justify-content: space-between; gap: 15px; margin-bottom: 17px; }
+.home-nearby-heading h2 { margin-top: 8px; color: var(--brown); font-size: 27px; }
+.home-nearby-heading p { max-width: 510px; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.home-nearby-heading > .icon { margin-top: 4px; color: var(--green-deep); }
+.home-nearby-minimal .home-nearby-heading { margin-bottom: 0; }
+.home-nearby-minimal .home-nearby-heading > div > .home-section-kicker, .home-nearby-minimal .home-nearby-heading p, .home-nearby-minimal .home-restaurant-grid { display: none; }
+.home-nearby-minimal .home-nearby-heading h2 { margin-top: 0; }
+.home-restaurant-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.home-restaurant-card { min-width: 0; overflow: hidden; border: 1px solid #eadfe0; border-radius: 21px; background: var(--paper); box-shadow: 0 9px 25px rgba(84, 63, 37, .07); transition: transform .18s ease, box-shadow .18s ease; }
+.home-restaurant-card:hover { transform: translateY(-3px); box-shadow: 0 15px 31px rgba(84, 63, 37, .13); }
+.home-restaurant-media { position: relative; overflow: hidden; aspect-ratio: 1.2 / 1; background: #ede2d7; }
+.home-restaurant-media::after { content: ''; position: absolute; inset: 52% 0 0; pointer-events: none; background: linear-gradient(transparent, rgba(20, 20, 20, .22)); }
+.home-restaurant-media img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .25s ease; }
+.home-restaurant-card:hover .home-restaurant-media img { transform: scale(1.035); }
+.home-restaurant-type, .home-restaurant-rating { position: absolute; z-index: 2; display: inline-flex; align-items: center; min-height: 25px; border-radius: 8px; color: #fff; background: rgba(44, 43, 42, .64); backdrop-filter: blur(6px); font-size: 10px; font-weight: 900; }
+.home-restaurant-type { top: 10px; left: 10px; padding: 0 9px; }
+.home-restaurant-rating { right: 10px; bottom: 10px; gap: 4px; padding: 0 8px; }
+.home-restaurant-rating .icon { color: #f7cf66; fill: #f7cf66; }
+.home-restaurant-save { position: absolute; z-index: 3; top: 9px; right: 9px; width: 29px; height: 29px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .92); color: #6e6f73; box-shadow: 0 4px 10px rgba(0,0,0,.1); }
+.home-restaurant-save:hover, .home-restaurant-save.saved { color: var(--brand); }
+.home-restaurant-save.saved .icon { fill: currentColor; }
+.home-restaurant-body { min-width: 0; padding: 14px 14px 15px; }
+.home-restaurant-title { display: flex; align-items: start; justify-content: space-between; gap: 9px; }
+.home-restaurant-title h3 { min-width: 0; color: var(--brown); font-size: 14px; line-height: 1.24; }
+.home-restaurant-title > span { flex: 0 0 auto; color: var(--brand); font: 800 10px 'DM Mono', monospace; text-align: right; white-space: nowrap; }
+.home-restaurant-cuisine { min-height: 27px; overflow: hidden; margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.home-restaurant-location { display: flex; align-items: start; gap: 4px; margin-top: 11px; color: #91868c; font-size: 9px; line-height: 1.35; }
+.home-restaurant-location .icon { flex: 0 0 auto; color: var(--brand); }
+.home-restaurant-note { display: flex; align-items: start; gap: 5px; min-height: 29px; margin-top: 9px; padding-top: 9px; border-top: 1px solid #f0e6e4; color: var(--green-deep); font-size: 9px; line-height: 1.4; }
+.home-restaurant-note .icon { flex: 0 0 auto; margin-top: 1px; }
 
 /* Shared page chrome */
 .page-header { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; gap: 12px; margin: 13px 0 32px; }
@@ -1391,4 +1453,74 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
   .detail-heading h1 { font-size: 24px; }
   .detail-card-topline { font-size: 9px; }
   .detail-card-topline .status-badge { font-size: 10px; }
+}
+
+@media (max-width: 720px) {
+  .home-welcome { margin: 16px 0 21px; }
+  .home-welcome h1 { font-size: clamp(30px, 9vw, 39px); }
+  .home-welcome p { font-size: 12px; }
+  .home-scan-card { grid-template-columns: 1fr; gap: 19px; padding: 22px 16px 16px; border-radius: 23px; }
+  .home-scan-copy h2 { max-width: 330px; font-size: 27px; }
+  .home-scan-copy p { font-size: 11px; }
+  .home-scan-actions { gap: 8px; }
+  .home-scan-action { min-height: 84px; grid-template-columns: auto minmax(0, 1fr); gap: 8px; padding: 12px 10px; border-radius: 16px; }
+  .home-scan-action > .icon { display: none; }
+  .home-scan-action-icon { width: 34px; height: 34px; border-radius: 10px; }
+  .home-scan-action strong { font-size: 11px; }
+  .home-scan-action small { font-size: 9px; }
+  .home-scan-hint { font-size: 9px; line-height: 1.35; }
+  .home-session-section { margin-top: 28px; }
+  .home-session-section .section-heading { align-items: start; }
+  .home-session-section .section-heading h2 { max-width: 205px; font-size: 19px; }
+  .home-session-section .status-chip { margin-top: 16px; }
+  .home-session-section .session-card { padding: 16px; }
+  .home-session-section .session-actions { align-items: stretch; flex-direction: column; gap: 9px; }
+  .home-session-section .session-delete-action { align-self: start; }
+  .home-nearby-section { margin-top: 38px; padding-top: 24px; }
+  .home-nearby-heading { margin-bottom: 14px; }
+  .home-nearby-heading h2 { font-size: 23px; }
+  .home-nearby-heading p { max-width: 275px; font-size: 10px; }
+  .home-restaurant-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .home-restaurant-card { border-radius: 16px; }
+  .home-restaurant-media { aspect-ratio: .98 / 1; }
+  .home-restaurant-type { top: 7px; left: 7px; min-height: 21px; padding: 0 6px; font-size: 8px; }
+  .home-restaurant-save { top: 6px; right: 6px; width: 25px; height: 25px; }
+  .home-restaurant-rating { right: 7px; bottom: 7px; min-height: 21px; padding: 0 6px; font-size: 9px; }
+  .home-restaurant-body { padding: 10px 9px 11px; }
+  .home-restaurant-title { display: block; }
+  .home-restaurant-title h3 { min-height: 31px; font-size: 11px; line-height: 1.28; }
+  .home-restaurant-title > span { display: block; margin-top: 5px; color: var(--brand); font-size: 8px; text-align: left; }
+  .home-restaurant-cuisine { min-height: 28px; margin-top: 5px; font-size: 8px; line-height: 1.4; }
+  .home-restaurant-location { margin-top: 8px; font-size: 8px; }
+  .home-restaurant-note { display: none; }
+}
+
+@media (max-width: 370px) {
+  .home-scan-action { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .home-scan-action strong, .home-scan-action small { max-width: 108px; }
+  .home-restaurant-grid { gap: 8px; }
+}
+
+/* Home page refinement */
+.page-home .home-scan-card-minimal { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.page-home .home-scan-action,
+.page-home .home-scan-action-upload { background: #fff; color: #30413f; }
+.page-home .home-scan-action strong { font-size: 16px; }
+.page-home .home-session-section .section-heading { margin-bottom: 16px; }
+.page-home .home-session-section .home-section-kicker { font-size: 12px; }
+.page-home .home-session-section .session-actions { justify-content: flex-start; }
+.page-home .home-session-section .session-primary-actions { align-items: center; }
+.page-home .home-session-section .session-actions .session-delete-action { min-height: 37px; border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; background: var(--paper); color: var(--brand-deep); font-size: 13px; }
+.page-home .home-session-section .session-actions .session-delete-action:hover { color: var(--brand); border-color: var(--brand); }
+.page-home .home-session-section .session-meta-copy .session-restaurant-name { font-size: 16px; }
+.page-home .home-session-section .session-meta-copy .session-time { font-size: 13px; }
+.page-home .home-session-section .session-meta-copy small { font-size: 12px; }
+.page-home .home-session-section .session-actions button { font-size: 13px; }
+.page-home .home-nearby-minimal { margin-top: 48px; padding-top: 0; border-top: 0; }
+.page-home .home-nearby-minimal .home-nearby-heading { align-items: center; }
+.page-home .home-nearby-minimal .home-nearby-heading > .icon { display: block; align-self: center; margin-top: 0; }
+.page-home .home-nearby-minimal .home-nearby-heading h2 { font-size: 30px; }
+
+@media (max-width: 720px) {
+  .page-home .home-session-section .session-actions { flex-direction: row; align-items: center; flex-wrap: wrap; }
 }

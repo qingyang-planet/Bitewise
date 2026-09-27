@@ -971,6 +971,42 @@ const foodCategories = [
   { id: 'bbq', label: '烧烤' },
 ]
 
+const homeRestaurantImageSrc: Record<string, string> = {
+  'zuihuihuang-fudan-zhengli': '/dish-photos/red-lantern-signature.png',
+  'haerbin-snacks-zhengli': '/dish-photos/jade-soup-dumpling-signature.png',
+  'he-sheng-hui-fei-dachu': '/dish-photos/pepper-alley-signature.png',
+  'he-xie-bang-cuisine': '/dish-photos/jade-soup-dumpling-signature.png',
+  'ruyi-chicken-abalone': '/dish-photos/winter-melon-soup.png',
+  'haidilao-he-sheng-hui': '/dish-photos/red-lantern-signature.png',
+  'kaijiang-grilled-fish': '/dish-photos/pepper-alley-signature.png',
+  'zuoting-youyuan-hotpot': '/dish-photos/red-lantern-signature.png',
+  'dongfang-yichuan': '/dish-photos/pepper-alley-signature.png',
+  'jiejiao-taiwanese': '/dish-photos/kung-pao.png',
+}
+type HomeCopy = {
+  scanKicker: string
+  scanTitle: string
+  scanDescription: string
+  takePhoto: string
+  uploadFromFile: string
+  scanHint: string
+  ongoingSession: string
+  nearbyFood: string
+  nearbyDescription: string
+  location: string
+  featured: string
+  distance: string
+  restaurantPhotoAlt: string
+}
+const homeCopy: Record<Language, HomeCopy> = {
+  en: { scanKicker: 'SCAN YOUR MENU', scanTitle: 'Make every menu easier to read.', scanDescription: 'Take a photo or upload a menu to see dishes, ingredients and Food Passport checks in one place.', takePhoto: 'Take a photo', uploadFromFile: 'Upload from file', scanHint: 'Your menu stays attached to this dining session.', ongoingSession: 'Ongoing session', nearbyFood: 'Nearby food', nearbyDescription: 'Real dishes from restaurants around Fudan Zhengli campus.', location: 'Fudan · within 3 km', featured: 'Featured', distance: 'away', restaurantPhotoAlt: 'Featured dish at' },
+  ko: { scanKicker: '메뉴 스캔', scanTitle: '모든 메뉴를 더 쉽게 읽어 보세요.', scanDescription: '메뉴를 촬영하거나 업로드하면 음식, 재료와 푸드 패스포트 확인 결과를 한곳에서 볼 수 있어요.', takePhoto: '사진 촬영', uploadFromFile: '파일에서 업로드', scanHint: '메뉴는 현재 식사 세션에 연결됩니다.', ongoingSession: '진행 중인 세션', nearbyFood: '주변 음식', nearbyDescription: '푸단 정리 캠퍼스 주변 식당의 실제 메뉴예요.', location: '푸단 · 3km 이내', featured: '대표 메뉴', distance: '거리', restaurantPhotoAlt: '대표 메뉴' },
+  ja: { scanKicker: 'メニューをスキャン', scanTitle: 'どんなメニューも読みやすく。', scanDescription: '写真を撮るかアップロードすると、料理・食材・フードパスポートの確認結果をまとめて見られます。', takePhoto: '写真を撮る', uploadFromFile: 'ファイルからアップロード', scanHint: 'メニューは現在の食事セッションに保存されます。', ongoingSession: '進行中のセッション', nearbyFood: '近くの料理', nearbyDescription: '復旦・政立キャンパス周辺の実際の料理です。', location: '復旦 · 3km以内', featured: 'おすすめ', distance: '距離', restaurantPhotoAlt: 'おすすめ料理' },
+  ru: { scanKicker: 'СКАНИРОВАТЬ МЕНЮ', scanTitle: 'Читайте любое меню проще.', scanDescription: 'Сфотографируйте или загрузите меню, чтобы увидеть блюда, ингредиенты и проверки пищевого паспорта.', takePhoto: 'Сфотографировать', uploadFromFile: 'Загрузить файл', scanHint: 'Меню сохранится в текущей сессии.', ongoingSession: 'Текущая сессия', nearbyFood: 'Еда рядом', nearbyDescription: 'Настоящие блюда из ресторанов у кампуса Фудань на Чжэнли.', location: 'Фудань · до 3 км', featured: 'Рекомендуем', distance: 'расстояние', restaurantPhotoAlt: 'Рекомендуемое блюдо' },
+  es: { scanKicker: 'ESCANEA TU MENÚ', scanTitle: 'Lee cualquier menú con más claridad.', scanDescription: 'Haz una foto o sube un menú para ver platos, ingredientes y comprobaciones de tu pasaporte en un solo lugar.', takePhoto: 'Hacer una foto', uploadFromFile: 'Subir desde archivo', scanHint: 'El menú queda guardado en esta sesión.', ongoingSession: 'Sesión en curso', nearbyFood: 'Comida cercana', nearbyDescription: 'Platos reales de restaurantes alrededor del campus Fudan Zhengli.', location: 'Fudan · hasta 3 km', featured: 'Recomendado', distance: 'distancia', restaurantPhotoAlt: 'Plato recomendado en' },
+  it: { scanKicker: 'SCANSIONA IL MENU', scanTitle: 'Leggi ogni menu più facilmente.', scanDescription: 'Scatta una foto o carica un menu per vedere piatti, ingredienti e controlli del Food Passport in un solo posto.', takePhoto: 'Scatta una foto', uploadFromFile: 'Carica da file', scanHint: 'Il menu resta collegato a questa sessione.', ongoingSession: 'Sessione in corso', nearbyFood: 'Cibo vicino', nearbyDescription: 'Piatti reali dai ristoranti intorno al campus Fudan Zhengli.', location: 'Fudan · entro 3 km', featured: 'In evidenza', distance: 'distanza', restaurantPhotoAlt: 'Piatto in evidenza da' },
+}
+
 const foodPosts: FoodPost[] = [
   { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.png', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
   { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.png', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
@@ -1282,6 +1318,8 @@ function App() {
   const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const cameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
+  const homeCameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
+  const homeUploadInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const billInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const t = (key: CopyKey) => tFor(language, key)
   const currentCompanions = account ? companionViewsFor(account.email, accounts, companionInvites) : []
@@ -1492,6 +1530,16 @@ function App() {
     }
     cameraInputRef.current?.click()
     track('camera_open')
+  }
+  const requestHomeScan = (mode: 'camera' | 'upload') => {
+    if (!sessionRestaurant.trim()) {
+      openScreen('scan')
+      setToast(p.toastRestaurantFirst)
+      return
+    }
+    if (mode === 'camera') homeCameraInputRef.current?.click()
+    else homeUploadInputRef.current?.click()
+    track(`home_${mode}_clicked`)
   }
   const addCapturedPage = () => {
     setCapturedPages((current) => {
@@ -1764,7 +1812,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
-        {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
+        {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} openScreen={openScreen} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} nearbyRestaurants={restaurantCatalog.filter((restaurant) => restaurant.source).slice(0, 6)} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onScanAction={requestHomeScan} />}
         {screen === 'scan' && <Scan t={t} p={p} language={language} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} photoInputRef={photoInputRef} fileInputRef={fileInputRef} cameraInputRef={cameraInputRef} showUploadOptions={showUploadOptions} setShowUploadOptions={setShowUploadOptions} handleFile={handleFile} handleCameraFile={handleCameraFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} onToast={setToast} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
@@ -1780,6 +1828,7 @@ function App() {
         {screen === 'companions' && account && <CompanionsPage p={p} account={account} accounts={accounts} companions={currentCompanions} incomingInvites={incomingCompanionInvites} outgoingInvites={outgoingCompanionInvites} onAddCompanion={addCompanion} onAcceptInvite={(inviteId) => updateInviteStatus(inviteId, 'accepted')} onDeclineInvite={(inviteId) => updateInviteStatus(inviteId, 'declined')} onRemoveCompanion={removeCompanion} onOpenCompanion={(email) => { setSelectedCompanionEmail(email); openScreen('companionDetail') }} onBack={() => openScreen(companionReturnScreen)} />}
         {screen === 'companionDetail' && selectedCompanion && <CompanionDetailPage p={p} language={language} companion={selectedCompanion} onUnlink={() => { removeCompanion(selectedCompanion.inviteId); openScreen('companions') }} onBack={() => openScreen('companions')} />}
       </main>
+      {screen === 'home' && <><input ref={homeCameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleCameraFile} hidden /><input ref={homeUploadInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile} hidden /></>}
       {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
     {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
@@ -2047,15 +2096,33 @@ function PassportEditor({ language, t, passport, updatePassport, onBack, onFinis
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
-function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, currentOrder, getStatus, openScreen, openBill, onOpenOrder, onAddMore, onDeleteSession, setSelectedDish, setAskSheet, cart }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; userName: string; passport: Passport; dishes: Dish[]; sessionRestaurant: string; currentOrder: DiningOrder | null; getStatus: (dish: Dish) => Status; openScreen: (screen: Screen) => void; openBill: () => void; onOpenOrder: (order: DiningOrder) => void; onAddMore: (order: DiningOrder) => void; onDeleteSession: () => void; setSelectedDish: (dish: Dish) => void; setAskSheet: (open: boolean) => void; cart: CartItem[] }) {
-  const flagged = dishes.filter((dish) => getStatus(dish) === 'CONFLICT').length
+function Home({ t, p, language, userName, passport, dishes: sessionDishes, sessionRestaurant, currentOrder, openScreen, onOpenOrder, onAddMore, onDeleteSession, setSelectedDish, setAskSheet, nearbyRestaurants, savedRestaurants, onToggleRestaurant, onScanAction }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; userName: string; passport: Passport; dishes: Dish[]; sessionRestaurant: string; currentOrder: DiningOrder | null; openScreen: (screen: Screen) => void; onOpenOrder: (order: DiningOrder) => void; onAddMore: (order: DiningOrder) => void; onDeleteSession: () => void; setSelectedDish: (dish: Dish) => void; setAskSheet: (open: boolean) => void; nearbyRestaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onScanAction: (mode: 'camera' | 'upload') => void }) {
+  const homeText = homeCopy[language]
   const hasSavedOrder = Boolean(currentOrder?.cartSnapshot?.length)
-  const hasScannedMenu = dishes.length > 0
-  const savedMenuCount = currentOrder?.menuSnapshot?.length || dishes.length
+  const hasScannedMenu = sessionDishes.length > 0
+  const hasOngoingSession = hasScannedMenu || Boolean(currentOrder)
+  const savedMenuCount = currentOrder?.menuSnapshot?.length || sessionDishes.length
   const restaurantName = currentOrder?.restaurant || sessionRestaurant
   const restaurantInitials = currentOrder?.initials || initialsForRestaurant(sessionRestaurant)
-  const greeting = { en: `Hello, ${userName}`, ko: `${userName}님, 안녕하세요`, ja: `こんにちは、${userName}さん`, ru: `Здравствуйте, ${userName}`, es: `Hola, ${userName}`, it: `Ciao, ${userName}` }[language]
-  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small>}</span></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
+
+  return <div className="page page-home">
+    <section className="home-scan-card home-scan-card-minimal" aria-label={`${homeText.takePhoto} / ${homeText.uploadFromFile}`}>
+      <div className="home-scan-actions">
+        <button className="home-scan-action home-scan-action-photo" type="button" aria-label={homeText.takePhoto} onClick={() => onScanAction('camera')}><span className="home-scan-action-icon"><Icon name="camera" size={22} /></span><span><strong>{homeText.takePhoto}</strong></span></button>
+        <button className="home-scan-action home-scan-action-upload" type="button" aria-label={homeText.uploadFromFile} onClick={() => onScanAction('upload')}><span className="home-scan-action-icon"><Icon name="upload" size={22} /></span><span><strong>{homeText.uploadFromFile}</strong></span></button>
+      </div>
+    </section>
+    {hasOngoingSession && <section className="session-section home-session-section"><div className="section-heading"><div><span className="home-section-kicker">{homeText.ongoingSession}</span></div></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-restaurant-name">{restaurantName}</strong><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{`${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}`}</small>}</span></div><div className="session-actions"><div className="session-primary-actions"><button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button>{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(sessionDishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}<button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button></div></div></div></section>}
+    <section className="home-nearby-section home-nearby-minimal" aria-labelledby="home-nearby-title"><div className="home-nearby-heading"><div><h2 id="home-nearby-title">{homeText.nearbyFood}</h2></div><Icon name="compass" size={22} /></div><div className="home-restaurant-grid">{nearbyRestaurants.map((restaurant, index) => {
+      const restaurantText = localizedRestaurant(language, restaurant)
+      const displayName = restaurantText.name || restaurant.name
+      const categoryLabel = restaurantText.cuisine.split(' · ')[0] || homeText.featured
+      const saved = savedRestaurants.some((item) => item.id === restaurant.id)
+      const imageSrc = homeRestaurantImageSrc[restaurant.id] || sessionDishes[index % sessionDishes.length]?.imageSrc || '/dish-photos/kung-pao.png'
+      const distance = restaurant.distanceKm === undefined ? '—' : `${restaurant.distanceKm.toFixed(1)} km ${homeText.distance}`
+      return <article className="home-restaurant-card" key={restaurant.id}><div className="home-restaurant-media"><img src={imageSrc} alt={`${homeText.restaurantPhotoAlt} ${displayName}`} loading={index < 2 ? 'eager' : 'lazy'} /><span className="home-restaurant-type">{categoryLabel}</span><button type="button" className={`home-restaurant-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button><span className="home-restaurant-rating"><Icon name="star" size={13} /> {restaurant.rating?.toFixed(1) || '—'}</span></div><div className="home-restaurant-body"><div className="home-restaurant-title"><h3>{displayName}</h3><span>{distance}</span></div><p className="home-restaurant-cuisine">{restaurantText.cuisine}</p><small className="home-restaurant-note"><Icon name="shield" size={13} /> {restaurantText.why}</small></div></article>
+    })}</div></section>
+  </div>
 }
 
 function Scan({ t, p, language, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, photoInputRef, fileInputRef, cameraInputRef, showUploadOptions, setShowUploadOptions, handleFile, handleCameraFile, startScan, onRetry, onOpenCamera, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; photoInputRef: RefObject<HTMLInputElement>; fileInputRef: RefObject<HTMLInputElement>; cameraInputRef: RefObject<HTMLInputElement>; showUploadOptions: boolean; setShowUploadOptions: (open: boolean) => void; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; handleCameraFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void; onToast: (message: string) => void }) {
