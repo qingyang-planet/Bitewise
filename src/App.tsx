@@ -1832,17 +1832,18 @@ function App() {
 
 type PassportFlowCopy = {
   progress: (current: number, total: number) => string
+  skip: string
   tapSeverity: string
   otherPlaceholder: string
 }
 
 const passportFlowCopy: Record<Language, PassportFlowCopy> = {
-  en: { progress: (current, total) => `Question ${current} of ${total}`, tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
-  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
-  ja: { progress: (current, total) => `${total}問中 ${current}問目`, tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
-  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
-  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
-  it: { progress: (current, total) => `Domanda ${current} di ${total}`, tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
+  en: { progress: (current, total) => `Question ${current} of ${total}`, skip: 'Skip', tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
+  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, skip: '건너뛰기', tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
+  ja: { progress: (current, total) => `${total}問中 ${current}問目`, skip: 'スキップ', tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
+  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, skip: 'Пропустить', tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
+  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, skip: 'Saltar', tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
+  it: { progress: (current, total) => `Domanda ${current} di ${total}`, skip: 'Salta', tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
 }
 
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
@@ -2100,7 +2101,7 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
   </section>
 }
 
-function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onFinish: () => void }) {
+function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void }) {
   const [currentStep, setCurrentStep] = useState(0)
   const text = onboardingCopy[language]
   const flowText = passportFlowCopy[language]
@@ -2188,7 +2189,7 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
     </div>
   }
 
-  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-2">
+  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-3">
     {localizedPreferences.map((item) => renderOptionCard(item, passport.preferences.includes(item.id), () => updatePassport('preferences', item.id)))}
   </div>
 
@@ -2202,9 +2203,11 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
   }
 
   const goNext = () => currentStep === questions.length - 1 ? onFinish() : setCurrentStep((step) => step + 1)
+  const goBack = () => currentStep === 0 ? onBack() : setCurrentStep((step) => step - 1)
 
   return <div className="passport-flow">
     <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
+      <div className="passport-flow-progress-top"><button type="button" className="passport-flow-back-top" onClick={goBack} aria-label={text.back}><Icon name="back" size={16} /></button><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
       <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
     </div>
     <section className="passport-flow-question-card">
@@ -2218,7 +2221,7 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
 
 function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan', onboardingMode = false }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string; onboardingMode?: boolean }) {
   const text = onboardingCopy[language]
-  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onFinish={onFinish} /></section>
+  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onFinish} /></section>
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
