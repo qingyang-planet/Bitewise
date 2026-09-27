@@ -1383,6 +1383,14 @@ function App() {
       const dietStyle = value as DietStyle
       return { ...current, dietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...(dietStyle === 'none' ? [] : [dietStyle])] }
     }
+    if (key === 'dietStyleMulti') {
+      const dietStyle = value as DietStyle
+      const currentStyles = current.diets.filter((id) => dietStyleIds.includes(id))
+      if (dietStyle === 'none') return { ...current, dietStyle: 'none', diets: current.diets.filter((id) => !dietStyleIds.includes(id)) }
+      const selected = currentStyles.includes(dietStyle) || current.dietStyle === dietStyle
+      const nextStyles = selected ? currentStyles.filter((id) => id !== dietStyle) : [...currentStyles, dietStyle]
+      return { ...current, dietStyle: (nextStyles[0] || 'none') as DietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...nextStyles] }
+    }
     if (key === 'faithDiet') {
       const faithDiet = value as FaithDiet
       return { ...current, faithDiet, diets: [...current.diets.filter((id) => !faithDietIds.includes(id)), ...(faithDiet === 'halal' || faithDiet === 'kosher' ? [faithDiet] : [])] }
@@ -1825,19 +1833,16 @@ function App() {
 type PassportFlowCopy = {
   progress: (current: number, total: number) => string
   tapSeverity: string
-  mild: string
-  moderate: string
-  severe: string
   otherPlaceholder: string
 }
 
 const passportFlowCopy: Record<Language, PassportFlowCopy> = {
-  en: { progress: (current, total) => `Question ${current} of ${total}`, tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', mild: 'Mild', moderate: 'Moderate', severe: 'Severe', otherPlaceholder: 'e.g. mustard' },
-  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', mild: '가벼움', moderate: '보통', severe: '심각', otherPlaceholder: '예: 겨자' },
-  ja: { progress: (current, total) => `${total}問中 ${current}問目`, tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', mild: '軽度', moderate: '中程度', severe: '重度', otherPlaceholder: '例：マスタード' },
-  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', mild: 'Лёгкая', moderate: 'Средняя', severe: 'Сильная', otherPlaceholder: 'например, горчица' },
-  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, tapSeverity: '1 toque: leve · 2: moderada · 3: grave', mild: 'Leve', moderate: 'Moderada', severe: 'Grave', otherPlaceholder: 'p. ej., mostaza' },
-  it: { progress: (current, total) => `Domanda ${current} di ${total}`, tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', mild: 'Lieve', moderate: 'Moderata', severe: 'Grave', otherPlaceholder: 'es. senape' },
+  en: { progress: (current, total) => `Question ${current} of ${total}`, tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
+  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
+  ja: { progress: (current, total) => `${total}問中 ${current}問目`, tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
+  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
+  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
+  it: { progress: (current, total) => `Domanda ${current} di ${total}`, tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
 }
 
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
@@ -1934,7 +1939,7 @@ function AllergenModal({ language, t, id, label, order, profile, otherValue, isE
         <span>{t('allergies')}</span>
       </div>
       <div className="allergen-modal-heading">
-        {order ? <img src={`/allergen-icons/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
+        {order ? <img src={`/allergen-icons-refined/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
         <div><span>{text.personalSettings}</span><h2 id="allergen-modal-title">{displayLabel}</h2></div>
       </div>
       {isOther && <label className="allergen-modal-input"><span>{text.otherAllergen}</span><input value={otherValue} onChange={(event) => onOtherChange(event.target.value)} placeholder={text.otherAllergenPlaceholder} autoFocus /></label>}
@@ -2006,7 +2011,7 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
           const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
           return <button type="button" key={item.id} aria-pressed={selected} className={`allergen-card ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => openAllergen(item.id)}>
             <span className="allergen-number">{item.order}</span>
-            <img className="allergen-icon" src={`/allergen-icons/${String(item.order).padStart(2, '0')}.png`} alt="" />
+            <img className="allergen-icon" src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" />
             <span className="allergen-label">{allergenLabel(language, item.id, item.label)}</span>
             {selected && <><span className="allergen-check"><Icon name="check" size={13} /></span><AllergenStatusIndicators profile={profile} t={t} /></>}
           </button>
@@ -2095,7 +2100,7 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
   </section>
 }
 
-function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void }) {
+function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onFinish: () => void }) {
   const [currentStep, setCurrentStep] = useState(0)
   const text = onboardingCopy[language]
   const flowText = passportFlowCopy[language]
@@ -2104,16 +2109,14 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
   const localizedAvoidFoods = avoidFoodOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].avoidFood[item.id] }))
   const localizedPreferences = preferenceOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].preference[item.id] }))
   const questions = [
-    { title: t('anything'), hint: text.selectAllToAvoid },
-    { title: text.howDoYouEat, hint: text.chooseEatingPattern },
-    { title: text.faithRequirements, hint: text.faithHint },
-    { title: text.foodsToLeaveOut, hint: text.meatSeafoodHint },
-    { title: text.spiceQuestion, hint: text.spiceHint },
-    { title: text.otherPreferences, hint: text.preferenceHint },
+    { title: t('anything') },
+    { title: text.howDoYouEat },
+    { title: text.faithRequirements },
+    { title: text.foodsToLeaveOut },
+    { title: text.spiceQuestion },
+    { title: text.otherPreferences },
   ]
-  const selectedAllergenCount = passport.allergies.length + (passport.otherAllergen.trim() ? 1 : 0)
   const severityOrder: AllergySeverity[] = ['mild', 'moderate', 'severe']
-  const severityLabels: Record<AllergySeverity, string> = { mild: flowText.mild, moderate: flowText.moderate, severe: flowText.severe }
 
   const cycleAllergen = (id: string) => {
     const selected = passport.allergies.includes(id)
@@ -2136,23 +2139,18 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
     <button type="button" key={item.id} aria-pressed={selected} className={`passport-flow-option ${selected ? 'selected' : ''}`} onClick={onSelect}>
       <span className="passport-flow-option-icon">{item.icon}</span>
       <strong>{item.label}</strong>
-      {item.hint && <small>{item.hint}</small>}
       {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
     </button>
   )
 
   const renderAllergens = () => <>
-    <div className="passport-flow-selection-summary"><span>{text.selectedAllergens}</span><strong>{text.selected(selectedAllergenCount)}</strong></div>
-    <div className="passport-flow-severity-help"><span>{flowText.tapSeverity}</span><div><b>1</b><em>{flowText.mild}</em><b>2</b><em>{flowText.moderate}</em><b>3</b><em>{flowText.severe}</em></div></div>
     <div className="passport-flow-grid passport-flow-allergen-grid">
       {allergyOptions.map((item) => {
         const selected = passport.allergies.includes(item.id)
         const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
-        const severityNumber = selected ? severityOrder.indexOf(profile.severity) + 1 : 0
-        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${severityNumber} · ${severityLabels[profile.severity]}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
-          <span className="passport-flow-option-icon"><img src={`/allergen-icons/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
+        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${profile.severity}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
+          <span className="passport-flow-option-icon"><img src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
           <strong>{allergenLabel(language, item.id, item.label)}</strong>
-          <small>{selected ? `${severityNumber} · ${severityLabels[profile.severity]}` : flowText.tapSeverity.split(' · ')[0]}</small>
           {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
         </button>
       })}
@@ -2161,7 +2159,10 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
   </>
 
   const renderDietStyle = () => <div className="passport-flow-grid passport-flow-grid-2">
-    {localizedDietStyles.map((item) => renderOptionCard(item, passport.dietStyle === item.id, () => updatePassport('dietStyle', item.id)))}
+    {localizedDietStyles.map((item) => {
+      const selected = item.id === 'none' ? passport.dietStyle === 'none' && !passport.diets.some((id) => dietStyleIds.includes(id)) : passport.diets.includes(item.id) || passport.dietStyle === item.id
+      return renderOptionCard(item, selected, () => updatePassport('dietStyleMulti', item.id))
+    })}
   </div>
 
   const renderFaith = () => <>
@@ -2177,10 +2178,10 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
 
   const renderSpice = () => {
     const options = [
-      { value: 0, label: text.spiceCannot, icon: '🌶️' },
-      { value: 1, label: text.spiceLow, icon: '🌶️🌶️' },
-      { value: 2, label: text.spiceMedium, icon: '🌶️🌶️🌶️' },
-      { value: 3, label: text.spiceAny, icon: '🌶️🌶️🌶️🌶️' },
+      { value: 0, label: text.spiceCannot, icon: '❌' },
+      { value: 1, label: text.spiceLow, icon: '🌶️' },
+      { value: 2, label: text.spiceMedium, icon: '🌶️🌶️' },
+      { value: 3, label: text.spiceAny, icon: '🌶️🌶️🌶️' },
     ]
     return <div className="passport-flow-grid passport-flow-grid-2">
       {options.map((item) => <button type="button" key={item.value} aria-pressed={passport.spiceLevel === item.value} className={`passport-flow-option passport-flow-spice-option ${passport.spiceLevel === item.value ? 'selected' : ''}`} onClick={() => updatePassport('spiceLevel', item.value)}><span className="passport-flow-option-icon">{item.icon}</span><strong>{item.label}</strong>{passport.spiceLevel === item.value && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}</button>)}
@@ -2200,28 +2201,24 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
     return renderPreferences()
   }
 
-  const goBack = () => currentStep === 0 ? onBack() : setCurrentStep((step) => step - 1)
   const goNext = () => currentStep === questions.length - 1 ? onFinish() : setCurrentStep((step) => step + 1)
 
   return <div className="passport-flow">
     <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
-      <div className="passport-flow-progress-top"><button type="button" className="passport-flow-back-top" onClick={goBack}><Icon name="back" size={17} /> {text.back}</button><span>{text.passportEyebrow}</span></div>
       <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
-      <div className="passport-flow-progress-label"><strong>{flowText.progress(currentStep + 1, questions.length)}</strong><span>{text.saved(selectedAllergenCount)}</span></div>
     </div>
     <section className="passport-flow-question-card">
-      <span className="passport-flow-kicker">{text.profileBuilder}</span>
       <h1>{questions[currentStep].title}</h1>
-      <p className="lead">{questions[currentStep].hint}</p>
+      {currentStep === 0 && <p className="lead passport-flow-severity-copy">{flowText.tapSeverity}</p>}
       <div className="passport-flow-body">{renderStepBody()}</div>
     </section>
-    <div className="passport-flow-actions"><button type="button" className="passport-flow-back-button" onClick={goBack}>{text.back}</button><Button className="passport-flow-next-button" onClick={goNext} icon={currentStep === questions.length - 1 ? 'check' : 'arrow'}>{currentStep === questions.length - 1 ? t('save') : t('next')}</Button></div>
+    <div className="passport-flow-actions"><Button className="passport-flow-next-button" onClick={goNext} icon={currentStep === questions.length - 1 ? 'check' : 'arrow'}>{currentStep === questions.length - 1 ? t('save') : t('next')}</Button></div>
   </div>
 }
 
 function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan', onboardingMode = false }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string; onboardingMode?: boolean }) {
   const text = onboardingCopy[language]
-  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onFinish} /></section>
+  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onFinish={onFinish} /></section>
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
