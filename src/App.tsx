@@ -168,6 +168,15 @@ const languages: Array<{ code: Language; label: string; native: string }> = [
   { code: 'it', label: 'Italiano', native: 'Italiano' },
 ]
 
+const profileSectionLabels: Record<Language, { preferences: string; settings: string }> = {
+  en: { preferences: 'Preferences', settings: 'Settings' },
+  ko: { preferences: '환경설정', settings: '설정' },
+  ja: { preferences: '環境設定', settings: '設定' },
+  ru: { preferences: 'Предпочтения', settings: 'Настройки' },
+  es: { preferences: 'Preferencias', settings: 'Ajustes' },
+  it: { preferences: 'Preferenze', settings: 'Impostazioni' },
+}
+
 const copy = {
   en: {
     step: 'Step',
@@ -1240,6 +1249,7 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     receipt: <><path d="M6 3h12v18l-2.3-1.7L13.5 21 11 19.3 8.5 21 6 19.3 3.8 21V3H6Z"/><path d="M7.5 8h9M7.5 12h9M7.5 16h5"/></>,
     arrow: <><path d="M5 12h14M13 6l6 6-6 6"/></>,
     back: <path d="m15 18-6-6 6-6"/>,
+    logout: <><path d="M14 5h5v14h-5"/><path d="M3 12h11M9 8l5 4-5 4"/></>,
     chevron: <path d="m8 10 4 4 4-4"/>,
     close: <><path d="m6 6 12 12M18 6 6 18"/></>,
     undo: <><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-2"/></>,
@@ -2151,7 +2161,7 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
   </section>
 }
 
-function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onFinish: () => void }) {
+function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void }) {
   const [currentStep, setCurrentStep] = useState(0)
   const text = onboardingCopy[language]
   const flowText = passportFlowCopy[language]
@@ -2199,10 +2209,11 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
       {allergyOptions.map((item) => {
         const selected = passport.allergies.includes(item.id)
         const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
-        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${profile.severity}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
+        const severityNumber = selected ? severityOrder.indexOf(profile.severity) + 1 : 0
+        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${severityNumber} · ${t(profile.severity)}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
           <span className="passport-flow-option-icon"><img src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
           <strong>{allergenLabel(language, item.id, item.label)}</strong>
-          {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+          {selected && <span className={`passport-flow-option-severity passport-flow-option-severity-${profile.severity}`} aria-hidden="true">{severityNumber}</span>}
         </button>
       })}
     </div>
@@ -2239,7 +2250,7 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
     </div>
   }
 
-  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-2">
+  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-3">
     {localizedPreferences.map((item) => renderOptionCard(item, passport.preferences.includes(item.id), () => updatePassport('preferences', item.id)))}
   </div>
 
@@ -2253,10 +2264,11 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
   }
 
   const goNext = () => currentStep === questions.length - 1 ? onFinish() : setCurrentStep((step) => step + 1)
+  const goBack = () => currentStep === 0 ? onBack() : setCurrentStep((step) => step - 1)
 
   return <div className="passport-flow">
     <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
-      <div className="passport-flow-progress-top"><span aria-hidden="true" /><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
+      <div className="passport-flow-progress-top"><button type="button" className="passport-flow-back-top" onClick={goBack} aria-label={text.back}><Icon name="back" size={16} /></button><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
       <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
     </div>
     <section className="passport-flow-question-card">
@@ -2270,7 +2282,7 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
 
 function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan', onboardingMode = false }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string; onboardingMode?: boolean }) {
   const text = onboardingCopy[language]
-  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onFinish={onFinish} /></section>
+  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onFinish} /></section>
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
@@ -3062,34 +3074,71 @@ function SubscriptionModal({ language, user, onClose, onSelect }: { language: La
   return <div className="subscription-backdrop" onClick={onClose}><section className="subscription-modal" role="dialog" aria-modal="true" aria-labelledby="subscription-title" onClick={(event) => event.stopPropagation()}><div className="subscription-modal-top"><div><span className="eyebrow">{text.entry}</span><h2 id="subscription-title">{text.title}</h2><p>{text.subtitle}</p></div><button type="button" className="icon-button soft" onClick={onClose} aria-label={text.close}><Icon name="close" size={18} /></button></div><div className="subscription-tier-comparison"><button type="button" className={`subscription-tier-card subscription-tier-card-free ${selectedPlan === null ? 'selected' : ''}`} aria-pressed={selectedPlan === null} onClick={() => selectPlan(null)}><span className="subscription-tier-card-heading"><strong>{text.free}</strong><b>¥0</b></span><SubscriptionBenefits tier="free" /></button><button type="button" className={`subscription-tier-card subscription-tier-card-pro ${selectedPlan !== null ? 'selected' : ''}`} aria-pressed={selectedPlan !== null} onClick={() => selectPlan(selectedPlan || subscriptionPlans[1].days)}><span className="subscription-tier-card-heading"><strong>Pro</strong><b>{subscriptionPlans[0].price}+</b></span><SubscriptionBenefits tier="pro" /></button></div><div className="subscription-plan-grid">{subscriptionPlans.map((plan) => { const selected = selectedPlan === plan.days; return <button type="button" key={plan.days} aria-label={`${plan.days} days · ${plan.price}`} className={`subscription-plan ${plan.featured ? 'subscription-plan-featured' : ''} ${selected ? 'selected' : ''}`} aria-pressed={selected} onClick={() => selectPlan(plan.days)}>{plan.featured && <span className="subscription-featured">{text.bestValue}</span>}<strong>{plan.days} days</strong><b>{plan.price}</b>{selected && <span className="subscription-selected-mark"><Icon name="check" size={13} /></span>}</button> })}</div></section></div>
 }
 
+function ProfileInfoModal({ language, user, activePro, onClose }: { language: Language; user: UserProfile; activePro: boolean; onClose: () => void }) {
+  const text = subscriptionTextFor(language)
+  const expiry = activePro && user.subscriptionExpiresAt
+    ? new Intl.DateTimeFormat(language, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(user.subscriptionExpiresAt))
+    : subscriptionTierCopy[language].noExpiry
+  return <div className="profile-info-backdrop" onClick={onClose}><section className="profile-info-modal" role="dialog" aria-modal="true" aria-labelledby="profile-info-title" onClick={(event) => event.stopPropagation()}><div className="profile-info-modal-header"><h2 id="profile-info-title">My Profile</h2><button type="button" className="icon-button soft" onClick={onClose} aria-label="Close"><Icon name="close" size={18} /></button></div><dl className="profile-info-list"><div><dt>Email</dt><dd>{user.email}</dd></div><div><dt>Subscription</dt><dd>{activePro ? subscriptionTierCopy[language].pro : text.free}</dd></div><div><dt>Expire</dt><dd>{expiry}</dd></div></dl></section></div>
+}
+
 function Profile({ t, p, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onAvatarChange, onSubscriptionChange, onLogout, onReset }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onAvatarChange: (avatarSrc: string) => void; onSubscriptionChange: (days: number | null) => void; onLogout: () => void; onReset: () => void }) {
   const text = subscriptionTextFor(language)
   const accountText = accountCopy[language]
   const [languageOpen, setLanguageOpen] = useState(false)
   const [subscriptionOpen, setSubscriptionOpen] = useState(false)
+  const [profileInfoOpen, setProfileInfoOpen] = useState(false)
+  const [avatarEditorSrc, setAvatarEditorSrc] = useState<string | null>(null)
+  const [avatarScale, setAvatarScale] = useState(1)
   const avatarInputRef = useRef<HTMLInputElement>(null)
   const passportCount = passport.allergies.length + (passport.otherAllergen ? 1 : 0) + passport.avoidFoods.length + (passport.dietStyle !== 'none' ? 1 : 0)
   const connectedCompanions = companions.length
   const activePro = user.subscriptionTier === 'pro' && (!user.subscriptionExpiresAt || user.subscriptionExpiresAt > Date.now())
   const tierLabel = activePro ? subscriptionTierCopy[language].pro : text.free
+  const sectionLabels = profileSectionLabels[language]
   const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file || !file.type.startsWith('image/')) return
     const reader = new FileReader()
-    reader.onload = () => { if (typeof reader.result === 'string') onAvatarChange(reader.result) }
+    reader.onload = () => { if (typeof reader.result === 'string') { setAvatarEditorSrc(reader.result); setAvatarScale(1) } }
     reader.readAsDataURL(file)
     event.target.value = ''
   }
+  const saveAvatar = () => {
+    if (!avatarEditorSrc) return
+    const image = new Image()
+    image.onload = () => {
+      const outputSize = 320
+      const cropSize = Math.min(image.naturalWidth, image.naturalHeight) / avatarScale
+      const canvas = document.createElement('canvas')
+      canvas.width = outputSize
+      canvas.height = outputSize
+      const context = canvas.getContext('2d')
+      if (!context) return
+      const sx = (image.naturalWidth - cropSize) / 2
+      const sy = (image.naturalHeight - cropSize) / 2
+      context.drawImage(image, sx, sy, cropSize, cropSize, 0, 0, outputSize, outputSize)
+      onAvatarChange(canvas.toDataURL('image/jpeg', .9))
+      setAvatarEditorSrc(null)
+    }
+    image.src = avatarEditorSrc
+  }
   return <div className="page page-narrow page-profile profile-dashboard">
-    <section className="profile-account-card"><input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} hidden /><button type="button" className="profile-avatar" onClick={() => avatarInputRef.current?.click()} aria-label="Change profile photo">{user.avatarSrc ? <img src={user.avatarSrc} alt="" /> : <span>{initialsForProfile(user)}</span>}<span className="profile-avatar-edit"><Icon name="camera" size={14} /></span></button><div className="profile-account-details"><div><strong>{user.username}</strong><small>{user.email}</small></div><div className="profile-subscription-summary"><span className={`profile-tier-badge ${activePro ? 'profile-tier-pro' : 'profile-tier-free'}`}>{tierLabel}</span><span>{subscriptionExpiryLabel(language, activePro ? user.subscriptionExpiresAt : null)}</span></div></div></section>
-    <section className="profile-section"><div className="profile-section-label">{p.yourFoodProfile}</div><div className="profile-entry-list"><button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{accountText.foodPassportTitle}</strong><small>{accountText.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{accountText.passportSummary}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>{p.myCompanions}</strong><small>{p.sharedPassports}</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} ${p.new}` : p.connected}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button></div></section>
-    <section className="profile-section"><div className="profile-section-label">{p.tableToolkit}</div><div className="profile-entry-list"><button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>{p.savedRestaurants}</strong><small>{p.placesTryNext}</small></span><span className="profile-setting-meta">{restaurants.length}<small>{p.savedCountLabel}</small></span><Icon name="arrow" size={18} /></button><button className="profile-setting-card profile-entry-card profile-subscription-entry" onClick={() => setSubscriptionOpen(true)}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="wallet" size={20} /></span><span className="profile-setting-copy"><strong>{text.entry}</strong><small>{text.entryDesc}</small></span><Icon name="arrow" size={18} /></button></div></section>
-    <section className="profile-section"><div className="profile-section-label">{accountText.otherSettings}</div>
+    <section className="profile-account-card"><input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} hidden /><button type="button" className="profile-avatar" onClick={() => avatarInputRef.current?.click()} aria-label="Change profile photo"><span className="profile-avatar-image">{user.avatarSrc ? <img src={user.avatarSrc} alt="" /> : <span>{initialsForProfile(user)}</span>}</span><span className="profile-avatar-edit"><Icon name="camera" size={14} /></span></button><div className="profile-account-details"><button type="button" className="profile-name-row" onClick={() => setProfileInfoOpen(true)}><strong>{user.username}</strong><span className={`profile-tier-badge ${activePro ? 'profile-tier-pro' : 'profile-tier-free'}`}>{tierLabel}</span></button><button type="button" className="profile-account-link" onClick={() => setProfileInfoOpen(true)}>My Profile <Icon name="arrow" size={16} /></button></div></section>
+    <section className="profile-section"><div className="profile-section-label">{sectionLabels.preferences}</div><div className="profile-entry-list">
+      <button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{accountText.foodPassportTitle}</strong><small>{accountText.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{accountText.passportSummary}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>{p.myCompanions}</strong><small>{p.sharedPassports}</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} ${p.new}` : p.connected}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>{p.savedRestaurants}</strong><small>{p.placesTryNext}</small></span><span className="profile-setting-meta">{restaurants.length}<small>{p.savedCountLabel}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card profile-entry-card profile-subscription-entry" onClick={() => setSubscriptionOpen(true)}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="wallet" size={20} /></span><span className="profile-setting-copy"><strong>{text.entry}</strong><small>{text.entryDesc}</small></span><Icon name="arrow" size={18} /></button>
+    </div></section>
+    <section className="profile-section"><div className="profile-section-label">{sectionLabels.settings}</div><div className="profile-entry-list profile-settings-list">
       <button className="profile-setting-card" onClick={() => setLanguageOpen((open) => !open)}><span className="profile-setting-icon"><Icon name="compass" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.languagePreference}</strong><small>{accountText.languagePreferenceDesc}</small></span><span className="profile-language-value">{language.toUpperCase()}</span><Icon name="chevron" size={17} /></button>
       {languageOpen && <div className="profile-language-panel"><div className="language-select-grid">{languages.map((item) => <button key={item.code} className={language === item.code ? 'active' : ''} onClick={() => { onLanguageChange(item.code); setLanguageOpen(false) }}><strong>{item.label}</strong><span>{item.native}</span></button>)}</div></div>}
-      <button className="profile-setting-card" onClick={onLogout}><span className="profile-setting-icon"><Icon name="back" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.signOut}</strong><small>{accountText.signOutDesc}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card" onClick={onLogout}><span className="profile-setting-icon"><Icon name="logout" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.signOut}</strong><small>{accountText.signOutDesc}</small></span><Icon name="arrow" size={18} /></button>
       <button className="profile-setting-card profile-danger-row" onClick={onReset}><span className="profile-setting-icon"><Icon name="refresh" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.resetDemo}</strong><small>{accountText.resetDemoDesc}</small></span><Icon name="arrow" size={18} /></button>
-    </section>
+    </div></section>
+    {profileInfoOpen && <ProfileInfoModal language={language} user={user} activePro={activePro} onClose={() => setProfileInfoOpen(false)} />}
+    {avatarEditorSrc && <div className="avatar-editor-backdrop" onClick={() => setAvatarEditorSrc(null)}><section className="avatar-editor-modal" role="dialog" aria-modal="true" aria-labelledby="avatar-editor-title" onClick={(event) => event.stopPropagation()}><div className="avatar-editor-header"><h2 id="avatar-editor-title">Adjust profile photo</h2><button type="button" className="icon-button soft" onClick={() => setAvatarEditorSrc(null)} aria-label="Close"><Icon name="close" size={18} /></button></div><div className="avatar-editor-preview"><img src={avatarEditorSrc} alt="" style={{ transform: `scale(${avatarScale})` }} /></div><label className="avatar-editor-scale">Size<input type="range" min="1" max="2.4" step=".01" value={avatarScale} onChange={(event) => setAvatarScale(Number(event.target.value))} /></label><div className="avatar-editor-actions"><button type="button" className="button button-secondary" onClick={() => setAvatarEditorSrc(null)}>Cancel</button><button type="button" className="button button-primary" onClick={saveAvatar}>Save photo</button></div></section></div>}
     {subscriptionOpen && <SubscriptionModal language={language} user={user} onSelect={onSubscriptionChange} onClose={() => setSubscriptionOpen(false)} />}
   </div>
 }
