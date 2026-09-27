@@ -1,4 +1,4 @@
-import knowledgeData from '../../public/data/chinese-food-knowledge.json'
+import { createRequire } from 'node:module'
 import type { MenuDish } from '../schemas/menu.js'
 
 type KnowledgeDish = {
@@ -6,6 +6,10 @@ type KnowledgeDish = {
   commonAllergens?: string[]
   possibleAllergens?: string[]
 }
+
+type KnowledgeData = { dishes?: KnowledgeDish[] }
+const require = createRequire(import.meta.url)
+const knowledgeData = require('../../public/data/chinese-food-knowledge.json') as KnowledgeData
 
 const allergenIds: Record<string, string> = {
   '小麦（含麸质）': 'wheat',
