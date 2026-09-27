@@ -84,6 +84,8 @@ type Dish = {
   zhIngredients: string[]
   allergens: string[]
   possibleAllergens?: string[]
+  possibleIngredients?: string[]
+  possibleZhIngredients?: string[]
   tags: string[]
   spicy: number
   vegetarian: boolean
@@ -94,6 +96,9 @@ type Dish = {
   hasSeafood?: boolean
   hasOffal?: boolean
   hasCilantro?: boolean
+  hasScallion?: boolean
+  hasGarlic?: boolean
+  hasLard?: boolean
   confidence: number
   taste: string
   texture: string
@@ -384,7 +389,15 @@ const onboardingCopy: Record<Language, OnboardingCopy> = {
 }
 
 type CopyKey = { [Key in keyof typeof copy.en]: (typeof copy.en)[Key] extends string ? Key : never }[keyof typeof copy.en]
-const tFor = (language: Language, key: CopyKey): string => (copy[language][key] as string).replace(/CanIEatThis/g, 'Bitewise')
+const completedCheckingCopy: Record<Language, string> = {
+  en: 'Food Passport check complete',
+  ko: '푸드 패스포트 확인 완료',
+  ja: 'フードパスポートの確認が完了しました',
+  ru: 'Проверка по пищевому паспорту завершена',
+  es: 'Comprobación con tu pasaporte completada',
+  it: 'Verifica con il tuo Food Passport completata',
+}
+const tFor = (language: Language, key: CopyKey): string => (key === 'checking' ? completedCheckingCopy[language] : (copy[language][key] as string)).replace(/CanIEatThis/g, 'Bitewise')
 
 type AccountCopy = {
   registerEyebrow: string; registerTitle: string; registerSubtitle: string; usernameLabel: string; usernamePlaceholder: string; emailLabel: string; emailPlaceholder: string; continueLabel: string
@@ -629,10 +642,10 @@ const localizedPostMeta: Record<Language, { justNow: string; worthTrying: string
 }
 
 const baseDishes: Dish[] = [
-  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
-  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
-  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
-  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: [], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
+  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasScallion: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
+  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], possibleIngredients: ['Beef', 'Scallions'], possibleZhIngredients: ['牛肉', '葱花'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
+  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], possibleIngredients: ['Scallions'], possibleZhIngredients: ['葱花'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
+  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: ['soy', 'mollusk'], possibleIngredients: ['Soy sauce or oyster sauce'], possibleZhIngredients: ['生抽或蚝油'], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
   { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.png', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
@@ -647,7 +660,7 @@ const demoKnowledge: Record<string, { id: string; nameEn: string; aliases: strin
 }
 const dishes: Dish[] = baseDishes.map((dish) => {
   const knowledge = demoKnowledge[dish.zh]
-  const ingredientEvidence = [...dish.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(knowledge?.ingredients || []).map((label) => ({ label, source: 'knowledge' as const }))].filter((item, index, items) => items.findIndex((candidate) => candidate.label.toLowerCase() === item.label.toLowerCase()) === index)
+  const ingredientEvidence = [...dish.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(knowledge?.ingredients || []).map((label) => ({ label, source: 'knowledge' as const })), ...(dish.possibleIngredients || []).map((label, index) => ({ label, labelZh: dish.possibleZhIngredients?.[index], source: 'unknown' as const }))].filter((item, index, items) => items.findIndex((candidate) => candidate.label.toLowerCase() === item.label.toLowerCase()) === index)
   const allergenEvidence = [...dish.allergens.map((id) => ({ id, source: 'menu' as const })), ...(knowledge?.allergens || []).map(({ id, label }) => ({ id, label, source: 'knowledge' as const }))]
   return { ...dish, ingredientEvidence, allergenEvidence, ...(knowledge ? { knowledgeMatch: { id: knowledge.id, nameZh: dish.zh, nameEn: knowledge.nameEn, aliases: knowledge.aliases } } : {}) }
 })
@@ -670,6 +683,8 @@ const mapBackendDish = (raw: BackendDish): Dish => {
     zhIngredients: local?.zhIngredients || raw.ingredients,
     allergens: raw.allergens,
     possibleAllergens: raw.possibleAllergens,
+    possibleIngredients: raw.possibleIngredients ?? local?.possibleIngredients,
+    possibleZhIngredients: raw.possibleZhIngredients ?? local?.possibleZhIngredients,
     tags: raw.tags,
     spicy: raw.spicy ?? 0,
     vegetarian: raw.vegetarian ?? local?.vegetarian ?? false,
@@ -680,13 +695,16 @@ const mapBackendDish = (raw: BackendDish): Dish => {
     hasSeafood: raw.hasSeafood ?? local?.hasSeafood,
     hasOffal: raw.hasOffal ?? local?.hasOffal,
     hasCilantro: raw.hasCilantro ?? local?.hasCilantro,
+    hasScallion: raw.hasScallion ?? local?.hasScallion,
+    hasGarlic: raw.hasGarlic ?? local?.hasGarlic,
+    hasLard: raw.hasLard ?? local?.hasLard,
     confidence: raw.confidence,
-    ingredientEvidence: raw.ingredientEvidence || raw.ingredients.map((label) => ({ label, source: 'menu' as const })),
+    ingredientEvidence: raw.ingredientEvidence || [...raw.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(raw.possibleIngredients || []).map((label, index) => ({ label, labelZh: raw.possibleZhIngredients?.[index], source: 'unknown' as const }))],
     allergenEvidence: raw.allergenEvidence || raw.allergens.map((id) => ({ id, source: 'menu' as const })),
     knowledgeMatch: raw.knowledgeMatch,
   }
 }
-const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized, ingredientEvidence: dish.ingredientEvidence, allergenEvidence: dish.allergenEvidence, knowledgeMatch: dish.knowledgeMatch })
+const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], possibleIngredients: dish.possibleIngredients, possibleZhIngredients: dish.possibleZhIngredients, confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, hasScallion: dish.hasScallion, hasGarlic: dish.hasGarlic, hasLard: dish.hasLard, localized: dish.localized, ingredientEvidence: dish.ingredientEvidence, allergenEvidence: dish.allergenEvidence, knowledgeMatch: dish.knowledgeMatch })
 
 const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
 
@@ -1570,7 +1588,6 @@ function App() {
     const hasSevereAllergy = activeAllergyProfiles.some((profile) => profile.severity === 'severe')
     const avoidsCrossContact = activeAllergyProfiles.some((profile) => profile.crossContact)
     const avoidFoods = new Set([...profile.avoidFoods, ...profile.diets.filter((id) => avoidFoodIds.includes(id))])
-    if (dish.confidence < 0.7) return 'UNKNOWN'
     if (profile.allergies.some((allergen) => allergenMatchKeys(allergen).some((key) => dish.allergens.includes(key)))) return 'CONFLICT'
     const isVegetarianProfile = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo'].includes(profile.dietStyle) || profile.diets.includes('vegetarian')
     if (isVegetarianProfile && !dish.vegetarian) return 'CONFLICT'
@@ -1583,12 +1600,23 @@ function App() {
     if (avoidFoods.has('no-poultry') && dish.hasPoultry) return 'CONFLICT'
     if (avoidFoods.has('no-seafood') && dish.hasSeafood) return 'CONFLICT'
     if (avoidFoods.has('no-offal') && dish.hasOffal) return 'CONFLICT'
+    if ((isVegetarianProfile || profile.dietStyle === 'vegan' || profile.diets.includes('vegan') || avoidFoods.has('no-pork') || profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasLard) return 'CONFLICT'
     if ((profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasPork) return 'CONFLICT'
     if (profile.faithDiet === 'kosher' && dish.hasSeafood) return 'CONFLICT'
+    const possibleRecipeConflict = (dish.possibleIngredients || []).some((ingredient) => {
+      const lower = ingredient.toLowerCase()
+      return (avoidFoods.has('no-beef') && /beef|牛肉/.test(lower)) || (profile.preferences.includes('no-scallion') && /scallion|green onion|spring onion|葱/.test(lower)) || (profile.preferences.includes('no-garlic') && /garlic|蒜/.test(lower))
+    })
+    if (possibleRecipeConflict) return 'WARNING'
     if (hasSevereAllergy && dish.possibleAllergens?.some((allergen) => profile.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))) return 'WARNING'
+    const cookingOilWarning = profile.allergies.some((allergen) => ['peanut', 'soy', 'sesame'].includes(allergen)) && dish.ingredients.some((ingredient) => /oil|fryer|fat|油/i.test(ingredient))
+    if (cookingOilWarning) return 'WARNING'
     if (avoidsCrossContact && (dish.possibleAllergens?.length || dish.confidence < 0.9)) return 'WARNING'
     if (profile.preferences.includes('no-cilantro') && dish.hasCilantro) return 'WARNING'
+    if (profile.preferences.includes('no-scallion') && dish.hasScallion) return 'WARNING'
+    if (profile.preferences.includes('no-garlic') && dish.hasGarlic) return 'WARNING'
     if (profile.spiceLevel !== null && dish.spicy > profile.spiceLevel) return 'WARNING'
+    if (dish.confidence < 0.7) return 'UNKNOWN'
     return 'MATCH'
   }
   const getStatus = (dish: Dish): Status => analysisPassportKey === passportKey ? sessionRisks[dish.id]?.status || getStatusForPassport(dish, passport) : getStatusForPassport(dish, passport)
@@ -2027,7 +2055,7 @@ function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, c
   const restaurantName = currentOrder?.restaurant || sessionRestaurant
   const restaurantInitials = currentOrder?.initials || initialsForRestaurant(sessionRestaurant)
   const greeting = { en: `Hello, ${userName}`, ko: `${userName}님, 안녕하세요`, ja: `こんにちは、${userName}さん`, ru: `Здравствуйте, ${userName}`, es: `Hola, ${userName}`, it: `Ciao, ${userName}` }[language]
-  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong><small>{hasSavedOrder && currentOrder ? <><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></> : hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small></span><button className="more-button" aria-label={p.moreOptions || 'More options'}><Icon name="dots" size={20} /></button></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
+  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small>}</span></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
 }
 
 function Scan({ t, p, language, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, photoInputRef, fileInputRef, cameraInputRef, showUploadOptions, setShowUploadOptions, handleFile, handleCameraFile, startScan, onRetry, onOpenCamera, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; photoInputRef: RefObject<HTMLInputElement>; fileInputRef: RefObject<HTMLInputElement>; cameraInputRef: RefObject<HTMLInputElement>; showUploadOptions: boolean; setShowUploadOptions: (open: boolean) => void; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; handleCameraFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void; onToast: (message: string) => void }) {
@@ -2254,12 +2282,17 @@ function ingredientDietConflict(label: string, dish: Dish, passport: Passport) {
   if (avoidFoods.has('no-seafood') && dish.hasSeafood) return has('fish', 'seafood', 'shrimp', 'prawn', 'shellfish')
   if (avoidFoods.has('no-offal') && dish.hasOffal) return has('offal', 'liver', 'intestine')
   if ((passport.faithDiet === 'halal' || passport.faithDiet === 'kosher') && dish.hasPork) return has('pork')
+  if (dish.hasLard && (isVegetarianProfile || passport.dietStyle === 'vegan' || passport.diets.includes('vegan') || avoidFoods.has('no-pork') || passport.faithDiet === 'halal' || passport.faithDiet === 'kosher')) return has('lard', 'pork fat', 'animal fat')
+  if (passport.preferences.includes('no-scallion') && dish.hasScallion) return has('scallion', 'green onion', 'spring onion')
+  if (passport.preferences.includes('no-garlic') && dish.hasGarlic) return has('garlic')
   return passport.faithDiet === 'kosher' && dish.hasSeafood && has('fish', 'seafood', 'shrimp', 'prawn', 'shellfish')
 }
 
 function buildIngredientChecks(dish: Dish, passport: Passport, status: Status): IngredientCheck[] {
   const evidence = dish.ingredientEvidence?.length ? dish.ingredientEvidence : dish.ingredients.map((label) => ({ label, source: 'menu' as const }))
   const checks = evidence.map<IngredientCheck>(({ label, source }) => {
+    if (source === 'unknown') return { label, risk: 'possible', source }
+    if (passport.allergies.some((allergen) => ['peanut', 'soy', 'sesame'].includes(allergen)) && /oil|fryer|fat|油/i.test(label)) return { label, risk: 'possible', source }
     const explicitConflict = passport.allergies.some((selected) => dish.allergens.some((allergen) => allergenMatchKeys(selected).includes(allergen)) && ingredientMatchesAllergen(label, selected))
     const dietaryConflict = ingredientDietConflict(label, dish, passport)
     if (explicitConflict || dietaryConflict) return { label, risk: 'conflict', source }
@@ -2330,9 +2363,18 @@ const chineseRequirementLabels: Record<string, string> = {
 const chineseDietLabels: Record<DietStyle, string> = { none: '', vegetarian: '素食', vegan: '纯素', lacto: '奶素', ovo: '蛋素', 'lacto-ovo': '蛋奶素', pescatarian: '鱼素', flexitarian: '弹性素食' }
 const chineseFaithLabels: Record<FaithDiet, string> = { none: '', halal: '清真', kosher: '犹太洁食', other: '宗教饮食要求' }
 const chineseSeverityLabels: Record<AllergySeverity, string> = { mild: '轻度', moderate: '中度', severe: '严重' }
+const orderConfirmationCopy: Record<Language, { recipe: string; oil: string; fat: string }> = {
+  en: { recipe: 'Recipe detail to confirm', oil: 'Confirm cooking oil and shared fryer', fat: 'Confirm cooking fat and stock base' },
+  ko: { recipe: '레시피 확인 필요', oil: '조리유와 공용 튀김기 확인', fat: '조리 기름과 육수 확인' },
+  ja: { recipe: 'レシピの確認が必要', oil: '調理油と共用フライヤーを確認', fat: '調理油脂とスープのベースを確認' },
+  ru: { recipe: 'Нужно уточнить состав', oil: 'Уточнить масло и общую фритюрницу', fat: 'Уточнить жир и основу бульона' },
+  es: { recipe: 'Hay que confirmar la receta', oil: 'Confirmar el aceite y la freidora compartida', fat: 'Confirmar la grasa y la base del caldo' },
+  it: { recipe: 'Ricetta da verificare', oil: 'Verificare olio e friggitrice condivisa', fat: 'Verificare grasso di cottura e brodo' },
+}
 
-function orderRequirements(passport: Passport, language: Language, t: (key: CopyKey) => string): OrderRequirement[] {
+function orderRequirements(passport: Passport, language: Language, t: (key: CopyKey) => string, cart: CartItem[]): OrderRequirement[] {
   const p = pageCopy[language]
+  const confirmationCopy = orderConfirmationCopy[language]
   const requirements: OrderRequirement[] = []
   passport.allergies.forEach((id) => {
     const profile = passport.allergyProfiles[id] || defaultAllergyProfile
@@ -2349,13 +2391,29 @@ function orderRequirements(passport: Passport, language: Language, t: (key: Copy
   if (passport.spiceLevel !== null) requirements.push({ user: `${p.spicePreference || 'Spice'} ${passport.spiceLevel} ${p.upToLevel}`, chinese: `辣度不超过${passport.spiceLevel}级`, tone: 'note' })
   const needsCrossContactCare = (passport.crossContact && (passport.allergies.length > 0 || Boolean(passport.otherAllergen))) || passport.allergies.some((id) => (passport.allergyProfiles[id] || defaultAllergyProfile).crossContact) || Boolean(passport.otherAllergen)
   if (needsCrossContactCare) requirements.push({ user: p.avoidCrossContact, chinese: '请避免交叉接触', tone: 'alert' })
+
+  const cartNeedsRecipeConfirmation = cart.some(({ dish }) => Boolean(dish.possibleIngredients?.length) || dish.ingredients.some((ingredient) => ingredientCarrier(ingredient)) || dish.confidence < 0.9)
+  cart.filter(({ dish }) => dish.possibleIngredients?.length).forEach(({ dish }) => {
+    const labels = dish.possibleZhIngredients?.length ? dish.possibleZhIngredients : dish.possibleIngredients || []
+    requirements.push({ user: `${confirmationCopy.recipe} · ${dish.localized[language]}`, chinese: `请确认${dish.zh}是否含${labels.join('、')}。菜单未明确标注这些成分。`, tone: 'alert' })
+  })
+
+  const oilAllergenLabels = passport.allergies.map((id) => ({ peanut: '花生油', soy: '大豆油', sesame: '芝麻油' }[id])).filter((label): label is string => Boolean(label))
+  const hasAnyAllergy = passport.allergies.length > 0 || Boolean(passport.otherAllergen.trim())
+  if (cartNeedsRecipeConfirmation && hasAnyAllergy) {
+    const oilDetail = oilAllergenLabels.length ? `是否使用${oilAllergenLabels.join('、')}，并确认没有与相关过敏原共用锅具或炸油` : '是否接触我的过敏原，并确认没有与相关过敏原共用锅具或炸油'
+    requirements.push({ user: confirmationCopy.oil, chinese: `请确认烹调油和炸油${oilDetail}。`, tone: 'alert' })
+  }
+
+  const avoidsAnimalFat = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo', 'vegan'].includes(passport.dietStyle) || passport.diets.some((id) => ['vegetarian', 'vegan'].includes(id)) || passport.avoidFoods.includes('no-pork') || passport.faithDiet === 'halal' || passport.faithDiet === 'kosher'
+  if (cartNeedsRecipeConfirmation && avoidsAnimalFat) requirements.push({ user: confirmationCopy.fat, chinese: '请确认未使用猪油、牛油、其他动物油或含肉高汤。', tone: 'alert' })
   return requirements
 }
 
 function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete, onAddMore, onSplitBill, onHome, onSpeak }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void; onSpeak: (text: string) => void }) {
   const t = (key: CopyKey) => tFor(language, key)
   const isSavedOrder = Boolean(savedOrder)
-  const requirements = orderRequirements(passport, language, t)
+  const requirements = orderRequirements(passport, language, t, cart)
   const total = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
   const count = cart.reduce((sum, item) => sum + item.quantity, 0)
   const waiterSpeech = [
@@ -2452,7 +2510,7 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
   }
 
   return <div className="page page-narrow page-bill">
-    <PageHeader title={t('billTitle')} hideKicker backLabel={p.back} onBack={onBack} action={<button className="icon-button soft"><Icon name="share" size={18} /></button>} />
+    <PageHeader title={t('billTitle')} hideKicker backLabel={p.back} onBack={onBack} />
     <div className="bill-context-card"><span className="bill-context-icon"><Icon name="receipt" size={20} /></span><div><strong>{order.restaurant}</strong><small>{order.time} · {billItems.length} {p.items}</small></div><span className={`bill-source-badge ${billSource === 'receipt' ? 'is-receipt' : ''}`}>{billSource === 'receipt' ? p.receiptUpdated : p.fromOrder}</span></div>
     <div className="bill-source-actions"><input ref={billInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden /><Button variant="secondary" onClick={() => billInputRef.current?.click()} icon="camera">{billSource === 'receipt' ? p.replaceReceipt : p.uploadReceipt}</Button>{billSource === 'receipt' && <button className="text-link" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
     <p className="bill-source-note"><Icon name="shield" size={14} /> {billSource === 'receipt' ? `${p.lineItemsUpdated} ${billReceiptName || p.uploadedReceipt}.` : p.usingOrderPrices}</p>

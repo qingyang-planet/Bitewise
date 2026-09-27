@@ -16,12 +16,17 @@ export type BackendDish = {
   vegetarian?: boolean
   vegan?: boolean
   tags: string[]
+  possibleIngredients?: string[]
+  possibleZhIngredients?: string[]
   hasPork?: boolean
   hasBeef?: boolean
   hasPoultry?: boolean
   hasSeafood?: boolean
   hasOffal?: boolean
   hasCilantro?: boolean
+  hasScallion?: boolean
+  hasGarlic?: boolean
+  hasLard?: boolean
   localized?: Record<string, string>
   ingredientEvidence?: BackendIngredientEvidence[]
   allergenEvidence?: BackendAllergenEvidence[]
