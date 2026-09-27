@@ -2325,20 +2325,30 @@ function ingredientRiskLabel(risk: IngredientRisk, t: (key: CopyKey) => string) 
 function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onAddToCart }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; passport: Passport; status: Status; onBack: () => void; onAsk: () => void; onAddToCart: () => void }) {
   const ingredientChecks = buildIngredientChecks(dish, passport, status)
   return <div className="page page-narrow page-detail">
-    <PageHeader title={t('viewDetails')} kicker={`${p.step} 03`} backLabel={p.back} onBack={onBack} />
-    <div className="detail-hero"><DishVisual dish={dish} language={language} /></div>
-    <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
-    <div className="detail-status-row"><StatusBadge status={status} t={t} /><span className="spice-chip">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span></div>
-    <section className="detail-ingredients-section">
-      <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
-      <div className="ingredient-scroller" role="list" aria-label={t('mainIngredients')}>
-        {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
+    <div className="detail-hero">
+      <DishVisual dish={dish} language={language} />
+      <div className="detail-hero-topbar">
+        <button type="button" className="detail-hero-icon" onClick={onBack} aria-label={p.back}><Icon name="back" size={19} /></button>
+        <div className="detail-hero-actions" aria-hidden="true"><span className="detail-hero-icon"><Icon name="heart" size={18} /></span><span className="detail-hero-icon"><Icon name="share" size={17} /></span></div>
       </div>
-    </section>
-    <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
-    <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
-    <SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div>
-    <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
+    </div>
+    <div className="detail-card">
+      <div className="detail-card-handle" aria-hidden="true" />
+      <div className="detail-card-topline"><StatusBadge status={status} t={t} /></div>
+      <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
+      <div className="detail-meta-row"><span className="detail-meta-chip"><Icon name="chili" size={15} />{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span>{dish.tags.slice(0, 2).map((tag) => <span className="detail-meta-chip" key={tag}><Icon name="check" size={14} />{dishTagLabel(language, tag)}</span>)}</div>
+      <section className="detail-ingredients-section">
+        <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
+        <div className="ingredient-scroller" role="list" aria-label={t('mainIngredients')}>
+          {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
+        </div>
+      </section>
+      <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
+      <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>Description</SectionTitle></div><div className="detail-status-summary"><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
+      <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
+      <section className="detail-info-section"><SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div></section>
+      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
+    </div>
   </div>
 }
 function Cart({ t, p, language, cart, itemCount, total, getStatus, onBack, onIncrease, onDecrease, onClear, onConfirm }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; cart: CartItem[]; itemCount: number; total: number; getStatus: (dish: Dish) => Status; onBack: () => void; onIncrease: (dishId: string) => void; onDecrease: (dishId: string) => void; onClear: () => void; onConfirm: () => void }) {
