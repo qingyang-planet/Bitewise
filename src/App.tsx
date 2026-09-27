@@ -994,6 +994,43 @@ const findFoodCategoryIds = (restaurant: SavedRestaurant) => {
   return ids.size ? [...ids] : ['local']
 }
 
+const homeRestaurantDishIds: Record<string, string> = {
+  'zuihuihuang-fudan-zhengli': 'red-lantern-signature',
+  'haerbin-snacks-zhengli': 'jade-soup-dumpling-signature',
+  'he-sheng-hui-fei-dachu': 'pepper-alley-signature',
+  'he-xie-bang-cuisine': 'jade-soup-dumpling-signature',
+  'ruyi-chicken-abalone': 'winter-melon-soup',
+  'haidilao-he-sheng-hui': 'red-lantern-signature',
+  'kaijiang-grilled-fish': 'pepper-alley-signature',
+  'zuoting-youyuan-hotpot': 'red-lantern-signature',
+  'dongfang-yichuan': 'pepper-alley-signature',
+  'jiejiao-taiwanese': 'kung-pao',
+}
+
+type HomeCopy = {
+  scanKicker: string
+  scanTitle: string
+  scanDescription: string
+  takePhoto: string
+  uploadFromFile: string
+  scanHint: string
+  ongoingSession: string
+  nearbyFood: string
+  nearbyDescription: string
+  location: string
+  featured: string
+  distance: string
+  restaurantPhotoAlt: string
+}
+const homeCopy: Record<Language, HomeCopy> = {
+  en: { scanKicker: 'SCAN YOUR MENU', scanTitle: 'Make every menu easier to read.', scanDescription: 'Take a photo or upload a menu to see dishes, ingredients and Food Passport checks in one place.', takePhoto: 'Take a photo', uploadFromFile: 'Upload from file', scanHint: 'Your menu stays attached to this dining session.', ongoingSession: 'Ongoing session', nearbyFood: 'Nearby food', nearbyDescription: 'Real dishes from restaurants around Fudan Zhengli campus.', location: 'Fudan · within 3 km', featured: 'Featured', distance: 'away', restaurantPhotoAlt: 'Featured dish at' },
+  ko: { scanKicker: '메뉴 스캔', scanTitle: '모든 메뉴를 더 쉽게 읽어 보세요.', scanDescription: '메뉴를 촬영하거나 업로드하면 음식, 재료와 푸드 패스포트 확인 결과를 한곳에서 볼 수 있어요.', takePhoto: '사진 촬영', uploadFromFile: '파일에서 업로드', scanHint: '메뉴는 현재 식사 세션에 연결됩니다.', ongoingSession: '진행 중인 세션', nearbyFood: '주변 음식', nearbyDescription: '푸단 정리 캠퍼스 주변 식당의 실제 메뉴예요.', location: '푸단 · 3km 이내', featured: '대표 메뉴', distance: '거리', restaurantPhotoAlt: '대표 메뉴' },
+  ja: { scanKicker: 'メニューをスキャン', scanTitle: 'どんなメニューも読みやすく。', scanDescription: '写真を撮るかアップロードすると、料理・食材・フードパスポートの確認結果をまとめて見られます。', takePhoto: '写真を撮る', uploadFromFile: 'ファイルからアップロード', scanHint: 'メニューは現在の食事セッションに保存されます。', ongoingSession: '進行中のセッション', nearbyFood: '近くの料理', nearbyDescription: '復旦・政立キャンパス周辺の実際の料理です。', location: '復旦 · 3km以内', featured: 'おすすめ', distance: '距離', restaurantPhotoAlt: 'おすすめ料理' },
+  ru: { scanKicker: 'СКАНИРОВАТЬ МЕНЮ', scanTitle: 'Читайте любое меню проще.', scanDescription: 'Сфотографируйте или загрузите меню, чтобы увидеть блюда, ингредиенты и проверки пищевого паспорта.', takePhoto: 'Сфотографировать', uploadFromFile: 'Загрузить файл', scanHint: 'Меню сохранится в текущей сессии.', ongoingSession: 'Текущая сессия', nearbyFood: 'Еда рядом', nearbyDescription: 'Настоящие блюда из ресторанов у кампуса Фудань на Чжэнли.', location: 'Фудань · до 3 км', featured: 'Рекомендуем', distance: 'расстояние', restaurantPhotoAlt: 'Рекомендуемое блюдо' },
+  es: { scanKicker: 'ESCANEA TU MENÚ', scanTitle: 'Lee cualquier menú con más claridad.', scanDescription: 'Haz una foto o sube un menú para ver platos, ingredientes y comprobaciones de tu pasaporte en un solo lugar.', takePhoto: 'Hacer una foto', uploadFromFile: 'Subir desde archivo', scanHint: 'El menú queda guardado en esta sesión.', ongoingSession: 'Sesión en curso', nearbyFood: 'Comida cercana', nearbyDescription: 'Platos reales de restaurantes alrededor del campus Fudan Zhengli.', location: 'Fudan · hasta 3 km', featured: 'Recomendado', distance: 'distancia', restaurantPhotoAlt: 'Plato recomendado en' },
+  it: { scanKicker: 'SCANSIONA IL MENU', scanTitle: 'Leggi ogni menu più facilmente.', scanDescription: 'Scatta una foto o carica un menu per vedere piatti, ingredienti e controlli del Food Passport in un solo posto.', takePhoto: 'Scatta una foto', uploadFromFile: 'Carica da file', scanHint: 'Il menu resta collegato a questa sessione.', ongoingSession: 'Sessione in corso', nearbyFood: 'Cibo vicino', nearbyDescription: 'Piatti reali dai ristoranti intorno al campus Fudan Zhengli.', location: 'Fudan · entro 3 km', featured: 'In evidenza', distance: 'distanza', restaurantPhotoAlt: 'Piatto in evidenza da' },
+}
+
 const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; nearbyFood: string; clearSearch: string }> = {
   en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', nearbyFood: 'Nearby Food', clearSearch: 'Clear search' },
   ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', nearbyFood: '주변 음식', clearSearch: '검색 지우기' },
@@ -1317,6 +1354,8 @@ function App() {
   const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const cameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
+  const homeCameraInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
+  const homeUploadInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const billInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
   const t = (key: CopyKey) => tFor(language, key)
   const currentCompanions = account ? companionViewsFor(account.email, accounts, companionInvites) : []
@@ -1535,6 +1574,16 @@ function App() {
     }
     cameraInputRef.current?.click()
     track('camera_open')
+  }
+  const requestHomeScan = (mode: 'camera' | 'upload') => {
+    if (!sessionRestaurant.trim()) {
+      openScreen('scan')
+      setToast(p.toastRestaurantFirst)
+      return
+    }
+    if (mode === 'camera') homeCameraInputRef.current?.click()
+    else homeUploadInputRef.current?.click()
+    track(`home_${mode}_clicked`)
   }
   const addCapturedPage = () => {
     setCapturedPages((current) => {
@@ -1807,7 +1856,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
       <main className="main-content">
-        {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} />}
+        {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} getStatus={getStatus} openScreen={openScreen} openBill={() => { if (currentSessionOrder) openBill(currentSessionOrder, 'home') }} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} cart={cart} nearbyRestaurants={restaurantCatalog.filter((restaurant) => restaurant.source).slice(0, 6)} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onScanAction={requestHomeScan} />}
         {screen === 'scan' && <Scan t={t} p={p} language={language} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} photoInputRef={photoInputRef} fileInputRef={fileInputRef} cameraInputRef={cameraInputRef} showUploadOptions={showUploadOptions} setShowUploadOptions={setShowUploadOptions} handleFile={handleFile} handleCameraFile={handleCameraFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} onToast={setToast} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
@@ -1823,6 +1872,7 @@ function App() {
         {screen === 'companions' && account && <CompanionsPage p={p} account={account} accounts={accounts} companions={currentCompanions} incomingInvites={incomingCompanionInvites} outgoingInvites={outgoingCompanionInvites} onAddCompanion={addCompanion} onAcceptInvite={(inviteId) => updateInviteStatus(inviteId, 'accepted')} onDeclineInvite={(inviteId) => updateInviteStatus(inviteId, 'declined')} onRemoveCompanion={removeCompanion} onOpenCompanion={(email) => { setSelectedCompanionEmail(email); openScreen('companionDetail') }} onBack={() => openScreen(companionReturnScreen)} />}
         {screen === 'companionDetail' && selectedCompanion && <CompanionDetailPage p={p} language={language} companion={selectedCompanion} onUnlink={() => { removeCompanion(selectedCompanion.inviteId); openScreen('companions') }} onBack={() => openScreen('companions')} />}
       </main>
+      {screen === 'home' && <><input ref={homeCameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleCameraFile} hidden /><input ref={homeUploadInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile} hidden /></>}
       {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
     {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
@@ -1832,17 +1882,18 @@ function App() {
 
 type PassportFlowCopy = {
   progress: (current: number, total: number) => string
+  skip: string
   tapSeverity: string
   otherPlaceholder: string
 }
 
 const passportFlowCopy: Record<Language, PassportFlowCopy> = {
-  en: { progress: (current, total) => `Question ${current} of ${total}`, tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
-  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
-  ja: { progress: (current, total) => `${total}問中 ${current}問目`, tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
-  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
-  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
-  it: { progress: (current, total) => `Domanda ${current} di ${total}`, tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
+  en: { progress: (current, total) => `Question ${current} of ${total}`, skip: 'Skip', tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
+  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, skip: '건너뛰기', tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
+  ja: { progress: (current, total) => `${total}問中 ${current}問目`, skip: 'スキップ', tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
+  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, skip: 'Пропустить', tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
+  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, skip: 'Saltar', tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
+  it: { progress: (current, total) => `Domanda ${current} di ${total}`, skip: 'Salta', tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
 }
 
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
@@ -2205,6 +2256,7 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish 
 
   return <div className="passport-flow">
     <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
+      <div className="passport-flow-progress-top"><span aria-hidden="true" /><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
       <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
     </div>
     <section className="passport-flow-question-card">

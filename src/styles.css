@@ -1489,6 +1489,8 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .passport-flow { display: grid; gap: 13px; }
 .passport-flow-progress { padding: 2px 4px 0; }
 .passport-flow-progress-top, .passport-flow-progress-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.passport-flow-skip { padding: 4px 0; background: transparent; color: var(--brown); font-size: 12px; font-weight: 800; }
+.passport-flow-skip:hover { color: var(--brand); }
 .passport-flow-progress-top > span { color: var(--brown); font: 800 11px 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
 .passport-flow-back-top, .passport-flow-back-button { display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; }
 .passport-flow-back-top:hover, .passport-flow-back-button:hover { color: var(--brand); }
