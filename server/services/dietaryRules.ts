@@ -27,6 +27,7 @@ function strictDietConflicts(dish: MenuDish, passport: FoodPassport): string[] {
   if (hasDiet(passport, 'no-poultry') && dish.hasPoultry) conflicts.push('no-poultry')
   if (hasDiet(passport, 'no-seafood') && dish.hasSeafood) conflicts.push('no-seafood')
   if (hasDiet(passport, 'no-offal') && dish.hasOffal) conflicts.push('no-offal')
+  if ((vegetarian || passport.dietStyle === 'vegan' || passport.diets.includes('vegan') || hasDiet(passport, 'no-pork') || passport.faithDiet === 'halal' || passport.faithDiet === 'kosher') && dish.hasLard) conflicts.push('animal-fat')
   if (passport.faithDiet === 'halal' && dish.hasPork) conflicts.push('halal')
   if (passport.faithDiet === 'kosher' && (dish.hasPork || dish.hasSeafood)) conflicts.push('kosher')
   return conflicts
@@ -71,22 +72,47 @@ export function evaluateDishRisk(dish: MenuDish, passport: FoodPassport): RiskAs
     }
   }
 
+  const possibleRecipeRestrictions = (dish.possibleIngredients || []).flatMap((ingredient) => {
+    const lower = ingredient.toLowerCase()
+    return [
+      ...(hasDiet(passport, 'no-beef') && /beef|牛肉/.test(lower) ? ['no-beef'] : []),
+      ...(passport.preferences.includes('no-scallion') && /scallion|green onion|spring onion|葱/.test(lower) ? ['no-scallion'] : []),
+      ...(passport.preferences.includes('no-garlic') && /garlic|蒜/.test(lower) ? ['no-garlic'] : []),
+    ]
+  })
+  if (possibleRecipeRestrictions.length) {
+    const restrictions = [...new Set(possibleRecipeRestrictions)]
+    return {
+      status: 'WARNING',
+      reasons: ['The menu suggests possible recipe variations that need restaurant confirmation.'],
+      matchedRestrictions: restrictions,
+      recommendationEligible: passport.severity !== 'severe',
+      source: 'unknown',
+    }
+  }
+
   if (dish.confidence < 0.7 || hasUnknownDietEvidence(dish, passport)) return { status: 'UNKNOWN', reasons: ['The menu evidence is not complete enough to identify the ingredients reliably.'], matchedRestrictions: [], recommendationEligible: false, source: 'unknown' }
 
   const crossContactWarning = passport.crossContact && passport.allergies.length > 0 && dish.confidence < 0.9
+  const cookingOilWarning = passport.allergies.some((allergen) => ['peanut', 'soy', 'sesame'].includes(allergen)) && dish.ingredients.some((ingredient) => /oil|fryer|fat|油/i.test(ingredient))
   const preferenceWarning = passport.preferences.includes('no-cilantro') && dish.hasCilantro === true
+  const scallionWarning = passport.preferences.includes('no-scallion') && dish.hasScallion === true
+  const garlicWarning = passport.preferences.includes('no-garlic') && dish.hasGarlic === true
   const spiceWarning = passport.spiceLevel !== null && passport.spiceLevel !== undefined && dish.spicy !== null && dish.spicy > passport.spiceLevel
-  if (crossContactWarning || preferenceWarning || spiceWarning) {
+  if (crossContactWarning || cookingOilWarning || preferenceWarning || scallionWarning || garlicWarning || spiceWarning) {
     const reasons: string[] = []
     if (crossContactWarning) reasons.push('Kitchen cross-contact or shared equipment is not confirmed.')
+    if (cookingOilWarning) reasons.push('The cooking oil or fryer oil is not identified for the selected allergen.')
     if (preferenceWarning) reasons.push('Contains cilantro, which is a selected preference.')
+    if (scallionWarning) reasons.push('Contains scallions, which is a selected preference.')
+    if (garlicWarning) reasons.push('Contains garlic, which is a selected preference.')
     if (spiceWarning) reasons.push('The dish is spicier than the selected preference.')
     return {
       status: 'WARNING',
       reasons,
-      matchedRestrictions: [...(crossContactWarning ? ['cross-contact'] : []), ...(preferenceWarning ? ['no-cilantro'] : []), ...(spiceWarning ? ['spice-level'] : [])],
-      recommendationEligible: passport.severity !== 'severe' || !crossContactWarning,
-      source: crossContactWarning ? 'unknown' : 'menu',
+      matchedRestrictions: [...(crossContactWarning ? ['cross-contact'] : []), ...(cookingOilWarning ? ['cooking-oil'] : []), ...(preferenceWarning ? ['no-cilantro'] : []), ...(scallionWarning ? ['no-scallion'] : []), ...(garlicWarning ? ['no-garlic'] : []), ...(spiceWarning ? ['spice-level'] : [])],
+      recommendationEligible: passport.severity !== 'severe' || !(crossContactWarning || cookingOilWarning),
+      source: crossContactWarning || cookingOilWarning ? 'unknown' : 'menu',
     }
   }
 

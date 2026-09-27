@@ -83,6 +83,7 @@ function ingredientEvidence(dish: MenuDish, knowledge?: KnowledgeDish) {
   const items = [
     ...(dish.ingredients || []).map((label) => ({ label, source: label.toLowerCase() === 'unknown' ? 'unknown' as const : 'menu' as const })),
     ...(knowledge?.ingredients || []).map((label) => ({ label: ingredientEnglish[label] || label, labelZh: label, source: 'knowledge' as const })),
+    ...(dish.possibleIngredients || []).map((label, index) => ({ label, labelZh: dish.possibleZhIngredients?.[index], source: 'unknown' as const })),
   ]
   const byLabel = new Map<string, { label: string; labelZh?: string; source: EvidenceSource }>()
   items.forEach((item) => {

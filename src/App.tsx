@@ -84,6 +84,8 @@ type Dish = {
   zhIngredients: string[]
   allergens: string[]
   possibleAllergens?: string[]
+  possibleIngredients?: string[]
+  possibleZhIngredients?: string[]
   tags: string[]
   spicy: number
   vegetarian: boolean
@@ -94,6 +96,9 @@ type Dish = {
   hasSeafood?: boolean
   hasOffal?: boolean
   hasCilantro?: boolean
+  hasScallion?: boolean
+  hasGarlic?: boolean
+  hasLard?: boolean
   confidence: number
   taste: string
   texture: string
@@ -393,7 +398,15 @@ const onboardingCopy: Record<Language, OnboardingCopy> = {
 }
 
 type CopyKey = { [Key in keyof typeof copy.en]: (typeof copy.en)[Key] extends string ? Key : never }[keyof typeof copy.en]
-const tFor = (language: Language, key: CopyKey): string => (copy[language][key] as string).replace(/CanIEatThis/g, 'Bitewise')
+const completedCheckingCopy: Record<Language, string> = {
+  en: 'Food Passport check complete',
+  ko: '푸드 패스포트 확인 완료',
+  ja: 'フードパスポートの確認が完了しました',
+  ru: 'Проверка по пищевому паспорту завершена',
+  es: 'Comprobación con tu pasaporte completada',
+  it: 'Verifica con il tuo Food Passport completata',
+}
+const tFor = (language: Language, key: CopyKey): string => (key === 'checking' ? completedCheckingCopy[language] : (copy[language][key] as string)).replace(/CanIEatThis/g, 'Bitewise')
 
 type AccountCopy = {
   registerEyebrow: string; registerTitle: string; registerSubtitle: string; usernameLabel: string; usernamePlaceholder: string; emailLabel: string; emailPlaceholder: string; continueLabel: string
@@ -638,10 +651,10 @@ const localizedPostMeta: Record<Language, { justNow: string; worthTrying: string
 }
 
 const baseDishes: Dish[] = [
-  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
-  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
-  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
-  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: [], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
+  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasScallion: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
+  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], possibleIngredients: ['Beef', 'Scallions'], possibleZhIngredients: ['牛肉', '葱花'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
+  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], possibleIngredients: ['Scallions'], possibleZhIngredients: ['葱花'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
+  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: ['soy', 'mollusk'], possibleIngredients: ['Soy sauce or oyster sauce'], possibleZhIngredients: ['生抽或蚝油'], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
   { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.png', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
@@ -656,7 +669,7 @@ const demoKnowledge: Record<string, { id: string; nameEn: string; aliases: strin
 }
 const dishes: Dish[] = baseDishes.map((dish) => {
   const knowledge = demoKnowledge[dish.zh]
-  const ingredientEvidence = [...dish.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(knowledge?.ingredients || []).map((label) => ({ label, source: 'knowledge' as const }))].filter((item, index, items) => items.findIndex((candidate) => candidate.label.toLowerCase() === item.label.toLowerCase()) === index)
+  const ingredientEvidence = [...dish.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(knowledge?.ingredients || []).map((label) => ({ label, source: 'knowledge' as const })), ...(dish.possibleIngredients || []).map((label, index) => ({ label, labelZh: dish.possibleZhIngredients?.[index], source: 'unknown' as const }))].filter((item, index, items) => items.findIndex((candidate) => candidate.label.toLowerCase() === item.label.toLowerCase()) === index)
   const allergenEvidence = [...dish.allergens.map((id) => ({ id, source: 'menu' as const })), ...(knowledge?.allergens || []).map(({ id, label }) => ({ id, label, source: 'knowledge' as const }))]
   return { ...dish, ingredientEvidence, allergenEvidence, ...(knowledge ? { knowledgeMatch: { id: knowledge.id, nameZh: dish.zh, nameEn: knowledge.nameEn, aliases: knowledge.aliases } } : {}) }
 })
@@ -679,6 +692,8 @@ const mapBackendDish = (raw: BackendDish): Dish => {
     zhIngredients: local?.zhIngredients || raw.ingredients,
     allergens: raw.allergens,
     possibleAllergens: raw.possibleAllergens,
+    possibleIngredients: raw.possibleIngredients ?? local?.possibleIngredients,
+    possibleZhIngredients: raw.possibleZhIngredients ?? local?.possibleZhIngredients,
     tags: raw.tags,
     spicy: raw.spicy ?? 0,
     vegetarian: raw.vegetarian ?? local?.vegetarian ?? false,
@@ -689,13 +704,16 @@ const mapBackendDish = (raw: BackendDish): Dish => {
     hasSeafood: raw.hasSeafood ?? local?.hasSeafood,
     hasOffal: raw.hasOffal ?? local?.hasOffal,
     hasCilantro: raw.hasCilantro ?? local?.hasCilantro,
+    hasScallion: raw.hasScallion ?? local?.hasScallion,
+    hasGarlic: raw.hasGarlic ?? local?.hasGarlic,
+    hasLard: raw.hasLard ?? local?.hasLard,
     confidence: raw.confidence,
-    ingredientEvidence: raw.ingredientEvidence || raw.ingredients.map((label) => ({ label, source: 'menu' as const })),
+    ingredientEvidence: raw.ingredientEvidence || [...raw.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(raw.possibleIngredients || []).map((label, index) => ({ label, labelZh: raw.possibleZhIngredients?.[index], source: 'unknown' as const }))],
     allergenEvidence: raw.allergenEvidence || raw.allergens.map((id) => ({ id, source: 'menu' as const })),
     knowledgeMatch: raw.knowledgeMatch,
   }
 }
-const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized, ingredientEvidence: dish.ingredientEvidence, allergenEvidence: dish.allergenEvidence, knowledgeMatch: dish.knowledgeMatch })
+const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], possibleIngredients: dish.possibleIngredients, possibleZhIngredients: dish.possibleZhIngredients, confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, hasScallion: dish.hasScallion, hasGarlic: dish.hasGarlic, hasLard: dish.hasLard, localized: dish.localized, ingredientEvidence: dish.ingredientEvidence, allergenEvidence: dish.allergenEvidence, knowledgeMatch: dish.knowledgeMatch })
 
 const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
 
@@ -962,6 +980,38 @@ const foodCategories = [
   { id: 'bbq', label: '烧烤' },
 ]
 
+const findFoodCategoryDishIds: Record<string, string> = {
+  local: 'eggplant',
+  hotpot: 'soup',
+  sichuan: 'mapo-tofu',
+  snacks: 'kung-pao',
+  cantonese: 'lotus',
+  vegetarian: 'greens',
+  bbq: 'kung-pao',
+}
+
+const findFoodCategoryIds = (restaurant: SavedRestaurant) => {
+  const haystack = `${restaurant.name} ${restaurant.cuisine}`.toLowerCase()
+  const ids = new Set<string>()
+  if (/(本帮|江浙|上海|shanghai|jiangnan|home-style)/.test(haystack)) ids.add('local')
+  if (/(火锅|hot ?pot)/.test(haystack) || restaurant.intents?.includes('hot-pot')) ids.add('hotpot')
+  if (/(川|四川|川渝|sichuan|chongqing)/.test(haystack)) ids.add('sichuan')
+  if (/(小吃|饺|面食|面|snack|dumpling|noodle)/.test(haystack) || restaurant.intents?.some((intent) => ['dumplings', 'noodles'].includes(intent))) ids.add('snacks')
+  if (/(粤|广东|cantonese)/.test(haystack)) ids.add('cantonese')
+  if (/(素食|vegetarian)/.test(haystack)) ids.add('vegetarian')
+  if (/(烧烤|烤鱼|barbecue|grill|grilled)/.test(haystack)) ids.add('bbq')
+  return ids.size ? [...ids] : ['local']
+}
+
+const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; nearbyFood: string; clearSearch: string }> = {
+  en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', nearbyFood: 'Nearby Food', clearSearch: 'Clear search' },
+  ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', nearbyFood: '주변 음식', clearSearch: '검색 지우기' },
+  ja: { searchPlaceholder: '食べたいものを検索…', category: 'カテゴリー', seeAll: 'すべて見る', nearbyFood: '近くの料理', clearSearch: '検索を消去' },
+  ru: { searchPlaceholder: 'Найдите что-нибудь вкусное…', category: 'Категории', seeAll: 'Все', nearbyFood: 'Еда рядом', clearSearch: 'Очистить поиск' },
+  es: { searchPlaceholder: 'Busca algo delicioso…', category: 'Categorías', seeAll: 'Ver todo', nearbyFood: 'Comida cercana', clearSearch: 'Borrar búsqueda' },
+  it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', nearbyFood: 'Cibo vicino', clearSearch: 'Cancella ricerca' },
+}
+
 const foodPosts: FoodPost[] = [
   { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.png', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
   { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.png', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
@@ -1189,6 +1239,9 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     oil: <><path d="M8 5h8l1 3v12H7V8l1-3Z"/><path d="M8 8h8M10 12h4M10 16h4"/><path d="M10 3h4"/></>,
     cart: <><path d="M4 5h2l1.5 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></>,
     dots: <><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></>,
+    search: <><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></>,
+    pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></>,
+    star: <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>,
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
     leaf: <><path d="M20 4C10 4 5 8 5 14c0 3.3 2.3 6 5.5 6C17 20 20 12 20 4Z"/><path d="M4 21c2-4 5.3-6.7 10-8.5"/></>,
@@ -1339,6 +1392,14 @@ function App() {
     if (key === 'dietStyle') {
       const dietStyle = value as DietStyle
       return { ...current, dietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...(dietStyle === 'none' ? [] : [dietStyle])] }
+    }
+    if (key === 'dietStyleMulti') {
+      const dietStyle = value as DietStyle
+      const currentStyles = current.diets.filter((id) => dietStyleIds.includes(id))
+      if (dietStyle === 'none') return { ...current, dietStyle: 'none', diets: current.diets.filter((id) => !dietStyleIds.includes(id)) }
+      const selected = currentStyles.includes(dietStyle) || current.dietStyle === dietStyle
+      const nextStyles = selected ? currentStyles.filter((id) => id !== dietStyle) : [...currentStyles, dietStyle]
+      return { ...current, dietStyle: (nextStyles[0] || 'none') as DietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...nextStyles] }
     }
     if (key === 'faithDiet') {
       const faithDiet = value as FaithDiet
@@ -1580,7 +1641,6 @@ function App() {
     const hasSevereAllergy = activeAllergyProfiles.some((profile) => profile.severity === 'severe')
     const avoidsCrossContact = activeAllergyProfiles.some((profile) => profile.crossContact)
     const avoidFoods = new Set([...profile.avoidFoods, ...profile.diets.filter((id) => avoidFoodIds.includes(id))])
-    if (dish.confidence < 0.7) return 'UNKNOWN'
     if (profile.allergies.some((allergen) => allergenMatchKeys(allergen).some((key) => dish.allergens.includes(key)))) return 'CONFLICT'
     const isVegetarianProfile = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo'].includes(profile.dietStyle) || profile.diets.includes('vegetarian')
     if (isVegetarianProfile && !dish.vegetarian) return 'CONFLICT'
@@ -1593,12 +1653,23 @@ function App() {
     if (avoidFoods.has('no-poultry') && dish.hasPoultry) return 'CONFLICT'
     if (avoidFoods.has('no-seafood') && dish.hasSeafood) return 'CONFLICT'
     if (avoidFoods.has('no-offal') && dish.hasOffal) return 'CONFLICT'
+    if ((isVegetarianProfile || profile.dietStyle === 'vegan' || profile.diets.includes('vegan') || avoidFoods.has('no-pork') || profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasLard) return 'CONFLICT'
     if ((profile.faithDiet === 'halal' || profile.faithDiet === 'kosher') && dish.hasPork) return 'CONFLICT'
     if (profile.faithDiet === 'kosher' && dish.hasSeafood) return 'CONFLICT'
+    const possibleRecipeConflict = (dish.possibleIngredients || []).some((ingredient) => {
+      const lower = ingredient.toLowerCase()
+      return (avoidFoods.has('no-beef') && /beef|牛肉/.test(lower)) || (profile.preferences.includes('no-scallion') && /scallion|green onion|spring onion|葱/.test(lower)) || (profile.preferences.includes('no-garlic') && /garlic|蒜/.test(lower))
+    })
+    if (possibleRecipeConflict) return 'WARNING'
     if (hasSevereAllergy && dish.possibleAllergens?.some((allergen) => profile.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))) return 'WARNING'
+    const cookingOilWarning = profile.allergies.some((allergen) => ['peanut', 'soy', 'sesame'].includes(allergen)) && dish.ingredients.some((ingredient) => /oil|fryer|fat|油/i.test(ingredient))
+    if (cookingOilWarning) return 'WARNING'
     if (avoidsCrossContact && (dish.possibleAllergens?.length || dish.confidence < 0.9)) return 'WARNING'
     if (profile.preferences.includes('no-cilantro') && dish.hasCilantro) return 'WARNING'
+    if (profile.preferences.includes('no-scallion') && dish.hasScallion) return 'WARNING'
+    if (profile.preferences.includes('no-garlic') && dish.hasGarlic) return 'WARNING'
     if (profile.spiceLevel !== null && dish.spicy > profile.spiceLevel) return 'WARNING'
+    if (dish.confidence < 0.7) return 'UNKNOWN'
     return 'MATCH'
   }
   const getStatus = (dish: Dish): Status => analysisPassportKey === passportKey ? sessionRisks[dish.id]?.status || getStatusForPassport(dish, passport) : getStatusForPassport(dish, passport)
@@ -1741,7 +1812,7 @@ function App() {
     return <Onboarding language={language} setLanguage={setLanguage} step={onboardingStep} setStep={setOnboardingStep} passport={passport} updatePassport={updatePassport} finish={finishOnboarding} onRegister={completeRegistration} existingEmails={accounts.map((record) => record.profile.email)} t={t} />
   }
 
-  return <div className="app-root">
+  return <div className={`app-root ${screen === 'find' ? 'find-route' : ''}`}>
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
@@ -1754,7 +1825,7 @@ function App() {
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
-        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
         {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
@@ -1769,9 +1840,25 @@ function App() {
   </div>
 }
 
+type PassportFlowCopy = {
+  progress: (current: number, total: number) => string
+  skip: string
+  tapSeverity: string
+  otherPlaceholder: string
+}
+
+const passportFlowCopy: Record<Language, PassportFlowCopy> = {
+  en: { progress: (current, total) => `Question ${current} of ${total}`, skip: 'Skip', tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
+  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, skip: '건너뛰기', tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
+  ja: { progress: (current, total) => `${total}問中 ${current}問目`, skip: 'スキップ', tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
+  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, skip: 'Пропустить', tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
+  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, skip: 'Saltar', tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
+  it: { progress: (current, total) => `Domanda ${current} di ${total}`, skip: 'Salta', tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
+}
+
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
   const text = onboardingCopy[language]
-  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <section className="onboarding-card"><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button type="button" key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(2)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : step === 2 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(1)} onContinue={onRegister} /> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
+  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <section className="onboarding-card"><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button type="button" key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(2)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : step === 2 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(1)} onContinue={onRegister} /> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} onboardingMode />}</div></div>
 }
 
 function RegisterPage({ language, existingEmails, onBack, onContinue }: { language: Language; existingEmails: string[]; onBack: () => void; onContinue: (profile: UserProfile) => void }) {
@@ -1863,7 +1950,7 @@ function AllergenModal({ language, t, id, label, order, profile, otherValue, isE
         <span>{t('allergies')}</span>
       </div>
       <div className="allergen-modal-heading">
-        {order ? <img src={`/allergen-icons/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
+        {order ? <img src={`/allergen-icons-refined/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
         <div><span>{text.personalSettings}</span><h2 id="allergen-modal-title">{displayLabel}</h2></div>
       </div>
       {isOther && <label className="allergen-modal-input"><span>{text.otherAllergen}</span><input value={otherValue} onChange={(event) => onOtherChange(event.target.value)} placeholder={text.otherAllergenPlaceholder} autoFocus /></label>}
@@ -1935,7 +2022,7 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
           const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
           return <button type="button" key={item.id} aria-pressed={selected} className={`allergen-card ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => openAllergen(item.id)}>
             <span className="allergen-number">{item.order}</span>
-            <img className="allergen-icon" src={`/allergen-icons/${String(item.order).padStart(2, '0')}.png`} alt="" />
+            <img className="allergen-icon" src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" />
             <span className="allergen-label">{allergenLabel(language, item.id, item.label)}</span>
             {selected && <><span className="allergen-check"><Icon name="check" size={13} /></span><AllergenStatusIndicators profile={profile} t={t} /></>}
           </button>
@@ -2024,8 +2111,127 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
   </section>
 }
 
-function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan' }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string }) {
+function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0)
   const text = onboardingCopy[language]
+  const flowText = passportFlowCopy[language]
+  const localizedDietStyles = dietStyleOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].dietStyle[item.id] }))
+  const localizedFaithDiets = faithDietOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].faithDiet[item.id] }))
+  const localizedAvoidFoods = avoidFoodOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].avoidFood[item.id] }))
+  const localizedPreferences = preferenceOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].preference[item.id] }))
+  const questions = [
+    { title: t('anything') },
+    { title: text.howDoYouEat },
+    { title: text.faithRequirements },
+    { title: text.foodsToLeaveOut },
+    { title: text.spiceQuestion },
+    { title: text.otherPreferences },
+  ]
+  const severityOrder: AllergySeverity[] = ['mild', 'moderate', 'severe']
+
+  const cycleAllergen = (id: string) => {
+    const selected = passport.allergies.includes(id)
+    const currentSeverity = passport.allergyProfiles[id]?.severity || defaultAllergyProfile.severity
+    if (!selected) {
+      updatePassport('allergies', id)
+      updatePassport(`allergyProfile:${id}:severity`, 'mild')
+      updatePassport(`allergyProfile:${id}:crossContact`, false)
+      return
+    }
+    const currentIndex = severityOrder.indexOf(currentSeverity)
+    if (currentIndex < severityOrder.length - 1) {
+      updatePassport(`allergyProfile:${id}:severity`, severityOrder[currentIndex + 1])
+      return
+    }
+    updatePassport('allergies', id)
+  }
+
+  const renderOptionCard = (item: { id: string; label: string; icon: string; hint?: string }, selected: boolean, onSelect: () => void) => (
+    <button type="button" key={item.id} aria-pressed={selected} className={`passport-flow-option ${selected ? 'selected' : ''}`} onClick={onSelect}>
+      <span className="passport-flow-option-icon">{item.icon}</span>
+      <strong>{item.label}</strong>
+      {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+    </button>
+  )
+
+  const renderAllergens = () => <>
+    <div className="passport-flow-grid passport-flow-allergen-grid">
+      {allergyOptions.map((item) => {
+        const selected = passport.allergies.includes(item.id)
+        const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
+        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${profile.severity}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
+          <span className="passport-flow-option-icon"><img src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
+          <strong>{allergenLabel(language, item.id, item.label)}</strong>
+          {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+        </button>
+      })}
+    </div>
+    <label className="passport-flow-other-input"><span>{text.otherAllergen}</span><input value={passport.otherAllergen} onChange={(event) => updatePassport('otherAllergen', event.target.value)} placeholder={flowText.otherPlaceholder} /></label>
+  </>
+
+  const renderDietStyle = () => <div className="passport-flow-grid passport-flow-grid-2">
+    {localizedDietStyles.map((item) => {
+      const selected = item.id === 'none' ? passport.dietStyle === 'none' && !passport.diets.some((id) => dietStyleIds.includes(id)) : passport.diets.includes(item.id) || passport.dietStyle === item.id
+      return renderOptionCard(item, selected, () => updatePassport('dietStyleMulti', item.id))
+    })}
+  </div>
+
+  const renderFaith = () => <>
+    <div className="passport-flow-grid passport-flow-grid-2">
+      {localizedFaithDiets.map((item) => renderOptionCard(item, passport.faithDiet === item.id, () => updatePassport('faithDiet', item.id)))}
+    </div>
+    {passport.faithDiet === 'other' && <label className="passport-flow-other-input"><span>{text.faithOtherLabel}</span><input value={passport.faithOther} onChange={(event) => updatePassport('faithOther', event.target.value)} placeholder={text.faithOtherPlaceholder} /></label>}
+  </>
+
+  const renderAvoidFoods = () => <div className="passport-flow-grid passport-flow-grid-2">
+    {localizedAvoidFoods.map((item) => renderOptionCard(item, passport.avoidFoods.includes(item.id), () => updatePassport('avoidFoods', item.id)))}
+  </div>
+
+  const renderSpice = () => {
+    const options = [
+      { value: 0, label: text.spiceCannot, icon: '❌' },
+      { value: 1, label: text.spiceLow, icon: '🌶️' },
+      { value: 2, label: text.spiceMedium, icon: '🌶️🌶️' },
+      { value: 3, label: text.spiceAny, icon: '🌶️🌶️🌶️' },
+    ]
+    return <div className="passport-flow-grid passport-flow-grid-2">
+      {options.map((item) => <button type="button" key={item.value} aria-pressed={passport.spiceLevel === item.value} className={`passport-flow-option passport-flow-spice-option ${passport.spiceLevel === item.value ? 'selected' : ''}`} onClick={() => updatePassport('spiceLevel', item.value)}><span className="passport-flow-option-icon">{item.icon}</span><strong>{item.label}</strong>{passport.spiceLevel === item.value && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}</button>)}
+    </div>
+  }
+
+  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-3">
+    {localizedPreferences.map((item) => renderOptionCard(item, passport.preferences.includes(item.id), () => updatePassport('preferences', item.id)))}
+  </div>
+
+  const renderStepBody = () => {
+    if (currentStep === 0) return renderAllergens()
+    if (currentStep === 1) return renderDietStyle()
+    if (currentStep === 2) return renderFaith()
+    if (currentStep === 3) return renderAvoidFoods()
+    if (currentStep === 4) return renderSpice()
+    return renderPreferences()
+  }
+
+  const goNext = () => currentStep === questions.length - 1 ? onFinish() : setCurrentStep((step) => step + 1)
+  const goBack = () => currentStep === 0 ? onBack() : setCurrentStep((step) => step - 1)
+
+  return <div className="passport-flow">
+    <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
+      <div className="passport-flow-progress-top"><button type="button" className="passport-flow-back-top" onClick={goBack} aria-label={text.back}><Icon name="back" size={16} /></button><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
+      <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
+    </div>
+    <section className="passport-flow-question-card">
+      <h1>{questions[currentStep].title}</h1>
+      {currentStep === 0 && <p className="lead passport-flow-severity-copy">{flowText.tapSeverity}</p>}
+      <div className="passport-flow-body">{renderStepBody()}</div>
+    </section>
+    <div className="passport-flow-actions"><Button className="passport-flow-next-button" onClick={goNext} icon={currentStep === questions.length - 1 ? 'check' : 'arrow'}>{currentStep === questions.length - 1 ? t('save') : t('next')}</Button></div>
+  </div>
+}
+
+function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan', onboardingMode = false }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string; onboardingMode?: boolean }) {
+  const text = onboardingCopy[language]
+  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onFinish} /></section>
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
@@ -2037,7 +2243,7 @@ function Home({ t, p, language, userName, passport, dishes, sessionRestaurant, c
   const restaurantName = currentOrder?.restaurant || sessionRestaurant
   const restaurantInitials = currentOrder?.initials || initialsForRestaurant(sessionRestaurant)
   const greeting = { en: `Hello, ${userName}`, ko: `${userName}님, 안녕하세요`, ja: `こんにちは、${userName}さん`, ru: `Здравствуйте, ${userName}`, es: `Hola, ${userName}`, it: `Ciao, ${userName}` }[language]
-  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong><small>{hasSavedOrder && currentOrder ? <><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></> : hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small></span><button className="more-button" aria-label={p.moreOptions || 'More options'}><Icon name="dots" size={20} /></button></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
+  return <div className="page page-home"><section className="welcome-row"><div><h1>{greeting}<span className="olive-dot">.</span></h1><p>{t('subtitle')}</p></div></section><section className="hero-card"><div className="hero-copy"><span className="hero-kicker">{p.decisionFirst}</span><h2>{t('scanSub')}</h2><p>{t('scanSub')}<br />{p.scanConfidence}</p><Button onClick={() => openScreen('scan')} icon="scan">{t('scanMenu')}</Button></div><div className="hero-visual"><div className="hero-plate"><span>🥢</span><b>菜</b></div><div className="floating-pill pill-one"><Icon name="shield" size={15} /> {flagged ? `${flagged} ${p.conflictFlagged}` : p.evidenceAware}</div><div className="floating-pill pill-two"><Icon name="spark" size={15} /> {savedMenuCount} {p.dishesReady}</div></div></section>{hasScannedMenu && <section className="session-section"><div className="section-heading"><div><h2>{restaurantName}</h2></div><span className={`status-chip ${hasSavedOrder || hasScannedMenu ? 'match' : ''}`}><span className="status-dot" /> {hasSavedOrder ? p.orderSaved : hasScannedMenu ? t('menuReady') : t('scanMenu')}</span></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{hasScannedMenu ? `${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}` : t('scanMenu')}</small>}</span></div><div className="session-actions"><div className="session-primary-actions">{hasScannedMenu ? <button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button> : <button className="session-action-primary" type="button" onClick={() => openScreen('scan')}><Icon name="scan" size={17} /> {t('scanMenu')}</button>}{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(dishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}</div>{hasScannedMenu && <button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button>}</div></div></section>}</div>
 }
 
 function Scan({ t, p, language, restaurantName, setRestaurantName, scanImage, scanning, scanError, canRetry, photoInputRef, fileInputRef, cameraInputRef, showUploadOptions, setShowUploadOptions, handleFile, handleCameraFile, startScan, onRetry, onOpenCamera, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurantName: string; setRestaurantName: (value: string) => void; scanImage: string | null; scanning: boolean; scanError: string; canRetry: boolean; photoInputRef: RefObject<HTMLInputElement>; fileInputRef: RefObject<HTMLInputElement>; cameraInputRef: RefObject<HTMLInputElement>; showUploadOptions: boolean; setShowUploadOptions: (open: boolean) => void; handleFile: (event: ChangeEvent<HTMLInputElement>) => void; handleCameraFile: (event: ChangeEvent<HTMLInputElement>) => void; startScan: (file?: File) => void | Promise<void>; onRetry: () => void; onOpenCamera: () => void; onBack: () => void; onToast: (message: string) => void }) {
@@ -2264,12 +2470,17 @@ function ingredientDietConflict(label: string, dish: Dish, passport: Passport) {
   if (avoidFoods.has('no-seafood') && dish.hasSeafood) return has('fish', 'seafood', 'shrimp', 'prawn', 'shellfish')
   if (avoidFoods.has('no-offal') && dish.hasOffal) return has('offal', 'liver', 'intestine')
   if ((passport.faithDiet === 'halal' || passport.faithDiet === 'kosher') && dish.hasPork) return has('pork')
+  if (dish.hasLard && (isVegetarianProfile || passport.dietStyle === 'vegan' || passport.diets.includes('vegan') || avoidFoods.has('no-pork') || passport.faithDiet === 'halal' || passport.faithDiet === 'kosher')) return has('lard', 'pork fat', 'animal fat')
+  if (passport.preferences.includes('no-scallion') && dish.hasScallion) return has('scallion', 'green onion', 'spring onion')
+  if (passport.preferences.includes('no-garlic') && dish.hasGarlic) return has('garlic')
   return passport.faithDiet === 'kosher' && dish.hasSeafood && has('fish', 'seafood', 'shrimp', 'prawn', 'shellfish')
 }
 
 function buildIngredientChecks(dish: Dish, passport: Passport, status: Status): IngredientCheck[] {
   const evidence = dish.ingredientEvidence?.length ? dish.ingredientEvidence : dish.ingredients.map((label) => ({ label, source: 'menu' as const }))
   const checks = evidence.map<IngredientCheck>(({ label, source }) => {
+    if (source === 'unknown') return { label, risk: 'possible', source }
+    if (passport.allergies.some((allergen) => ['peanut', 'soy', 'sesame'].includes(allergen)) && /oil|fryer|fat|油/i.test(label)) return { label, risk: 'possible', source }
     const explicitConflict = passport.allergies.some((selected) => dish.allergens.some((allergen) => allergenMatchKeys(selected).includes(allergen)) && ingredientMatchesAllergen(label, selected))
     const dietaryConflict = ingredientDietConflict(label, dish, passport)
     if (explicitConflict || dietaryConflict) return { label, risk: 'conflict', source }
@@ -2302,20 +2513,30 @@ function ingredientRiskLabel(risk: IngredientRisk, t: (key: CopyKey) => string) 
 function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onAddToCart }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; passport: Passport; status: Status; onBack: () => void; onAsk: () => void; onAddToCart: () => void }) {
   const ingredientChecks = buildIngredientChecks(dish, passport, status)
   return <div className="page page-narrow page-detail">
-    <PageHeader title={t('viewDetails')} kicker={`${p.step} 03`} backLabel={p.back} onBack={onBack} />
-    <div className="detail-hero"><DishVisual dish={dish} language={language} /></div>
-    <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
-    <div className="detail-status-row"><StatusBadge status={status} t={t} /><span className="spice-chip">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span></div>
-    <section className="detail-ingredients-section">
-      <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
-      <div className="ingredient-scroller" role="list" aria-label={t('mainIngredients')}>
-        {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
+    <div className="detail-hero">
+      <DishVisual dish={dish} language={language} />
+      <div className="detail-hero-topbar">
+        <button type="button" className="detail-hero-icon" onClick={onBack} aria-label={p.back}><Icon name="back" size={19} /></button>
+        <div className="detail-hero-actions" aria-hidden="true"><span className="detail-hero-icon"><Icon name="heart" size={18} /></span><span className="detail-hero-icon"><Icon name="share" size={17} /></span></div>
       </div>
-    </section>
-    <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
-    <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
-    <SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div>
-    <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
+    </div>
+    <div className="detail-card">
+      <div className="detail-card-handle" aria-hidden="true" />
+      <div className="detail-card-topline"><span>{t('viewDetails')}</span><StatusBadge status={status} t={t} /></div>
+      <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
+      <div className="detail-meta-row"><span className="detail-meta-chip"><Icon name="chili" size={15} />{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span>{dish.tags.slice(0, 2).map((tag) => <span className="detail-meta-chip" key={tag}><Icon name="check" size={14} />{dishTagLabel(language, tag)}</span>)}</div>
+      <section className="detail-ingredients-section">
+        <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
+        <div className="ingredient-scroller" role="list" aria-label={t('mainIngredients')}>
+          {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
+        </div>
+      </section>
+      <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
+      <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>{t('whySeeing')}</SectionTitle></div><div className="detail-status-summary"><StatusBadge status={status} t={t} /><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
+      <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
+      <section className="detail-info-section"><SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div></section>
+      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
+    </div>
   </div>
 }
 function Cart({ t, p, language, cart, itemCount, total, getStatus, onBack, onIncrease, onDecrease, onClear, onConfirm }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; cart: CartItem[]; itemCount: number; total: number; getStatus: (dish: Dish) => Status; onBack: () => void; onIncrease: (dishId: string) => void; onDecrease: (dishId: string) => void; onClear: () => void; onConfirm: () => void }) {
@@ -2340,9 +2561,18 @@ const chineseRequirementLabels: Record<string, string> = {
 const chineseDietLabels: Record<DietStyle, string> = { none: '', vegetarian: '素食', vegan: '纯素', lacto: '奶素', ovo: '蛋素', 'lacto-ovo': '蛋奶素', pescatarian: '鱼素', flexitarian: '弹性素食' }
 const chineseFaithLabels: Record<FaithDiet, string> = { none: '', halal: '清真', kosher: '犹太洁食', other: '宗教饮食要求' }
 const chineseSeverityLabels: Record<AllergySeverity, string> = { mild: '轻度', moderate: '中度', severe: '严重' }
+const orderConfirmationCopy: Record<Language, { recipe: string; oil: string; fat: string }> = {
+  en: { recipe: 'Recipe detail to confirm', oil: 'Confirm cooking oil and shared fryer', fat: 'Confirm cooking fat and stock base' },
+  ko: { recipe: '레시피 확인 필요', oil: '조리유와 공용 튀김기 확인', fat: '조리 기름과 육수 확인' },
+  ja: { recipe: 'レシピの確認が必要', oil: '調理油と共用フライヤーを確認', fat: '調理油脂とスープのベースを確認' },
+  ru: { recipe: 'Нужно уточнить состав', oil: 'Уточнить масло и общую фритюрницу', fat: 'Уточнить жир и основу бульона' },
+  es: { recipe: 'Hay que confirmar la receta', oil: 'Confirmar el aceite y la freidora compartida', fat: 'Confirmar la grasa y la base del caldo' },
+  it: { recipe: 'Ricetta da verificare', oil: 'Verificare olio e friggitrice condivisa', fat: 'Verificare grasso di cottura e brodo' },
+}
 
-function orderRequirements(passport: Passport, language: Language, t: (key: CopyKey) => string): OrderRequirement[] {
+function orderRequirements(passport: Passport, language: Language, t: (key: CopyKey) => string, cart: CartItem[]): OrderRequirement[] {
   const p = pageCopy[language]
+  const confirmationCopy = orderConfirmationCopy[language]
   const requirements: OrderRequirement[] = []
   passport.allergies.forEach((id) => {
     const profile = passport.allergyProfiles[id] || defaultAllergyProfile
@@ -2359,13 +2589,29 @@ function orderRequirements(passport: Passport, language: Language, t: (key: Copy
   if (passport.spiceLevel !== null) requirements.push({ user: `${p.spicePreference || 'Spice'} ${passport.spiceLevel} ${p.upToLevel}`, chinese: `辣度不超过${passport.spiceLevel}级`, tone: 'note' })
   const needsCrossContactCare = (passport.crossContact && (passport.allergies.length > 0 || Boolean(passport.otherAllergen))) || passport.allergies.some((id) => (passport.allergyProfiles[id] || defaultAllergyProfile).crossContact) || Boolean(passport.otherAllergen)
   if (needsCrossContactCare) requirements.push({ user: p.avoidCrossContact, chinese: '请避免交叉接触', tone: 'alert' })
+
+  const cartNeedsRecipeConfirmation = cart.some(({ dish }) => Boolean(dish.possibleIngredients?.length) || dish.ingredients.some((ingredient) => ingredientCarrier(ingredient)) || dish.confidence < 0.9)
+  cart.filter(({ dish }) => dish.possibleIngredients?.length).forEach(({ dish }) => {
+    const labels = dish.possibleZhIngredients?.length ? dish.possibleZhIngredients : dish.possibleIngredients || []
+    requirements.push({ user: `${confirmationCopy.recipe} · ${dish.localized[language]}`, chinese: `请确认${dish.zh}是否含${labels.join('、')}。菜单未明确标注这些成分。`, tone: 'alert' })
+  })
+
+  const oilAllergenLabels = passport.allergies.map((id) => ({ peanut: '花生油', soy: '大豆油', sesame: '芝麻油' }[id])).filter((label): label is string => Boolean(label))
+  const hasAnyAllergy = passport.allergies.length > 0 || Boolean(passport.otherAllergen.trim())
+  if (cartNeedsRecipeConfirmation && hasAnyAllergy) {
+    const oilDetail = oilAllergenLabels.length ? `是否使用${oilAllergenLabels.join('、')}，并确认没有与相关过敏原共用锅具或炸油` : '是否接触我的过敏原，并确认没有与相关过敏原共用锅具或炸油'
+    requirements.push({ user: confirmationCopy.oil, chinese: `请确认烹调油和炸油${oilDetail}。`, tone: 'alert' })
+  }
+
+  const avoidsAnimalFat = ['vegetarian', 'lacto', 'ovo', 'lacto-ovo', 'vegan'].includes(passport.dietStyle) || passport.diets.some((id) => ['vegetarian', 'vegan'].includes(id)) || passport.avoidFoods.includes('no-pork') || passport.faithDiet === 'halal' || passport.faithDiet === 'kosher'
+  if (cartNeedsRecipeConfirmation && avoidsAnimalFat) requirements.push({ user: confirmationCopy.fat, chinese: '请确认未使用猪油、牛油、其他动物油或含肉高汤。', tone: 'alert' })
   return requirements
 }
 
 function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete, onAddMore, onSplitBill, onHome, onSpeak }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void; onSpeak: (text: string) => void }) {
   const t = (key: CopyKey) => tFor(language, key)
   const isSavedOrder = Boolean(savedOrder)
-  const requirements = orderRequirements(passport, language, t)
+  const requirements = orderRequirements(passport, language, t, cart)
   const total = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
   const count = cart.reduce((sum, item) => sum + item.quantity, 0)
   const waiterSpeech = [
@@ -2462,7 +2708,7 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
   }
 
   return <div className="page page-narrow page-bill">
-    <PageHeader title={t('billTitle')} hideKicker backLabel={p.back} onBack={onBack} action={<button className="icon-button soft"><Icon name="share" size={18} /></button>} />
+    <PageHeader title={t('billTitle')} hideKicker backLabel={p.back} onBack={onBack} />
     <div className="bill-context-card"><span className="bill-context-icon"><Icon name="receipt" size={20} /></span><div><strong>{order.restaurant}</strong><small>{order.time} · {billItems.length} {p.items}</small></div><span className={`bill-source-badge ${billSource === 'receipt' ? 'is-receipt' : ''}`}>{billSource === 'receipt' ? p.receiptUpdated : p.fromOrder}</span></div>
     <div className="bill-source-actions"><input ref={billInputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} hidden /><Button variant="secondary" onClick={() => billInputRef.current?.click()} icon="camera">{billSource === 'receipt' ? p.replaceReceipt : p.uploadReceipt}</Button>{billSource === 'receipt' && <button className="text-link" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
     <p className="bill-source-note"><Icon name="shield" size={14} /> {billSource === 'receipt' ? `${p.lineItemsUpdated} ${billReceiptName || p.uploadedReceipt}.` : p.usingOrderPrices}</p>
@@ -2473,127 +2719,65 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     <div className="split-result"><div className="result-heading"><h2>{p.everyonePays}</h2><span>{p.exactCheck} <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast(p.shareReady); navigator.share?.({ title: 'Bitewise bill split', text: `${p.everyonePays} ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
 }
 
-function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+function FindFood({ t, p, language, restaurants, savedRestaurants, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
   const [activeCategory, setActiveCategory] = useState('all')
-  const [likedPosts, setLikedPosts] = useState<string[]>([])
-  const [posts, setPosts] = useState<FoodPost[]>(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('cit:food-posts') || '') as FoodPost[]
-      return Array.isArray(saved) && saved.length ? saved : foodPosts
-    } catch { return foodPosts }
-  })
-  const [composerOpen, setComposerOpen] = useState(false)
-  const cameraInputRef = useRef<HTMLInputElement>(null)
-  const galleryInputRef = useRef<HTMLInputElement>(null)
-  const [composerRestaurantId, setComposerRestaurantId] = useState('')
-  const [draft, setDraft] = useState<FoodPostDraft>({ title: '', body: '', dish: '', dishMeta: '', category: 'local' })
-  const historyRestaurants = pastOrders.reduce<SavedRestaurant[]>((items, order) => {
-    const restaurant = restaurants.find((item) => item.name === order.restaurant)
-    return restaurant && !items.some((item) => item.id === restaurant.id) ? [...items, restaurant] : items
-  }, [])
-  const selectedRestaurant = historyRestaurants.find((restaurant) => restaurant.id === composerRestaurantId) || historyRestaurants[0]
-  const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
-  const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
-  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const [query, setQuery] = useState('')
   const nearbyText = nearbyCopy[language]
-  const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
-  const openComposer = () => {
-    const firstRestaurant = historyRestaurants[0]
-    const firstPost = firstRestaurant ? posts.find((post) => post.restaurantId === firstRestaurant.id) || foodPosts.find((post) => post.restaurantId === firstRestaurant.id) : undefined
-    setComposerRestaurantId(firstRestaurant?.id || '')
-    setDraft({ title: '', body: '', dish: firstPost?.dish || '', dishMeta: firstPost?.dishMeta || '', category: firstPost?.category || 'local' })
-    setComposerOpen(true)
-  }
-  const changeComposerRestaurant = (restaurantId: string) => {
-    const nextRestaurant = historyRestaurants.find((restaurant) => restaurant.id === restaurantId)
-    const nextPost = nextRestaurant ? posts.find((post) => post.restaurantId === nextRestaurant.id) || foodPosts.find((post) => post.restaurantId === nextRestaurant.id) : undefined
-    setComposerRestaurantId(restaurantId)
-    setDraft((current) => ({ ...current, dish: nextPost?.dish || '', dishMeta: nextPost?.dishMeta || '', category: nextPost?.category || current.category }))
-  }
-  const publishPost = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!selectedRestaurant || !draft.title.trim() || !draft.body.trim() || !draft.dish.trim()) return
-    const nextPost: FoodPost = {
-      id: `post-user-${Date.now()}`,
-      restaurantId: selectedRestaurant.id,
-      category: draft.category,
-      categoryLabel: foodCategoryLabels[language][draft.category] || foodCategoryLabels[language].all,
-      author: p.you,
-      initials: 'YO',
-      avatarTone: 'avatar-coral',
-      time: localizedPostMeta[language].justNow,
-      title: draft.title.trim(),
-      body: draft.body.trim(),
-      dish: draft.dish.trim(),
-      dishMeta: draft.dishMeta.trim() || localizedPostMeta[language].worthTrying,
-      imageSrc: draft.imageSrc || referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.png',
-      imageTone: referencePost?.imageTone || 'feed-image-coral',
-      likes: 0,
-      comments: 0,
-    }
-    setPosts((current) => [nextPost, ...current])
-    setActiveCategory('all')
-    setComposerOpen(false)
-  }
-  const handleFoodPhoto = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => setDraft((current) => ({ ...current, imageSrc: typeof reader.result === 'string' ? reader.result : current.imageSrc }))
-    reader.readAsDataURL(file)
-    event.target.value = ''
-  }
-  useEffect(() => { localStorage.setItem('cit:food-posts', JSON.stringify(posts)) }, [posts])
-  useEffect(() => {
-    if (!composerOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-    return () => { document.body.style.overflow = previousOverflow }
-  }, [composerOpen])
+  const browseText = findBrowseCopy[language]
+  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
+    ...category,
+    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
+  }))
+  const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
+    const dish = dishes[index % dishes.length]
+    const categoryIds = findFoodCategoryIds(restaurant)
+    if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
+    return { restaurant, dish, categoryIds }
+  })
+  const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
+  const visibleFood = nearbyFood.filter(({ restaurant, dish, categoryIds }) => {
+    const restaurantText = localizedRestaurant(language, restaurant)
+    const searchable = `${restaurant.name} ${restaurantText.name || ''} ${restaurant.cuisine} ${restaurantText.cuisine} ${restaurant.address || ''} ${dish.name} ${dish.zh} ${dish.localized[language]}`.toLowerCase().replace(/\s+/g, '')
+    return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
+  })
 
-  return <div className="page page-narrow page-find">
-    <PageHeader title={t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
-    <div className="feed-intro">
-      <div><h1>{p.findHeading}</h1><p>{p.findDescription}</p></div>
+  return <div className="page page-find">
+    <div className="find-search-row">
+      <button type="button" className="find-back-button" onClick={onBack} aria-label={p.back}><Icon name="back" size={21} /></button>
+      <label className="find-search-box">
+        <Icon name="search" size={20} stroke={1.7} />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={browseText.searchPlaceholder} aria-label={browseText.searchPlaceholder} />
+        {query && <button type="button" onClick={() => setQuery('')} aria-label={browseText.clearSearch}><Icon name="close" size={16} /></button>}
+      </label>
     </div>
-    <div className="feed-categories" aria-label={p.foodCategories}>{foodCategories.map((category) => <button type="button" key={category.id} className={activeCategory === category.id ? 'active' : ''} onClick={() => setActiveCategory(category.id)}>{foodCategoryLabels[language][category.id]}</button>)}</div>
-    <div className="feed-context"><span className="feed-context-icon"><Icon name="leaf" size={15} /></span><span><strong>{p.communityPicks}</strong><small>{p.communityHint}</small></span></div>
-    <div className="feed-grid">{visiblePosts.map((post) => {
-      const restaurant = restaurants.find((item) => item.id === post.restaurantId)
-      if (!restaurant) return null
-      const restaurantText = localizedRestaurant(language, restaurant)
-      const postText = localizedPost(language, post)
-      const saved = savedRestaurants.some((item) => item.id === restaurant.id)
-      const liked = likedPosts.includes(post.id)
-      return <article className="feed-post" key={post.id}>
-        <div className={`feed-media ${post.imageTone}`}><img src={post.imageSrc} alt={postText.dish} /><span className="feed-media-category">{foodCategoryLabels[language][post.category] || post.categoryLabel}</span></div>
-        <div className="feed-post-body">
-          <div className="feed-author"><span className={`feed-avatar ${post.avatarTone}`}>{post.initials}</span><span><strong>{post.author}</strong><small>{postText.time} · {restaurantText.location.split(' · ')[0]}</small></span><button type="button" className="feed-more" aria-label={`${p.moreOptions} ${postText.title}`}><Icon name="dots" size={17} /></button></div>
-          <h2>{postText.title}</h2>
-          <p>{postText.body}</p>
-          <div className="feed-dish"><small>{p.mustTry}</small><strong>{postText.dish}</strong><span>{postText.dishMeta}</span></div>
-          <div className="feed-restaurant"><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurantText.name || restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span><button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurantText.name || restaurant.name}` : `${p.save} ${restaurantText.name || restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button></div>
-          <div className="feed-actions"><button type="button" className={liked ? 'liked' : ''} onClick={() => toggleLike(post.id)}><Icon name="heart" size={15} /> {post.likes + (liked ? 1 : 0)}</button><span><Icon name="dots" size={15} /> {post.comments}</span><button type="button" aria-label={`${p.sharePost} ${postText.title}`}><Icon name="share" size={15} /></button></div>
-        </div>
-      </article>
-    })}</div>
-    {!visiblePosts.length && <div className="feed-empty"><span>🍜</span><strong>{p.noNotes}</strong><small>{p.keepExploring}</small></div>}
-    {nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><h2>{nearbyText.title}</h2><p>{nearbyText.description}</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); const displayName = restaurantText.name || restaurant.name; const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{displayName}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurantText.cuisine}</p><small><Icon name="shield" size={14} /> {restaurantText.why}</small><div className="restaurant-meta"><span>{restaurantText.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">{nearbyText.source}: {restaurant.source}</small></div></article> })}</div></section>}
-    {composerOpen && createPortal(<div className="sheet-backdrop feed-compose-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false) }}><form className="feed-compose-sheet" role="dialog" aria-modal="true" aria-label={p.createFoodPost} onSubmit={publishPost} onMouseDown={(event) => event.stopPropagation()}>
-      <div className="feed-compose-heading"><div><h2>{p.createFoodNote}</h2><p>{p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>
-      <label className="feed-compose-field">{p.visitedRestaurant}<select value={selectedRestaurant?.id || ''} onChange={(event) => changeComposerRestaurant(event.target.value)} disabled={!historyRestaurants.length}>{historyRestaurants.map((restaurant) => <option key={restaurant.id} value={restaurant.id}>{restaurant.name} · {localizedRestaurant(language, restaurant).location}</option>)}</select></label>
-      <div className="feed-compose-order-note"><Icon name="receipt" size={15} /><span>{selectedRestaurant ? `${p.pastVisit} · ${pastOrders.find((order) => order.restaurant === selectedRestaurant.name)?.time || ''}` : p.noHistory}</span></div>
-      <section className="feed-compose-photo-field"><div className="feed-compose-label">Food photo <span>Optional, but a real plate helps others decide</span></div>{draft.imageSrc ? <div className="feed-compose-photo-preview"><img src={draft.imageSrc} alt="Selected food" /><button type="button" onClick={() => setDraft((current) => ({ ...current, imageSrc: undefined }))}>Remove</button></div> : <div className="feed-compose-photo-actions"><button type="button" onClick={() => cameraInputRef.current?.click()}><Icon name="camera" size={18} /><strong>Take a photo</strong><small>Use your camera</small></button><button type="button" onClick={() => galleryInputRef.current?.click()}><Icon name="image" size={18} /><strong>Choose from gallery</strong><small>Pick from your album</small></button></div>}<input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFoodPhoto} hidden /><input ref={galleryInputRef} type="file" accept="image/*" onChange={handleFoodPhoto} hidden /></section>
-      <label className="feed-compose-field">Post title <span className="feed-compose-helper">Give this meal a memorable one-line takeaway</span><input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder={p.titlePlaceholder} required /></label>
-      <label className="feed-compose-field">What did you order? <span className="feed-compose-helper">Name the dish others should look for</span><input value={draft.dish} onChange={(event) => setDraft({ ...draft, dish: event.target.value })} placeholder={p.dishName} required /></label>
-      <label className="feed-compose-field">{p.cuisineCategory}<select value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })}>{foodCategories.filter((category) => category.id !== 'all').map((category) => <option key={category.id} value={category.id}>{foodCategoryLabels[language][category.id]}</option>)}</select></label>
-      <label className="feed-compose-field">Your quick take <span className="feed-compose-helper">Tell people about taste, texture, portion, or who would enjoy it</span><textarea value={draft.body} onChange={(event) => setDraft({ ...draft, body: event.target.value })} placeholder="e.g. Floral and chewy, best shared after a spicy meal." rows={4} required /></label>
-      <label className="feed-compose-field">Extra details <span className="feed-compose-helper">Optional: price, spice level, or a useful ordering tip</span><input value={draft.dishMeta} onChange={(event) => setDraft({ ...draft, dishMeta: event.target.value })} placeholder={p.dishDetailsPlaceholder} /></label>
-      <div className="feed-compose-actions"><button type="button" className="button button-secondary" onClick={() => setComposerOpen(false)}>{p.cancel}</button><Button type="submit" icon="plus" disabled={!selectedRestaurant}>{p.publishNote}</Button></div>
-    </form></div>, document.body)}
+
+    <section className="find-browse-section">
+      <div className="find-section-heading"><h2>{browseText.category}</h2><button type="button" onClick={() => setActiveCategory('all')}>{browseText.seeAll}</button></div>
+      <div className="find-category-scroll" aria-label={browseText.category}>
+        {categoryCards.map((category, index) => <button type="button" key={category.id} className={`find-category-card find-category-card-${index + 1} ${activeCategory === category.id ? 'active' : ''}`} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>
+          <span>{foodCategoryLabels[language][category.id]}</span>
+          <img src={category.dish.imageSrc} alt="" loading="lazy" />
+        </button>)}
+      </div>
+    </section>
+
+    <section className="find-browse-section find-nearby-section" id="nearby-food">
+      <div className="find-section-heading"><h2>{browseText.nearbyFood}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
+      <div className="find-location"><Icon name="pin" size={16} stroke={1.9} /><span>{nearbyText.area}</span></div>
+      <div className="nearby-food-grid">
+        {visibleFood.map(({ restaurant, dish }) => {
+          const restaurantText = localizedRestaurant(language, restaurant)
+          const displayName = restaurantText.name || restaurant.name
+          const saved = savedRestaurants.some((item) => item.id === restaurant.id)
+          return <article className="nearby-food-card" key={restaurant.id}>
+            <div className="nearby-food-media"><img src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /><span className="nearby-food-rating"><Icon name="star" size={13} stroke={1.6} /> {restaurant.rating?.toFixed(1) || '—'}</span><button type="button" className={`nearby-food-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button></div>
+            <div className="nearby-food-body"><h3>{dish.localized[language]}</h3><p>{displayName}</p><div className="nearby-food-meta"><strong>¥ {dish.price}</strong><span>{restaurant.distanceKm?.toFixed(1) || '—'} km</span></div></div>
+          </article>
+        })}
+      </div>
+      {!visibleFood.length && <div className="find-empty"><Icon name="search" size={24} /><strong>{p.noNotes}</strong><span>{p.keepExploring}</span></div>}
+    </section>
   </div>
 }
 
@@ -2620,7 +2804,7 @@ function OrderCard({ language, text, order, onOpenOrder, onSplitBill }: { langua
 function PassportPage({ language, t, passport, updatePassport, onBack }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void }) {
   return <div className="page page-narrow page-profile profile-passport-page">
     <div className="profile-passport-frame">
-      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" />
+      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" onboardingMode />
     </div>
   </div>
 }
