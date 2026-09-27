@@ -2477,7 +2477,7 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
     </div>
     <div className="detail-card">
       <div className="detail-card-handle" aria-hidden="true" />
-      <div className="detail-card-topline"><span>{t('viewDetails')}</span><StatusBadge status={status} t={t} /></div>
+      <div className="detail-card-topline"><StatusBadge status={status} t={t} /></div>
       <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
       <div className="detail-meta-row"><span className="detail-meta-chip"><Icon name="chili" size={15} />{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span>{dish.tags.slice(0, 2).map((tag) => <span className="detail-meta-chip" key={tag}><Icon name="check" size={14} />{dishTagLabel(language, tag)}</span>)}</div>
       <section className="detail-ingredients-section">
@@ -2487,7 +2487,7 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
         </div>
       </section>
       <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
-      <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>{t('whySeeing')}</SectionTitle></div><div className="detail-status-summary"><StatusBadge status={status} t={t} /><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
+      <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>Description</SectionTitle></div><div className="detail-status-summary"><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
       <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
       <section className="detail-info-section"><SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div></section>
       <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>

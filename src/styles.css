@@ -1361,7 +1361,6 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .illustrative .icon { color: var(--brand); }
 .detail-info-section { padding-top: 17px; margin-top: 17px; border-top: 1px solid #f0e4e4; }
 .detail-status-summary { display: flex; align-items: flex-start; gap: 9px; padding: 11px 12px; border-radius: 14px; background: #fff8f7; }
-.detail-status-summary .status-badge { padding: 6px 8px; }
 .detail-status-summary > span:last-child { flex: 1; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .fact-grid { gap: 8px; margin-top: 17px; }
 .page-detail .fact-card { min-height: 84px; border: 1px solid #f0dddd; background: #fff; box-shadow: none; }
