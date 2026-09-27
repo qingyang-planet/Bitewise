@@ -2159,10 +2159,11 @@ function PassportQuestionFlow({ language, t, passport, updatePassport, onBack, o
       {allergyOptions.map((item) => {
         const selected = passport.allergies.includes(item.id)
         const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
-        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${profile.severity}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
+        const severityNumber = selected ? severityOrder.indexOf(profile.severity) + 1 : 0
+        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${severityNumber} · ${t(profile.severity)}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
           <span className="passport-flow-option-icon"><img src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
           <strong>{allergenLabel(language, item.id, item.label)}</strong>
-          {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+          {selected && <span className={`passport-flow-option-severity passport-flow-option-severity-${profile.severity}`} aria-hidden="true">{severityNumber}</span>}
         </button>
       })}
     </div>
