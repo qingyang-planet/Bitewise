@@ -971,6 +971,29 @@ const foodCategories = [
   { id: 'bbq', label: '烧烤' },
 ]
 
+const findFoodCategoryDishIds: Record<string, string> = {
+  local: 'eggplant',
+  hotpot: 'soup',
+  sichuan: 'mapo-tofu',
+  snacks: 'kung-pao',
+  cantonese: 'lotus',
+  vegetarian: 'greens',
+  bbq: 'kung-pao',
+}
+
+const findFoodCategoryIds = (restaurant: SavedRestaurant) => {
+  const haystack = `${restaurant.name} ${restaurant.cuisine}`.toLowerCase()
+  const ids = new Set<string>()
+  if (/(本帮|江浙|上海|shanghai|jiangnan|home-style)/.test(haystack)) ids.add('local')
+  if (/(火锅|hot ?pot)/.test(haystack) || restaurant.intents?.includes('hot-pot')) ids.add('hotpot')
+  if (/(川|四川|川渝|sichuan|chongqing)/.test(haystack)) ids.add('sichuan')
+  if (/(小吃|饺|面食|面|snack|dumpling|noodle)/.test(haystack) || restaurant.intents?.some((intent) => ['dumplings', 'noodles'].includes(intent))) ids.add('snacks')
+  if (/(粤|广东|cantonese)/.test(haystack)) ids.add('cantonese')
+  if (/(素食|vegetarian)/.test(haystack)) ids.add('vegetarian')
+  if (/(烧烤|烤鱼|barbecue|grill|grilled)/.test(haystack)) ids.add('bbq')
+  return ids.size ? [...ids] : ['local']
+}
+
 const homeRestaurantImageSrc: Record<string, string> = {
   'zuihuihuang-fudan-zhengli': '/dish-photos/red-lantern-signature.png',
   'haerbin-snacks-zhengli': '/dish-photos/jade-soup-dumpling-signature.png',
@@ -1005,6 +1028,15 @@ const homeCopy: Record<Language, HomeCopy> = {
   ru: { scanKicker: 'СКАНИРОВАТЬ МЕНЮ', scanTitle: 'Читайте любое меню проще.', scanDescription: 'Сфотографируйте или загрузите меню, чтобы увидеть блюда, ингредиенты и проверки пищевого паспорта.', takePhoto: 'Сфотографировать', uploadFromFile: 'Загрузить файл', scanHint: 'Меню сохранится в текущей сессии.', ongoingSession: 'Текущая сессия', nearbyFood: 'Еда рядом', nearbyDescription: 'Настоящие блюда из ресторанов у кампуса Фудань на Чжэнли.', location: 'Фудань · до 3 км', featured: 'Рекомендуем', distance: 'расстояние', restaurantPhotoAlt: 'Рекомендуемое блюдо' },
   es: { scanKicker: 'ESCANEA TU MENÚ', scanTitle: 'Lee cualquier menú con más claridad.', scanDescription: 'Haz una foto o sube un menú para ver platos, ingredientes y comprobaciones de tu pasaporte en un solo lugar.', takePhoto: 'Hacer una foto', uploadFromFile: 'Subir desde archivo', scanHint: 'El menú queda guardado en esta sesión.', ongoingSession: 'Sesión en curso', nearbyFood: 'Comida cercana', nearbyDescription: 'Platos reales de restaurantes alrededor del campus Fudan Zhengli.', location: 'Fudan · hasta 3 km', featured: 'Recomendado', distance: 'distancia', restaurantPhotoAlt: 'Plato recomendado en' },
   it: { scanKicker: 'SCANSIONA IL MENU', scanTitle: 'Leggi ogni menu più facilmente.', scanDescription: 'Scatta una foto o carica un menu per vedere piatti, ingredienti e controlli del Food Passport in un solo posto.', takePhoto: 'Scatta una foto', uploadFromFile: 'Carica da file', scanHint: 'Il menu resta collegato a questa sessione.', ongoingSession: 'Sessione in corso', nearbyFood: 'Cibo vicino', nearbyDescription: 'Piatti reali dai ristoranti intorno al campus Fudan Zhengli.', location: 'Fudan · entro 3 km', featured: 'In evidenza', distance: 'distanza', restaurantPhotoAlt: 'Piatto in evidenza da' },
+}
+
+const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; nearbyFood: string; clearSearch: string }> = {
+  en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', nearbyFood: 'Nearby Food', clearSearch: 'Clear search' },
+  ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', nearbyFood: '주변 음식', clearSearch: '검색 지우기' },
+  ja: { searchPlaceholder: '食べたいものを検索…', category: 'カテゴリー', seeAll: 'すべて見る', nearbyFood: '近くの料理', clearSearch: '検索を消去' },
+  ru: { searchPlaceholder: 'Найдите что-нибудь вкусное…', category: 'Категории', seeAll: 'Все', nearbyFood: 'Еда рядом', clearSearch: 'Очистить поиск' },
+  es: { searchPlaceholder: 'Busca algo delicioso…', category: 'Categorías', seeAll: 'Ver todo', nearbyFood: 'Comida cercana', clearSearch: 'Borrar búsqueda' },
+  it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', nearbyFood: 'Cibo vicino', clearSearch: 'Cancella ricerca' },
 }
 
 const foodPosts: FoodPost[] = [
@@ -1233,6 +1265,9 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     oil: <><path d="M8 5h8l1 3v12H7V8l1-3Z"/><path d="M8 8h8M10 12h4M10 16h4"/><path d="M10 3h4"/></>,
     cart: <><path d="M4 5h2l1.5 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></>,
     dots: <><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></>,
+    search: <><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></>,
+    pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></>,
+    star: <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>,
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
     leaf: <><path d="M20 4C10 4 5 8 5 14c0 3.3 2.3 6 5.5 6C17 20 20 12 20 4Z"/><path d="M4 21c2-4 5.3-6.7 10-8.5"/></>,
@@ -1385,6 +1420,14 @@ function App() {
     if (key === 'dietStyle') {
       const dietStyle = value as DietStyle
       return { ...current, dietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...(dietStyle === 'none' ? [] : [dietStyle])] }
+    }
+    if (key === 'dietStyleMulti') {
+      const dietStyle = value as DietStyle
+      const currentStyles = current.diets.filter((id) => dietStyleIds.includes(id))
+      if (dietStyle === 'none') return { ...current, dietStyle: 'none', diets: current.diets.filter((id) => !dietStyleIds.includes(id)) }
+      const selected = currentStyles.includes(dietStyle) || current.dietStyle === dietStyle
+      const nextStyles = selected ? currentStyles.filter((id) => id !== dietStyle) : [...currentStyles, dietStyle]
+      return { ...current, dietStyle: (nextStyles[0] || 'none') as DietStyle, diets: [...current.diets.filter((id) => !dietStyleIds.includes(id)), ...nextStyles] }
     }
     if (key === 'faithDiet') {
       const faithDiet = value as FaithDiet
@@ -1807,7 +1850,7 @@ function App() {
     return <Onboarding language={language} setLanguage={setLanguage} step={onboardingStep} setStep={setOnboardingStep} passport={passport} updatePassport={updatePassport} finish={finishOnboarding} onRegister={completeRegistration} existingEmails={accounts.map((record) => record.profile.email)} t={t} />
   }
 
-  return <div className="app-root">
+  return <div className={`app-root ${screen === 'find' ? 'find-route' : ''}`}>
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
@@ -1820,8 +1863,8 @@ function App() {
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
-        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
-        {screen === 'community' && <FindFood variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'community' && <CommunityPage variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
         {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
@@ -1830,16 +1873,32 @@ function App() {
         {screen === 'companionDetail' && selectedCompanion && <CompanionDetailPage p={p} language={language} companion={selectedCompanion} onUnlink={() => { removeCompanion(selectedCompanion.inviteId); openScreen('companions') }} onBack={() => openScreen('companions')} />}
       </main>
       {screen === 'home' && <><input ref={homeCameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleCameraFile} hidden /><input ref={homeUploadInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile} hidden /></>}
-      {(['home', 'find', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
+      {(['home', 'find', 'community', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
     {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
 
+type PassportFlowCopy = {
+  progress: (current: number, total: number) => string
+  skip: string
+  tapSeverity: string
+  otherPlaceholder: string
+}
+
+const passportFlowCopy: Record<Language, PassportFlowCopy> = {
+  en: { progress: (current, total) => `Question ${current} of ${total}`, skip: 'Skip', tapSeverity: 'Tap once for mild · twice for moderate · three times for severe', otherPlaceholder: 'e.g. mustard' },
+  ko: { progress: (current, total) => `${total}개 질문 중 ${current}번째`, skip: '건너뛰기', tapSeverity: '한 번: 가벼움 · 두 번: 보통 · 세 번: 심각', otherPlaceholder: '예: 겨자' },
+  ja: { progress: (current, total) => `${total}問中 ${current}問目`, skip: 'スキップ', tapSeverity: '1回: 軽度 · 2回: 中程度 · 3回: 重度', otherPlaceholder: '例：マスタード' },
+  ru: { progress: (current, total) => `Вопрос ${current} из ${total}`, skip: 'Пропустить', tapSeverity: '1 нажатие: лёгкая · 2: средняя · 3: сильная', otherPlaceholder: 'например, горчица' },
+  es: { progress: (current, total) => `Pregunta ${current} de ${total}`, skip: 'Saltar', tapSeverity: '1 toque: leve · 2: moderada · 3: grave', otherPlaceholder: 'p. ej., mostaza' },
+  it: { progress: (current, total) => `Domanda ${current} di ${total}`, skip: 'Salta', tapSeverity: '1 tocco: lieve · 2: moderata · 3: grave', otherPlaceholder: 'es. senape' },
+}
+
 function Onboarding({ language, setLanguage, step, setStep, passport, updatePassport, finish, onRegister, existingEmails, t }: { language: Language; setLanguage: (language: Language) => void; step: number; setStep: (step: number) => void; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; finish: () => void; onRegister: (profile: UserProfile) => void; existingEmails: string[]; t: (key: CopyKey) => string }) {
   const text = onboardingCopy[language]
-  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <section className="onboarding-card"><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button type="button" key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(2)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : step === 2 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(1)} onContinue={onRegister} /> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} />}</div></div>
+  return <div className="onboarding-root"><div className={`onboarding-frame ${step === 0 ? 'onboarding-frame-welcome' : ''}`}><div className="onboarding-progress"><LogoMark /><div className="onboarding-brand"><strong>BITEWISE</strong><small>食见</small></div></div>{step === 0 ? <WelcomePage onContinue={() => setStep(1)} /> : step === 1 ? <section className="onboarding-card"><h1>{t('selectLanguage')}</h1><p className="lead">{t('languageSub')}</p><div className="language-grid">{languages.map((item) => <button type="button" key={item.code} className={`language-card ${language === item.code ? 'selected' : ''}`} onClick={() => setLanguage(item.code)}><span>{item.label}</span><small>{item.native}</small>{language === item.code && <span className="selected-check"><Icon name="check" size={14} /></span>}</button>)}</div><Button className="full-button" onClick={() => setStep(2)} icon="arrow">{t('next')}</Button><p className="safe-note"><Icon name="shield" size={16} /> {text.clarityNote}</p></section> : step === 2 ? <RegisterPage language={language} existingEmails={existingEmails} onBack={() => setStep(1)} onContinue={onRegister} /> : <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => setStep(2)} onFinish={finish} onboardingMode />}</div></div>
 }
 
 function RegisterPage({ language, existingEmails, onBack, onContinue }: { language: Language; existingEmails: string[]; onBack: () => void; onContinue: (profile: UserProfile) => void }) {
@@ -1931,7 +1990,7 @@ function AllergenModal({ language, t, id, label, order, profile, otherValue, isE
         <span>{t('allergies')}</span>
       </div>
       <div className="allergen-modal-heading">
-        {order ? <img src={`/allergen-icons/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
+        {order ? <img src={`/allergen-icons-refined/${String(order).padStart(2, '0')}.png`} alt="" /> : <span className="allergen-modal-other-icon">＋</span>}
         <div><span>{text.personalSettings}</span><h2 id="allergen-modal-title">{displayLabel}</h2></div>
       </div>
       {isOther && <label className="allergen-modal-input"><span>{text.otherAllergen}</span><input value={otherValue} onChange={(event) => onOtherChange(event.target.value)} placeholder={text.otherAllergenPlaceholder} autoFocus /></label>}
@@ -2003,7 +2062,7 @@ function AllergenSection({ language, t, passport, updatePassport }: { language: 
           const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
           return <button type="button" key={item.id} aria-pressed={selected} className={`allergen-card ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => openAllergen(item.id)}>
             <span className="allergen-number">{item.order}</span>
-            <img className="allergen-icon" src={`/allergen-icons/${String(item.order).padStart(2, '0')}.png`} alt="" />
+            <img className="allergen-icon" src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" />
             <span className="allergen-label">{allergenLabel(language, item.id, item.label)}</span>
             {selected && <><span className="allergen-check"><Icon name="check" size={13} /></span><AllergenStatusIndicators profile={profile} t={t} /></>}
           </button>
@@ -2092,8 +2151,126 @@ function EverydayPreferenceSection({ language, passport, updatePassport }: { lan
   </section>
 }
 
-function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan' }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string }) {
+function PassportQuestionFlow({ language, t, passport, updatePassport, onFinish }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onFinish: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0)
   const text = onboardingCopy[language]
+  const flowText = passportFlowCopy[language]
+  const localizedDietStyles = dietStyleOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].dietStyle[item.id] }))
+  const localizedFaithDiets = faithDietOptions.map((item) => ({ ...item, ...passportOptionTranslations[language].faithDiet[item.id] }))
+  const localizedAvoidFoods = avoidFoodOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].avoidFood[item.id] }))
+  const localizedPreferences = preferenceOptions.map((item) => ({ ...item, label: passportOptionTranslations[language].preference[item.id] }))
+  const questions = [
+    { title: t('anything') },
+    { title: text.howDoYouEat },
+    { title: text.faithRequirements },
+    { title: text.foodsToLeaveOut },
+    { title: text.spiceQuestion },
+    { title: text.otherPreferences },
+  ]
+  const severityOrder: AllergySeverity[] = ['mild', 'moderate', 'severe']
+
+  const cycleAllergen = (id: string) => {
+    const selected = passport.allergies.includes(id)
+    const currentSeverity = passport.allergyProfiles[id]?.severity || defaultAllergyProfile.severity
+    if (!selected) {
+      updatePassport('allergies', id)
+      updatePassport(`allergyProfile:${id}:severity`, 'mild')
+      updatePassport(`allergyProfile:${id}:crossContact`, false)
+      return
+    }
+    const currentIndex = severityOrder.indexOf(currentSeverity)
+    if (currentIndex < severityOrder.length - 1) {
+      updatePassport(`allergyProfile:${id}:severity`, severityOrder[currentIndex + 1])
+      return
+    }
+    updatePassport('allergies', id)
+  }
+
+  const renderOptionCard = (item: { id: string; label: string; icon: string; hint?: string }, selected: boolean, onSelect: () => void) => (
+    <button type="button" key={item.id} aria-pressed={selected} className={`passport-flow-option ${selected ? 'selected' : ''}`} onClick={onSelect}>
+      <span className="passport-flow-option-icon">{item.icon}</span>
+      <strong>{item.label}</strong>
+      {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+    </button>
+  )
+
+  const renderAllergens = () => <>
+    <div className="passport-flow-grid passport-flow-allergen-grid">
+      {allergyOptions.map((item) => {
+        const selected = passport.allergies.includes(item.id)
+        const profile = passport.allergyProfiles[item.id] || defaultAllergyProfile
+        return <button type="button" key={item.id} aria-pressed={selected} aria-label={`${allergenLabel(language, item.id, item.label)}${selected ? ` · ${profile.severity}` : ''}`} className={`passport-flow-option passport-flow-allergen-option ${selected ? `selected allergen-severity-${profile.severity}` : ''}`} onClick={() => cycleAllergen(item.id)}>
+          <span className="passport-flow-option-icon"><img src={`/allergen-icons-refined/${String(item.order).padStart(2, '0')}.png`} alt="" /></span>
+          <strong>{allergenLabel(language, item.id, item.label)}</strong>
+          {selected && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}
+        </button>
+      })}
+    </div>
+    <label className="passport-flow-other-input"><span>{text.otherAllergen}</span><input value={passport.otherAllergen} onChange={(event) => updatePassport('otherAllergen', event.target.value)} placeholder={flowText.otherPlaceholder} /></label>
+  </>
+
+  const renderDietStyle = () => <div className="passport-flow-grid passport-flow-grid-2">
+    {localizedDietStyles.map((item) => {
+      const selected = item.id === 'none' ? passport.dietStyle === 'none' && !passport.diets.some((id) => dietStyleIds.includes(id)) : passport.diets.includes(item.id) || passport.dietStyle === item.id
+      return renderOptionCard(item, selected, () => updatePassport('dietStyleMulti', item.id))
+    })}
+  </div>
+
+  const renderFaith = () => <>
+    <div className="passport-flow-grid passport-flow-grid-2">
+      {localizedFaithDiets.map((item) => renderOptionCard(item, passport.faithDiet === item.id, () => updatePassport('faithDiet', item.id)))}
+    </div>
+    {passport.faithDiet === 'other' && <label className="passport-flow-other-input"><span>{text.faithOtherLabel}</span><input value={passport.faithOther} onChange={(event) => updatePassport('faithOther', event.target.value)} placeholder={text.faithOtherPlaceholder} /></label>}
+  </>
+
+  const renderAvoidFoods = () => <div className="passport-flow-grid passport-flow-grid-2">
+    {localizedAvoidFoods.map((item) => renderOptionCard(item, passport.avoidFoods.includes(item.id), () => updatePassport('avoidFoods', item.id)))}
+  </div>
+
+  const renderSpice = () => {
+    const options = [
+      { value: 0, label: text.spiceCannot, icon: '❌' },
+      { value: 1, label: text.spiceLow, icon: '🌶️' },
+      { value: 2, label: text.spiceMedium, icon: '🌶️🌶️' },
+      { value: 3, label: text.spiceAny, icon: '🌶️🌶️🌶️' },
+    ]
+    return <div className="passport-flow-grid passport-flow-grid-2">
+      {options.map((item) => <button type="button" key={item.value} aria-pressed={passport.spiceLevel === item.value} className={`passport-flow-option passport-flow-spice-option ${passport.spiceLevel === item.value ? 'selected' : ''}`} onClick={() => updatePassport('spiceLevel', item.value)}><span className="passport-flow-option-icon">{item.icon}</span><strong>{item.label}</strong>{passport.spiceLevel === item.value && <span className="passport-flow-option-check"><Icon name="check" size={13} /></span>}</button>)}
+    </div>
+  }
+
+  const renderPreferences = () => <div className="passport-flow-grid passport-flow-grid-2">
+    {localizedPreferences.map((item) => renderOptionCard(item, passport.preferences.includes(item.id), () => updatePassport('preferences', item.id)))}
+  </div>
+
+  const renderStepBody = () => {
+    if (currentStep === 0) return renderAllergens()
+    if (currentStep === 1) return renderDietStyle()
+    if (currentStep === 2) return renderFaith()
+    if (currentStep === 3) return renderAvoidFoods()
+    if (currentStep === 4) return renderSpice()
+    return renderPreferences()
+  }
+
+  const goNext = () => currentStep === questions.length - 1 ? onFinish() : setCurrentStep((step) => step + 1)
+
+  return <div className="passport-flow">
+    <div className="passport-flow-progress" aria-label={flowText.progress(currentStep + 1, questions.length)}>
+      <div className="passport-flow-progress-top"><span aria-hidden="true" /><button type="button" className="passport-flow-skip" onClick={onFinish}>{flowText.skip}</button></div>
+      <div className="passport-flow-progress-bars">{questions.map((_, index) => <span key={index} className={index <= currentStep ? 'active' : ''} />)}</div>
+    </div>
+    <section className="passport-flow-question-card">
+      <h1>{questions[currentStep].title}</h1>
+      {currentStep === 0 && <p className="lead passport-flow-severity-copy">{flowText.tapSeverity}</p>}
+      <div className="passport-flow-body">{renderStepBody()}</div>
+    </section>
+    <div className="passport-flow-actions"><Button className="passport-flow-next-button" onClick={goNext} icon={currentStep === questions.length - 1 ? 'check' : 'arrow'}>{currentStep === questions.length - 1 ? t('save') : t('next')}</Button></div>
+  </div>
+}
+
+function PassportEditor({ language, t, passport, updatePassport, onBack, onFinish, finishLabel, finishIcon = 'scan', onboardingMode = false }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void; onFinish: () => void; finishLabel?: string; finishIcon?: string; onboardingMode?: boolean }) {
+  const text = onboardingCopy[language]
+  if (onboardingMode) return <section className="onboarding-card passport-onboarding passport-flow-shell"><PassportQuestionFlow language={language} t={t} passport={passport} updatePassport={updatePassport} onFinish={onFinish} /></section>
   return <section className="onboarding-card passport-onboarding"><button className="back-link" onClick={onBack}><Icon name="back" size={18} /> {text.back}</button><h1>{t('anything')}</h1><p className="lead">{t('passportSub')}</p><AllergenSection language={language} t={t} passport={passport} updatePassport={updatePassport} /><DietPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><EverydayPreferenceSection language={language} passport={passport} updatePassport={updatePassport} /><Button className="full-button" onClick={onFinish} icon={finishIcon}>{finishLabel || t('save')}</Button></section>
 }
 
@@ -2599,9 +2776,72 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     <div className="split-result"><div className="result-heading"><h2>{p.everyonePays}</h2><span>{p.exactCheck} <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast(p.shareReady); navigator.share?.({ title: 'Bitewise bill split', text: `${p.everyonePays} ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
 }
 
-function FindFood({ variant = 'find', t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onBack }: { variant?: 'find' | 'community'; t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+function FindFood({ t, p, language, restaurants, savedRestaurants, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+  const [activeCategory, setActiveCategory] = useState('all')
+  const [query, setQuery] = useState('')
+  const nearbyText = nearbyCopy[language]
+  const browseText = findBrowseCopy[language]
+  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
+    ...category,
+    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
+  }))
+  const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
+    const dish = dishes[index % dishes.length]
+    const categoryIds = findFoodCategoryIds(restaurant)
+    if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
+    return { restaurant, dish, categoryIds }
+  })
+  const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
+  const visibleFood = nearbyFood.filter(({ restaurant, dish, categoryIds }) => {
+    const restaurantText = localizedRestaurant(language, restaurant)
+    const searchable = `${restaurant.name} ${restaurantText.name || ''} ${restaurant.cuisine} ${restaurantText.cuisine} ${restaurant.address || ''} ${dish.name} ${dish.zh} ${dish.localized[language]}`.toLowerCase().replace(/\s+/g, '')
+    return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
+  })
+
+  return <div className="page page-find">
+    <div className="find-search-row">
+      <button type="button" className="find-back-button" onClick={onBack} aria-label={p.back}><Icon name="back" size={21} /></button>
+      <label className="find-search-box">
+        <Icon name="search" size={20} stroke={1.7} />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={browseText.searchPlaceholder} aria-label={browseText.searchPlaceholder} />
+        {query && <button type="button" onClick={() => setQuery('')} aria-label={browseText.clearSearch}><Icon name="close" size={16} /></button>}
+      </label>
+    </div>
+    <section className="find-browse-section">
+      <div className="find-section-heading"><h2>{browseText.category}</h2><button type="button" onClick={() => setActiveCategory('all')}>{browseText.seeAll}</button></div>
+      <div className="find-category-scroll" aria-label={browseText.category}>
+        {categoryCards.map((category, index) => <button type="button" key={category.id} className={`find-category-card find-category-card-${index + 1} ${activeCategory === category.id ? 'active' : ''}`} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>
+          <span>{foodCategoryLabels[language][category.id]}</span>
+          <img src={category.dish.imageSrc} alt="" loading="lazy" />
+        </button>)}
+      </div>
+    </section>
+    <section className="find-browse-section find-nearby-section" id="nearby-food">
+      <div className="find-section-heading"><h2>{browseText.nearbyFood}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
+      <div className="find-location"><Icon name="pin" size={16} stroke={1.9} /><span>{nearbyText.area}</span></div>
+      <div className="nearby-food-grid">
+        {visibleFood.map(({ restaurant, dish }) => {
+          const restaurantText = localizedRestaurant(language, restaurant)
+          const displayName = restaurantText.name || restaurant.name
+          const saved = savedRestaurants.some((item) => item.id === restaurant.id)
+          return <article className="nearby-food-card" key={restaurant.id}>
+            <div className="nearby-food-media"><img src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /><span className="nearby-food-rating"><Icon name="star" size={13} stroke={1.6} /> {restaurant.rating?.toFixed(1) || '—'}</span><button type="button" className={`nearby-food-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button></div>
+            <div className="nearby-food-body"><h3>{dish.localized[language]}</h3><p>{displayName}</p><div className="nearby-food-meta"><strong>¥ {dish.price}</strong><span>{restaurant.distanceKm?.toFixed(1) || '—'} km</span></div></div>
+          </article>
+        })}
+      </div>
+      {!visibleFood.length && <div className="find-empty"><Icon name="search" size={24} /><strong>{p.noNotes}</strong><span>{p.keepExploring}</span></div>}
+    </section>
+  </div>
+}
+
+function CommunityPage({ variant = 'community', t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onBack }: { variant?: 'find' | 'community'; t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
   const communityMode = variant === 'community'
   const [activeCategory, setActiveCategory] = useState('all')
+  const [query, setQuery] = useState('')
+  const nearbyText = nearbyCopy[language]
+  const browseText = findBrowseCopy[language]
   const [likedPosts, setLikedPosts] = useState<string[]>([])
   const [posts, setPosts] = useState<FoodPost[]>(() => {
     try {
@@ -2621,8 +2861,6 @@ function FindFood({ variant = 'find', t, p, language, restaurants, savedRestaura
   const selectedRestaurant = historyRestaurants.find((restaurant) => restaurant.id === composerRestaurantId) || historyRestaurants[0]
   const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
   const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
-  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
-  const nearbyText = nearbyCopy[language]
   const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
   const openComposer = () => {
     const firstRestaurant = historyRestaurants[0]
@@ -2675,11 +2913,25 @@ function FindFood({ variant = 'find', t, p, language, restaurants, savedRestaura
     if (!composerOpen) return
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
     return () => { document.body.style.overflow = previousOverflow }
   }, [composerOpen])
+  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
+    ...category,
+    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
+  }))
+  const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
+    const dish = dishes[index % dishes.length]
+    const categoryIds = findFoodCategoryIds(restaurant)
+    if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
+    return { restaurant, dish, categoryIds }
+  })
+  const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
+  const visibleFood = nearbyFood.filter(({ restaurant, dish, categoryIds }) => {
+    const restaurantText = localizedRestaurant(language, restaurant)
+    const searchable = `${restaurant.name} ${restaurantText.name || ''} ${restaurant.cuisine} ${restaurantText.cuisine} ${restaurant.address || ''} ${dish.name} ${dish.zh} ${dish.localized[language]}`.toLowerCase().replace(/\s+/g, '')
+    return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
+  })
 
   return <div className={`page page-narrow ${communityMode ? 'page-community' : 'page-find'}`}>
     <PageHeader title={communityMode ? 'Community' : t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
@@ -2748,7 +3000,7 @@ function OrderCard({ language, text, order, onOpenOrder, onSplitBill }: { langua
 function PassportPage({ language, t, passport, updatePassport, onBack }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void }) {
   return <div className="page page-narrow page-profile profile-passport-page">
     <div className="profile-passport-frame">
-      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" />
+      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" onboardingMode />
     </div>
   </div>
 }
@@ -2842,6 +3094,6 @@ function Profile({ t, p, language, user, passport, restaurants, companions, pend
   </div>
 }
 
-function BottomNav({ language, screen, openScreen, t }: { language: Language; screen: Screen; openScreen: (screen: Screen) => void; t: (key: CopyKey) => string }) { return <nav className="bottom-nav"><button className={screen === 'home' ? 'active' : ''} onClick={() => openScreen('home')}><Icon name="home" size={19} /><span>{t('home')}</span></button><button className={screen === 'find' ? 'active' : ''} onClick={() => openScreen('find')}><Icon name="compass" size={19} /><span>{t('findFood')}</span></button><button className={screen === 'community' ? 'active' : ''} onClick={() => openScreen('community')}><Icon name="users" size={19} /><span>Community</span></button><button className={screen === 'orders' ? 'active' : ''} onClick={() => openScreen('orders')}><Icon name="receipt" size={19} /><span>{orderCopy[language].nav}</span></button><button className={screen === 'profile' || screen === 'passport' || screen === 'savedRestaurants' || screen === 'companions' || screen === 'companionDetail' ? 'active' : ''} onClick={() => openScreen('profile')}><Icon name="user" size={19} /><span>{t('foodPassport')}</span></button></nav> }
+function BottomNav({ language, screen, openScreen, t }: { language: Language; screen: Screen; openScreen: (screen: Screen) => void; t: (key: CopyKey) => string }) { return <nav className="bottom-nav"><button className={screen === 'find' ? 'active' : ''} onClick={() => openScreen('find')}><Icon name="compass" size={19} /><span>{t('findFood')}</span></button><button className={screen === 'community' ? 'active' : ''} onClick={() => openScreen('community')}><Icon name="users" size={19} /><span>Community</span></button><button className={screen === 'home' ? 'active' : ''} onClick={() => openScreen('home')}><Icon name="home" size={19} /><span>{t('home')}</span></button><button className={screen === 'orders' ? 'active' : ''} onClick={() => openScreen('orders')}><Icon name="receipt" size={19} /><span>{orderCopy[language].nav}</span></button><button className={screen === 'profile' || screen === 'passport' || screen === 'savedRestaurants' || screen === 'companions' || screen === 'companionDetail' ? 'active' : ''} onClick={() => openScreen('profile')}><Icon name="user" size={19} /><span>{t('profile')}</span></button></nav> }
 
 export default App
