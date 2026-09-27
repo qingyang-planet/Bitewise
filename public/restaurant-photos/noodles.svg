@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrated noodle bowl</title>
+  <desc id="desc">A warm illustrated bowl of noodles with vegetables.</desc>
+  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#dcebd9"/><stop offset="1" stop-color="#8ab5a0"/></linearGradient></defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)"/><circle cx="112" cy="83" r="58" fill="#fff8ed" opacity=".6"/>
+  <ellipse cx="324" cy="268" rx="200" ry="38" fill="#406c61" opacity=".28"/><path d="M154 148h350l-25 116c-7 31-40 52-78 52H257c-38 0-71-21-78-52z" fill="#fff8ed"/><ellipse cx="329" cy="148" rx="176" ry="60" fill="#e8b36f"/><path d="M208 149c38-43 78 33 116-14 31-38 57 38 110-8" fill="none" stroke="#c47a47" stroke-width="14" stroke-linecap="round"/><path d="M231 121c-3-42 27-61 48-70M341 114c4-40 36-57 53-74M410 122c9-31 32-43 51-49" fill="none" stroke="#fff8ed" stroke-width="7" stroke-linecap="round" opacity=".72"/><path d="M250 152c-22-28-42-25-59-8 23 1 35 16 43 35M402 148c24-29 45-23 59-4-22-1-35 14-43 31" fill="none" stroke="#477b62" stroke-width="13" stroke-linecap="round"/><circle cx="302" cy="151" r="9" fill="#d85e4d"/><circle cx="375" cy="151" r="9" fill="#d85e4d"/></svg>

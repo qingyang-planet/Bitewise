@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrated hot pot</title>
+  <desc id="desc">A warm illustrated hot pot with ingredients and steam.</desc>
+  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f7e2ac"/><stop offset="1" stop-color="#d98767"/></linearGradient></defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)"/><circle cx="514" cy="92" r="64" fill="#fff7de" opacity=".5"/>
+  <ellipse cx="321" cy="276" rx="204" ry="40" fill="#9c5148" opacity=".32"/><path d="M156 155h344l-24 106c-9 36-45 54-83 54H263c-38 0-74-18-83-54z" fill="#5c3e42"/><ellipse cx="328" cy="155" rx="173" ry="59" fill="#d85f43"/><ellipse cx="328" cy="153" rx="139" ry="40" fill="#a9443d"/><path d="M245 134c-3-44 17-66 38-80M324 131c-10-45 13-68 34-83M407 136c1-39 21-59 43-72" fill="none" stroke="#fff4dc" stroke-width="10" stroke-linecap="round" opacity=".72"/><circle cx="263" cy="154" r="13" fill="#f2c276"/><circle cx="329" cy="166" r="13" fill="#74a56f"/><circle cx="394" cy="149" r="13" fill="#efb1a0"/><path d="M205 103h55M381 104h52" stroke="#5c3e42" stroke-width="11" stroke-linecap="round"/></svg>

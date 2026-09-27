@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "center": {
+    "name": "复旦大学管理学院政立院区",
+    "address": "上海市杨浦区政立路558号",
+    "radiusKm": 3
+  },
+  "dataBoundary": "Public discovery leads for classroom demo. Verify opening status, exact store, rating, menu and allergens before real-world reliance.",
+  "restaurants": [
+    {"id":"zuihuihuang-fudan-zhengli","name":"醉辉皇 · 复旦管院政立院区店","cuisine":"本帮 / 海鲜 · 商务聚餐","distanceKm":0.1,"address":"政立路558号复旦大学管理学院政立院区","intents":["not-spicy"],"rating":4.6,"source":"百度地图 / Fudan campus listing","photoSrc":"/restaurant-photos/seafood.svg","verificationStatus":"现场核验门店与营业状态"},
+    {"id":"haerbin-snacks-zhengli","name":"哈尔滨风味小吃（政立路）","cuisine":"东北菜 · 饺子 / 面食 / 家常菜","distanceKm":0.3,"address":"政立路499号（近国定路）","intents":["dumplings","noodles"],"rating":4.3,"source":"公开餐厅目录 / 大众点评线索","photoSrc":"/restaurant-photos/noodles.svg","verificationStatus":"现场核验门店与营业状态"},
+    {"id":"he-sheng-hui-fei-dachu","name":"费大厨辣椒炒肉（合生汇店）","cuisine":"湘菜 · 小炒 / 下饭菜","distanceKm":1.7,"address":"翔殷路1099号合生汇商场内","intents":["not-spicy"],"rating":4.5,"source":"五角场公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/hotpot.svg","verificationStatus":"现场核验具体楼层与营业状态"},
+    {"id":"he-xie-bang-cuisine","name":"蟹榭 · 本帮江浙菜（合生汇店）","cuisine":"本帮 / 江浙菜 · 蟹粉 / 小笼","distanceKm":1.7,"address":"翔殷路1099号合生汇商场内","intents":["dumplings","not-spicy"],"rating":4.5,"source":"五角场公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/seafood.svg","verificationStatus":"现场核验具体楼层与营业状态"},
+    {"id":"ruyi-chicken-abalone","name":"如一鸡鲍鱼 · 粤式煲汤（合生汇店）","cuisine":"粤菜 · 汤 / 煲 / 海鲜","distanceKm":1.7,"address":"翔殷路1099号合生汇商场内","intents":["not-spicy"],"rating":4.7,"source":"五角场公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/seafood.svg","verificationStatus":"现场核验具体楼层与营业状态"},
+    {"id":"haidilao-he-sheng-hui","name":"海底捞火锅（合生汇商圈）","cuisine":"四川火锅 · 火锅 / 聚餐","distanceKm":1.8,"address":"合生汇商圈内（到店前请核对具体门店）","intents":["hot-pot"],"rating":4.6,"source":"公开地图餐饮列表 / 大众点评线索","photoSrc":"/restaurant-photos/hotpot.svg","verificationStatus":"现场核验具体门店"},
+    {"id":"kaijiang-grilled-fish","name":"烤匠川渝烤鱼（五角场）","cuisine":"川渝菜 · 烤鱼 / 辣味","distanceKm":2.0,"address":"五角场商圈门店（到店前请核对具体楼层）","intents":["not-spicy"],"rating":4.4,"source":"五角场公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/seafood.svg","verificationStatus":"现场核验具体门店"},
+    {"id":"zuoting-youyuan-hotpot","name":"左庭右院鲜牛肉火锅（五角场）","cuisine":"潮汕火锅 · 牛肉 / 火锅","distanceKm":2.1,"address":"五角场商圈门店（到店前请核对具体楼层）","intents":["hot-pot","not-spicy"],"rating":4.5,"source":"五角场夜宵公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/hotpot.svg","verificationStatus":"现场核验具体门店"},
+    {"id":"dongfang-yichuan","name":"东方一串（国定东路店）","cuisine":"烧烤 / 烤鱼 · 夜宵","distanceKm":2.2,"address":"国定东路附近（到店前请核对具体门牌）","intents":["not-spicy"],"rating":4.2,"source":"五角场夜宵公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/hotpot.svg","verificationStatus":"现场核验具体门牌与营业状态"},
+    {"id":"jiejiao-taiwanese","name":"捡角台湾食堂（五角场）","cuisine":"台湾小吃 · 卤味 / 面 / 小食","distanceKm":2.3,"address":"五角场商圈门店（到店前请核对具体楼层）","intents":["noodles","not-spicy"],"rating":4.4,"source":"五角场公开榜单 / 大众点评线索","photoSrc":"/restaurant-photos/noodles.svg","verificationStatus":"现场核验具体门店"}
+  ]
+}

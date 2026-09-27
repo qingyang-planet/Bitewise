@@ -864,6 +864,20 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .restaurant-save-toggle:hover, .restaurant-save-toggle.saved { background: var(--brand-soft); color: var(--brand); }
 .restaurant-save-toggle.saved .icon { stroke-width: 2.5; }
 .restaurant-meta { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font: 10px 'DM Mono', monospace; margin-top: 8px; }
+.restaurant-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.restaurant-source { margin-top: 6px; color: var(--muted) !important; font-size: 9px !important; }
+.nearby-restaurant-section { margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--line); }
+.nearby-restaurant-heading { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+.nearby-restaurant-heading h2 { margin-top: 6px; font-size: 20px; }
+.nearby-restaurant-heading p { color: var(--muted); font-size: 10px; line-height: 1.45; margin-top: 6px; max-width: 560px; }
+.nearby-restaurant-heading > .icon { color: var(--green-deep); flex: 0 0 auto; margin-top: 6px; }
+.nearby-restaurant-list .restaurant-photo { min-height: 90px; overflow: hidden; }
+.analysis-error { border: 1px solid #efc3bc; background: #fff2ef; border-radius: 18px; padding: 14px; color: var(--brand-deep); }
+.analysis-error strong, .analysis-error p { display: block; }
+.analysis-error p { color: var(--muted); font-size: 11px; line-height: 1.45; margin: 6px 0 12px; }
+.analysis-error-actions { display: flex; gap: 8px; }
+.analysis-error-actions .button { flex: 1; }
+.assistant-loading { display: flex; align-items: center; gap: 8px; color: var(--muted); }
 .photo-three { background: #f5d5ca; }
 
 @media (max-width: 560px) {
