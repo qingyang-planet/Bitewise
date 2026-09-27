@@ -2791,7 +2791,7 @@ function OrderCard({ language, text, order, onOpenOrder, onSplitBill }: { langua
 function PassportPage({ language, t, passport, updatePassport, onBack }: { language: Language; t: (key: CopyKey) => string; passport: Passport; updatePassport: (key: keyof Passport | string, value: string | boolean | number | null) => void; onBack: () => void }) {
   return <div className="page page-narrow page-profile profile-passport-page">
     <div className="profile-passport-frame">
-      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" />
+      <PassportEditor language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={onBack} onFinish={onBack} finishLabel={onboardingCopy[language].saveChanges} finishIcon="check" onboardingMode />
     </div>
   </div>
 }
