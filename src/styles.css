@@ -778,6 +778,96 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
   .subscription-plan-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Find food · clean browse layout */
+.find-route { background: #fff; color: #1d1d1f; }
+.find-route .ambient, .find-route .topbar { display: none; }
+.find-route .app-shell { max-width: 1120px; padding: 0 28px 100px; }
+.find-route .main-content { min-height: 100vh; }
+.find-route .bottom-nav { background: rgba(255,255,255,.94); border-color: #ededed; }
+.find-route .bottom-nav button.active { color: var(--brand); background: #fff0ed; }
+.page-find { max-width: 980px; padding: 28px 0 48px; background: #fff; color: #1d1d1f; }
+.find-search-row { display: flex; align-items: center; gap: 12px; margin-bottom: 34px; }
+.find-back-button { width: 38px; height: 38px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: #f7f7f7; color: #555; }
+.find-back-button:hover { color: var(--brand); background: #fff0ed; }
+.find-search-box { min-width: 0; width: 100%; height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 17px; border: 1px solid #ededed; border-radius: 999px; background: #fff; color: #b6b7ba; box-shadow: 0 8px 22px rgba(36, 36, 36, .07); }
+.find-search-box:focus-within { border-color: #e7aaa1; box-shadow: 0 0 0 4px rgba(199,70,55,.09), 0 8px 22px rgba(36, 36, 36, .07); }
+.find-search-box input { min-width: 0; flex: 1; height: 100%; border: 0; outline: 0; background: transparent; color: #1d1d1f; font-size: 13px; }
+.find-search-box input::placeholder { color: #b6b7ba; }
+.find-search-box > button { width: 25px; height: 25px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: #f3f3f3; color: #777; }
+.find-browse-section { margin-top: 30px; }
+.find-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.find-section-heading h2 { color: #202124; font-size: 21px; line-height: 1.15; }
+.find-section-heading button { padding: 4px 0; background: transparent; color: var(--brand); font-size: 12px; font-weight: 800; }
+.find-section-heading button:hover { color: var(--brand-deep); }
+.find-category-scroll { display: flex; gap: 12px; overflow-x: auto; margin: 0 -4px; padding: 0 4px 6px; scrollbar-width: none; }
+.find-category-scroll::-webkit-scrollbar { display: none; }
+.find-category-card { position: relative; overflow: hidden; min-width: 0; flex: 0 0 166px; height: 91px; padding: 17px 15px; border-radius: 20px; background: #edf8e9; color: #26252a; text-align: left; isolation: isolate; transition: transform .18s ease, box-shadow .18s ease, outline .18s ease; }
+.find-category-card:hover { transform: translateY(-2px); box-shadow: 0 9px 18px rgba(40,40,40,.09); }
+.find-category-card.active { outline: 2px solid var(--brand); outline-offset: 2px; }
+.find-category-card span { position: relative; z-index: 2; display: block; max-width: 88px; font-size: 12px; font-weight: 800; line-height: 1.2; }
+.find-category-card img { position: absolute; z-index: 1; right: -7px; bottom: -18px; width: 94px; height: 94px; border-radius: 50%; object-fit: cover; box-shadow: 0 5px 12px rgba(0,0,0,.11); }
+.find-category-card-2 { background: #fff0f3; }
+.find-category-card-3 { background: #e9eefb; }
+.find-category-card-4 { background: #fff4d9; }
+.find-category-card-5 { background: #f0eaf8; }
+.find-category-card-6 { background: #e8f4f4; }
+.find-category-card-7 { background: #f9e8e1; }
+.find-nearby-section { margin-top: 35px; }
+.find-location { display: flex; align-items: center; gap: 6px; margin: -4px 0 15px; color: #a7a9ad; font-size: 12px; }
+.find-location .icon { color: #9599a0; }
+.nearby-food-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.nearby-food-card { min-width: 0; overflow: hidden; border: 1px solid #eeeeee; border-radius: 18px; background: #fff; box-shadow: 0 7px 18px rgba(32,32,32,.055); transition: transform .18s ease, box-shadow .18s ease; }
+.nearby-food-card:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(32,32,32,.1); }
+.nearby-food-media { position: relative; overflow: hidden; aspect-ratio: 1.02 / 1; background: #f4eee7; }
+.nearby-food-media::after { content: ''; position: absolute; inset: 56% 0 0; pointer-events: none; background: linear-gradient(transparent, rgba(28,24,25,.13)); }
+.nearby-food-media > img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.nearby-food-rating { position: absolute; z-index: 2; top: 11px; left: 11px; display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: 8px; background: rgba(54,54,54,.58); color: #fff; font-size: 11px; font-weight: 800; backdrop-filter: blur(5px); }
+.nearby-food-rating .icon { color: #f7c94f; fill: #f7c94f; }
+.nearby-food-save { position: absolute; z-index: 2; top: 10px; right: 10px; width: 29px; height: 29px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.9); color: #6e6f73; box-shadow: 0 4px 10px rgba(0,0,0,.1); }
+.nearby-food-save:hover, .nearby-food-save.saved { color: var(--brand); }
+.nearby-food-save.saved .icon { fill: currentColor; }
+.nearby-food-body { min-width: 0; padding: 12px 12px 13px; }
+.nearby-food-body h3 { min-height: 35px; color: #2b2b2d; font-size: 14px; line-height: 1.25; }
+.nearby-food-body p { overflow: hidden; margin-top: 5px; color: #929398; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.nearby-food-meta { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: 11px; padding-top: 9px; border-top: 1px solid #f0f0f0; }
+.nearby-food-meta strong { color: var(--brand); font: 800 14px 'DM Mono', monospace; }
+.nearby-food-meta span { color: #a0a1a5; font: 10px 'DM Mono', monospace; }
+.find-empty { display: grid; justify-items: center; gap: 5px; padding: 36px 18px; border: 1px dashed #e8d8d4; border-radius: 18px; color: #9b9da1; text-align: center; }
+.find-empty .icon { color: var(--brand); }
+.find-empty strong { color: #343438; font-size: 13px; }
+.find-empty span { font-size: 10px; }
+
+@media (min-width: 721px) {
+  .find-back-button { display: grid; }
+}
+
+@media (max-width: 720px) {
+  .find-route .app-shell { padding: 0 15px 95px; }
+  .page-find { padding: 17px 0 31px; }
+  .find-search-row { margin-bottom: 28px; }
+  .find-back-button { display: none; }
+  .find-search-box { height: 47px; padding: 0 16px; }
+  .find-browse-section { margin-top: 27px; }
+  .find-section-heading h2 { font-size: 19px; }
+  .find-section-heading button { font-size: 11px; }
+  .find-category-scroll { gap: 10px; }
+  .find-category-card { flex-basis: 139px; height: 84px; padding: 14px 13px; border-radius: 18px; }
+  .find-category-card img { width: 84px; height: 84px; right: -7px; bottom: -17px; }
+  .find-category-card span { max-width: 79px; font-size: 11px; }
+  .find-nearby-section { margin-top: 31px; }
+  .find-location { font-size: 11px; }
+  .nearby-food-grid { gap: 14px 11px; }
+  .nearby-food-card { border-radius: 16px; }
+  .nearby-food-rating { top: 8px; left: 8px; min-height: 22px; padding: 0 7px; font-size: 10px; }
+  .nearby-food-save { top: 8px; right: 8px; width: 27px; height: 27px; }
+  .nearby-food-body { padding: 10px 10px 11px; }
+  .nearby-food-body h3 { min-height: 34px; font-size: 12px; }
+  .nearby-food-body p { margin-top: 4px; font-size: 9px; }
+  .nearby-food-meta { margin-top: 9px; padding-top: 8px; }
+  .nearby-food-meta strong { font-size: 12px; }
+  .nearby-food-meta span { font-size: 9px; }
+}
+
 /* Orders */
 .page-orders { max-width: 720px; }
 .orders-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 25px 0 29px; }
@@ -1407,11 +1497,12 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .passport-flow-progress-bars span.active { background: #d8c9a8; border-color: #d8c9a8; }
 .passport-flow-progress-label strong { color: var(--brown); font: 700 10px 'DM Mono', monospace; }
 .passport-flow-progress-label span { color: var(--muted); font-size: 10px; }
-.passport-flow-question-card { min-width: 0; background: #fff; border: 1px solid #eee9e6; border-radius: 25px; padding: 24px 21px 21px; box-shadow: 0 12px 28px rgba(52,38,57,.07); animation: rise .22s ease-out both; }
+.passport-flow-question-card { min-width: 0; height: 620px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: #fff; border: 1px solid #eee9e6; border-radius: 25px; padding: 24px 21px 21px; box-shadow: 0 12px 28px rgba(52,38,57,.07); animation: rise .22s ease-out both; }
 .passport-flow-kicker { display: block; color: var(--green-deep); font: 800 10px 'DM Mono', monospace; letter-spacing: .11em; text-transform: uppercase; }
 .passport-flow-question-card h1 { max-width: 440px; margin: 13px 0 8px; color: var(--brown); font-size: clamp(27px, 6vw, 37px); line-height: 1.08; }
 .passport-flow-question-card > .lead { max-width: 430px; font-size: 12px; }
-.passport-flow-body { display: grid; gap: 13px; margin-top: 22px; }
+.passport-flow-severity-copy { margin-top: 0; color: var(--muted); }
+.passport-flow-body { min-height: 0; flex: 1; display: grid; align-content: start; gap: 13px; margin-top: 22px; overflow-y: auto; padding-right: 2px; scrollbar-width: thin; }
 .passport-flow-selection-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
 .passport-flow-selection-summary strong { color: var(--green-deep); font-size: 10px; }
 .passport-flow-severity-help { display: grid; gap: 8px; padding: 10px 11px; border: 1px solid #eee9e6; border-radius: 14px; background: #f8f8f5; color: var(--muted); font-size: 10px; line-height: 1.35; }
@@ -1423,30 +1514,27 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .passport-flow-allergen-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .passport-flow-option { min-width: 0; min-height: 94px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 9px 6px; border: 1px solid #eee9e6; border-radius: 16px; background: #fff; color: var(--brown); text-align: center; transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease; }
 .passport-flow-option:hover { border-color: #bed29e; transform: translateY(-1px); box-shadow: 0 5px 12px rgba(52,38,57,.06); }
-.passport-flow-option.selected { border: 2px solid var(--green); background: #eef6df; padding: 8px 5px; box-shadow: 0 5px 12px rgba(127,158,85,.11); }
+.passport-flow-option.selected { border: 2px solid var(--green); background: #eff8d1; padding: 8px 5px; box-shadow: 0 5px 12px rgba(127,158,85,.11); }
 .passport-flow-option-icon { min-height: 27px; display: grid; place-items: center; font-size: 22px; line-height: 1; }
 .passport-flow-option-icon img { width: 40px; height: 40px; object-fit: contain; }
 .passport-flow-option strong { max-width: 100%; font-size: 11px; line-height: 1.2; overflow-wrap: anywhere; }
 .passport-flow-option small { max-width: 100%; min-height: 11px; color: var(--muted); font-size: 9px; line-height: 1.15; overflow-wrap: anywhere; }
 .passport-flow-option.selected small { color: var(--green-deep); font-weight: 800; }
 .passport-flow-option-check { position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: #fff; }
-.passport-flow-allergen-option.allergen-severity-mild.selected { border-color: #d79e93; background: #fff4f1; }
-.passport-flow-allergen-option.allergen-severity-moderate.selected { border-color: #d66758; background: #f9d8d2; }
-.passport-flow-allergen-option.allergen-severity-severe.selected { border-color: #b83d31; background: #f1b0a7; }
-.passport-flow-allergen-option.allergen-severity-mild.selected small { color: #a95a50; }
-.passport-flow-allergen-option.allergen-severity-moderate.selected small { color: #a73f34; }
-.passport-flow-allergen-option.allergen-severity-severe.selected small { color: #8e2f27; }
+.passport-flow-allergen-option.allergen-severity-mild.selected { border-color: #bbd67d; }
+.passport-flow-allergen-option.allergen-severity-moderate.selected { border-color: #98be4d; }
+.passport-flow-allergen-option.allergen-severity-severe.selected { border-color: #6e9738; }
 .passport-flow-spice-option { min-height: 88px; }
 .passport-flow-spice-option .passport-flow-option-icon { font-size: 18px; letter-spacing: -3px; }
 .passport-flow-other-input { display: grid; gap: 6px; padding: 11px; border: 1px solid #eee9e6; border-radius: 14px; background: #fff; color: var(--brown); font-size: 11px; font-weight: 900; }
 .passport-flow-other-input input { width: 100%; min-height: 40px; border: 1px solid #eee9e6; border-radius: 10px; background: #fff; color: var(--brown); padding: 0 11px; outline: none; font-size: 12px; font-weight: 500; }
 .passport-flow-other-input input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(199,70,55,.1); }
-.passport-flow-actions { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 9px; }
+.passport-flow-actions { display: grid; grid-template-columns: 1fr; align-items: center; gap: 9px; }
 .passport-flow-next-button { width: 100%; }
 
 @media (max-width: 520px) {
   .passport-flow-shell { padding: 10px; border-radius: 27px; }
-  .passport-flow-question-card { padding: 19px 14px 15px; border-radius: 22px; }
+  .passport-flow-question-card { height: 570px; padding: 19px 14px 15px; border-radius: 22px; }
   .passport-flow-question-card h1 { font-size: 29px; }
   .passport-flow-body { margin-top: 18px; }
   .passport-flow-option { min-height: 86px; padding-left: 4px; padding-right: 4px; border-radius: 14px; }

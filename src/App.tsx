@@ -971,6 +971,38 @@ const foodCategories = [
   { id: 'bbq', label: '烧烤' },
 ]
 
+const findFoodCategoryDishIds: Record<string, string> = {
+  local: 'eggplant',
+  hotpot: 'soup',
+  sichuan: 'mapo-tofu',
+  snacks: 'kung-pao',
+  cantonese: 'lotus',
+  vegetarian: 'greens',
+  bbq: 'kung-pao',
+}
+
+const findFoodCategoryIds = (restaurant: SavedRestaurant) => {
+  const haystack = `${restaurant.name} ${restaurant.cuisine}`.toLowerCase()
+  const ids = new Set<string>()
+  if (/(本帮|江浙|上海|shanghai|jiangnan|home-style)/.test(haystack)) ids.add('local')
+  if (/(火锅|hot ?pot)/.test(haystack) || restaurant.intents?.includes('hot-pot')) ids.add('hotpot')
+  if (/(川|四川|川渝|sichuan|chongqing)/.test(haystack)) ids.add('sichuan')
+  if (/(小吃|饺|面食|面|snack|dumpling|noodle)/.test(haystack) || restaurant.intents?.some((intent) => ['dumplings', 'noodles'].includes(intent))) ids.add('snacks')
+  if (/(粤|广东|cantonese)/.test(haystack)) ids.add('cantonese')
+  if (/(素食|vegetarian)/.test(haystack)) ids.add('vegetarian')
+  if (/(烧烤|烤鱼|barbecue|grill|grilled)/.test(haystack)) ids.add('bbq')
+  return ids.size ? [...ids] : ['local']
+}
+
+const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; nearbyFood: string; clearSearch: string }> = {
+  en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', nearbyFood: 'Nearby Food', clearSearch: 'Clear search' },
+  ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', nearbyFood: '주변 음식', clearSearch: '검색 지우기' },
+  ja: { searchPlaceholder: '食べたいものを検索…', category: 'カテゴリー', seeAll: 'すべて見る', nearbyFood: '近くの料理', clearSearch: '検索を消去' },
+  ru: { searchPlaceholder: 'Найдите что-нибудь вкусное…', category: 'Категории', seeAll: 'Все', nearbyFood: 'Еда рядом', clearSearch: 'Очистить поиск' },
+  es: { searchPlaceholder: 'Busca algo delicioso…', category: 'Categorías', seeAll: 'Ver todo', nearbyFood: 'Comida cercana', clearSearch: 'Borrar búsqueda' },
+  it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', nearbyFood: 'Cibo vicino', clearSearch: 'Cancella ricerca' },
+}
+
 const foodPosts: FoodPost[] = [
   { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.png', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
   { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.png', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
@@ -1197,6 +1229,9 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     oil: <><path d="M8 5h8l1 3v12H7V8l1-3Z"/><path d="M8 8h8M10 12h4M10 16h4"/><path d="M10 3h4"/></>,
     cart: <><path d="M4 5h2l1.5 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></>,
     dots: <><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></>,
+    search: <><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></>,
+    pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></>,
+    star: <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>,
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
     leaf: <><path d="M20 4C10 4 5 8 5 14c0 3.3 2.3 6 5.5 6C17 20 20 12 20 4Z"/><path d="M4 21c2-4 5.3-6.7 10-8.5"/></>,
@@ -1759,7 +1794,7 @@ function App() {
     return <Onboarding language={language} setLanguage={setLanguage} step={onboardingStep} setStep={setOnboardingStep} passport={passport} updatePassport={updatePassport} finish={finishOnboarding} onRegister={completeRegistration} existingEmails={accounts.map((record) => record.profile.email)} t={t} />
   }
 
-  return <div className="app-root">
+  return <div className={`app-root ${screen === 'find' ? 'find-route' : ''}`}>
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <div className="app-shell">
       <header className="topbar"><button className="brand" onClick={() => openScreen('home')} aria-label={`${t('home')} · Bitewise 食见`}><LogoMark small /><span className="brand-lockup"><strong>BITEWISE</strong><small>食见</small></span></button></header>
@@ -1772,7 +1807,7 @@ function App() {
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
-        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
         {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
@@ -2674,127 +2709,65 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     <div className="split-result"><div className="result-heading"><h2>{p.everyonePays}</h2><span>{p.exactCheck} <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast(p.shareReady); navigator.share?.({ title: 'Bitewise bill split', text: `${p.everyonePays} ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
 }
 
-function FindFood({ t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+function FindFood({ t, p, language, restaurants, savedRestaurants, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
   const [activeCategory, setActiveCategory] = useState('all')
-  const [likedPosts, setLikedPosts] = useState<string[]>([])
-  const [posts, setPosts] = useState<FoodPost[]>(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('cit:food-posts') || '') as FoodPost[]
-      return Array.isArray(saved) && saved.length ? saved : foodPosts
-    } catch { return foodPosts }
-  })
-  const [composerOpen, setComposerOpen] = useState(false)
-  const cameraInputRef = useRef<HTMLInputElement>(null)
-  const galleryInputRef = useRef<HTMLInputElement>(null)
-  const [composerRestaurantId, setComposerRestaurantId] = useState('')
-  const [draft, setDraft] = useState<FoodPostDraft>({ title: '', body: '', dish: '', dishMeta: '', category: 'local' })
-  const historyRestaurants = pastOrders.reduce<SavedRestaurant[]>((items, order) => {
-    const restaurant = restaurants.find((item) => item.name === order.restaurant)
-    return restaurant && !items.some((item) => item.id === restaurant.id) ? [...items, restaurant] : items
-  }, [])
-  const selectedRestaurant = historyRestaurants.find((restaurant) => restaurant.id === composerRestaurantId) || historyRestaurants[0]
-  const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
-  const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
-  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const [query, setQuery] = useState('')
   const nearbyText = nearbyCopy[language]
-  const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
-  const openComposer = () => {
-    const firstRestaurant = historyRestaurants[0]
-    const firstPost = firstRestaurant ? posts.find((post) => post.restaurantId === firstRestaurant.id) || foodPosts.find((post) => post.restaurantId === firstRestaurant.id) : undefined
-    setComposerRestaurantId(firstRestaurant?.id || '')
-    setDraft({ title: '', body: '', dish: firstPost?.dish || '', dishMeta: firstPost?.dishMeta || '', category: firstPost?.category || 'local' })
-    setComposerOpen(true)
-  }
-  const changeComposerRestaurant = (restaurantId: string) => {
-    const nextRestaurant = historyRestaurants.find((restaurant) => restaurant.id === restaurantId)
-    const nextPost = nextRestaurant ? posts.find((post) => post.restaurantId === nextRestaurant.id) || foodPosts.find((post) => post.restaurantId === nextRestaurant.id) : undefined
-    setComposerRestaurantId(restaurantId)
-    setDraft((current) => ({ ...current, dish: nextPost?.dish || '', dishMeta: nextPost?.dishMeta || '', category: nextPost?.category || current.category }))
-  }
-  const publishPost = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!selectedRestaurant || !draft.title.trim() || !draft.body.trim() || !draft.dish.trim()) return
-    const nextPost: FoodPost = {
-      id: `post-user-${Date.now()}`,
-      restaurantId: selectedRestaurant.id,
-      category: draft.category,
-      categoryLabel: foodCategoryLabels[language][draft.category] || foodCategoryLabels[language].all,
-      author: p.you,
-      initials: 'YO',
-      avatarTone: 'avatar-coral',
-      time: localizedPostMeta[language].justNow,
-      title: draft.title.trim(),
-      body: draft.body.trim(),
-      dish: draft.dish.trim(),
-      dishMeta: draft.dishMeta.trim() || localizedPostMeta[language].worthTrying,
-      imageSrc: draft.imageSrc || referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.png',
-      imageTone: referencePost?.imageTone || 'feed-image-coral',
-      likes: 0,
-      comments: 0,
-    }
-    setPosts((current) => [nextPost, ...current])
-    setActiveCategory('all')
-    setComposerOpen(false)
-  }
-  const handleFoodPhoto = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => setDraft((current) => ({ ...current, imageSrc: typeof reader.result === 'string' ? reader.result : current.imageSrc }))
-    reader.readAsDataURL(file)
-    event.target.value = ''
-  }
-  useEffect(() => { localStorage.setItem('cit:food-posts', JSON.stringify(posts)) }, [posts])
-  useEffect(() => {
-    if (!composerOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-    return () => { document.body.style.overflow = previousOverflow }
-  }, [composerOpen])
+  const browseText = findBrowseCopy[language]
+  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
+  const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
+    ...category,
+    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
+  }))
+  const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
+    const dish = dishes[index % dishes.length]
+    const categoryIds = findFoodCategoryIds(restaurant)
+    if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
+    return { restaurant, dish, categoryIds }
+  })
+  const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
+  const visibleFood = nearbyFood.filter(({ restaurant, dish, categoryIds }) => {
+    const restaurantText = localizedRestaurant(language, restaurant)
+    const searchable = `${restaurant.name} ${restaurantText.name || ''} ${restaurant.cuisine} ${restaurantText.cuisine} ${restaurant.address || ''} ${dish.name} ${dish.zh} ${dish.localized[language]}`.toLowerCase().replace(/\s+/g, '')
+    return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
+  })
 
-  return <div className="page page-narrow page-find">
-    <PageHeader title={t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
-    <div className="feed-intro">
-      <div><h1>{p.findHeading}</h1><p>{p.findDescription}</p></div>
+  return <div className="page page-find">
+    <div className="find-search-row">
+      <button type="button" className="find-back-button" onClick={onBack} aria-label={p.back}><Icon name="back" size={21} /></button>
+      <label className="find-search-box">
+        <Icon name="search" size={20} stroke={1.7} />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={browseText.searchPlaceholder} aria-label={browseText.searchPlaceholder} />
+        {query && <button type="button" onClick={() => setQuery('')} aria-label={browseText.clearSearch}><Icon name="close" size={16} /></button>}
+      </label>
     </div>
-    <div className="feed-categories" aria-label={p.foodCategories}>{foodCategories.map((category) => <button type="button" key={category.id} className={activeCategory === category.id ? 'active' : ''} onClick={() => setActiveCategory(category.id)}>{foodCategoryLabels[language][category.id]}</button>)}</div>
-    <div className="feed-context"><span className="feed-context-icon"><Icon name="leaf" size={15} /></span><span><strong>{p.communityPicks}</strong><small>{p.communityHint}</small></span></div>
-    <div className="feed-grid">{visiblePosts.map((post) => {
-      const restaurant = restaurants.find((item) => item.id === post.restaurantId)
-      if (!restaurant) return null
-      const restaurantText = localizedRestaurant(language, restaurant)
-      const postText = localizedPost(language, post)
-      const saved = savedRestaurants.some((item) => item.id === restaurant.id)
-      const liked = likedPosts.includes(post.id)
-      return <article className="feed-post" key={post.id}>
-        <div className={`feed-media ${post.imageTone}`}><img src={post.imageSrc} alt={postText.dish} /><span className="feed-media-category">{foodCategoryLabels[language][post.category] || post.categoryLabel}</span></div>
-        <div className="feed-post-body">
-          <div className="feed-author"><span className={`feed-avatar ${post.avatarTone}`}>{post.initials}</span><span><strong>{post.author}</strong><small>{postText.time} · {restaurantText.location.split(' · ')[0]}</small></span><button type="button" className="feed-more" aria-label={`${p.moreOptions} ${postText.title}`}><Icon name="dots" size={17} /></button></div>
-          <h2>{postText.title}</h2>
-          <p>{postText.body}</p>
-          <div className="feed-dish"><small>{p.mustTry}</small><strong>{postText.dish}</strong><span>{postText.dishMeta}</span></div>
-          <div className="feed-restaurant"><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurantText.name || restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span><button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurantText.name || restaurant.name}` : `${p.save} ${restaurantText.name || restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button></div>
-          <div className="feed-actions"><button type="button" className={liked ? 'liked' : ''} onClick={() => toggleLike(post.id)}><Icon name="heart" size={15} /> {post.likes + (liked ? 1 : 0)}</button><span><Icon name="dots" size={15} /> {post.comments}</span><button type="button" aria-label={`${p.sharePost} ${postText.title}`}><Icon name="share" size={15} /></button></div>
-        </div>
-      </article>
-    })}</div>
-    {!visiblePosts.length && <div className="feed-empty"><span>🍜</span><strong>{p.noNotes}</strong><small>{p.keepExploring}</small></div>}
-    {nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><h2>{nearbyText.title}</h2><p>{nearbyText.description}</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); const displayName = restaurantText.name || restaurant.name; const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{displayName}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurantText.cuisine}</p><small><Icon name="shield" size={14} /> {restaurantText.why}</small><div className="restaurant-meta"><span>{restaurantText.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">{nearbyText.source}: {restaurant.source}</small></div></article> })}</div></section>}
-    {composerOpen && createPortal(<div className="sheet-backdrop feed-compose-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false) }}><form className="feed-compose-sheet" role="dialog" aria-modal="true" aria-label={p.createFoodPost} onSubmit={publishPost} onMouseDown={(event) => event.stopPropagation()}>
-      <div className="feed-compose-heading"><div><h2>{p.createFoodNote}</h2><p>{p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>
-      <label className="feed-compose-field">{p.visitedRestaurant}<select value={selectedRestaurant?.id || ''} onChange={(event) => changeComposerRestaurant(event.target.value)} disabled={!historyRestaurants.length}>{historyRestaurants.map((restaurant) => <option key={restaurant.id} value={restaurant.id}>{restaurant.name} · {localizedRestaurant(language, restaurant).location}</option>)}</select></label>
-      <div className="feed-compose-order-note"><Icon name="receipt" size={15} /><span>{selectedRestaurant ? `${p.pastVisit} · ${pastOrders.find((order) => order.restaurant === selectedRestaurant.name)?.time || ''}` : p.noHistory}</span></div>
-      <section className="feed-compose-photo-field"><div className="feed-compose-label">Food photo <span>Optional, but a real plate helps others decide</span></div>{draft.imageSrc ? <div className="feed-compose-photo-preview"><img src={draft.imageSrc} alt="Selected food" /><button type="button" onClick={() => setDraft((current) => ({ ...current, imageSrc: undefined }))}>Remove</button></div> : <div className="feed-compose-photo-actions"><button type="button" onClick={() => cameraInputRef.current?.click()}><Icon name="camera" size={18} /><strong>Take a photo</strong><small>Use your camera</small></button><button type="button" onClick={() => galleryInputRef.current?.click()}><Icon name="image" size={18} /><strong>Choose from gallery</strong><small>Pick from your album</small></button></div>}<input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFoodPhoto} hidden /><input ref={galleryInputRef} type="file" accept="image/*" onChange={handleFoodPhoto} hidden /></section>
-      <label className="feed-compose-field">Post title <span className="feed-compose-helper">Give this meal a memorable one-line takeaway</span><input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder={p.titlePlaceholder} required /></label>
-      <label className="feed-compose-field">What did you order? <span className="feed-compose-helper">Name the dish others should look for</span><input value={draft.dish} onChange={(event) => setDraft({ ...draft, dish: event.target.value })} placeholder={p.dishName} required /></label>
-      <label className="feed-compose-field">{p.cuisineCategory}<select value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })}>{foodCategories.filter((category) => category.id !== 'all').map((category) => <option key={category.id} value={category.id}>{foodCategoryLabels[language][category.id]}</option>)}</select></label>
-      <label className="feed-compose-field">Your quick take <span className="feed-compose-helper">Tell people about taste, texture, portion, or who would enjoy it</span><textarea value={draft.body} onChange={(event) => setDraft({ ...draft, body: event.target.value })} placeholder="e.g. Floral and chewy, best shared after a spicy meal." rows={4} required /></label>
-      <label className="feed-compose-field">Extra details <span className="feed-compose-helper">Optional: price, spice level, or a useful ordering tip</span><input value={draft.dishMeta} onChange={(event) => setDraft({ ...draft, dishMeta: event.target.value })} placeholder={p.dishDetailsPlaceholder} /></label>
-      <div className="feed-compose-actions"><button type="button" className="button button-secondary" onClick={() => setComposerOpen(false)}>{p.cancel}</button><Button type="submit" icon="plus" disabled={!selectedRestaurant}>{p.publishNote}</Button></div>
-    </form></div>, document.body)}
+
+    <section className="find-browse-section">
+      <div className="find-section-heading"><h2>{browseText.category}</h2><button type="button" onClick={() => setActiveCategory('all')}>{browseText.seeAll}</button></div>
+      <div className="find-category-scroll" aria-label={browseText.category}>
+        {categoryCards.map((category, index) => <button type="button" key={category.id} className={`find-category-card find-category-card-${index + 1} ${activeCategory === category.id ? 'active' : ''}`} onClick={() => setActiveCategory(category.id)} aria-pressed={activeCategory === category.id}>
+          <span>{foodCategoryLabels[language][category.id]}</span>
+          <img src={category.dish.imageSrc} alt="" loading="lazy" />
+        </button>)}
+      </div>
+    </section>
+
+    <section className="find-browse-section find-nearby-section" id="nearby-food">
+      <div className="find-section-heading"><h2>{browseText.nearbyFood}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
+      <div className="find-location"><Icon name="pin" size={16} stroke={1.9} /><span>{nearbyText.area}</span></div>
+      <div className="nearby-food-grid">
+        {visibleFood.map(({ restaurant, dish }) => {
+          const restaurantText = localizedRestaurant(language, restaurant)
+          const displayName = restaurantText.name || restaurant.name
+          const saved = savedRestaurants.some((item) => item.id === restaurant.id)
+          return <article className="nearby-food-card" key={restaurant.id}>
+            <div className="nearby-food-media"><img src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /><span className="nearby-food-rating"><Icon name="star" size={13} stroke={1.6} /> {restaurant.rating?.toFixed(1) || '—'}</span><button type="button" className={`nearby-food-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button></div>
+            <div className="nearby-food-body"><h3>{dish.localized[language]}</h3><p>{displayName}</p><div className="nearby-food-meta"><strong>¥ {dish.price}</strong><span>{restaurant.distanceKm?.toFixed(1) || '—'} km</span></div></div>
+          </article>
+        })}
+      </div>
+      {!visibleFood.length && <div className="find-empty"><Icon name="search" size={24} /><strong>{p.noNotes}</strong><span>{p.keepExploring}</span></div>}
+    </section>
   </div>
 }
 
