@@ -1385,7 +1385,17 @@ function App() {
     ? '我对花生严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。'
     : `请问${dish.zh}是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？`)
   const copyQuestion = async () => { await navigator.clipboard?.writeText(questionFor(selectedDish)); setToast(p.toastQuestionCopied); track('ask_restaurant_clicked') }
-  const speak = (text: string) => { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); track('question_voice_play') } }
+  const speak = (text: string, eventName = 'question_voice_play') => {
+    if (!('speechSynthesis' in window)) return
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'zh-CN'
+    utterance.rate = 0.9
+    const voices = window.speechSynthesis.getVoices()
+    utterance.voice = voices.find((voice) => voice.lang.toLowerCase() === 'zh-cn') || voices.find((voice) => voice.lang.toLowerCase().startsWith('zh')) || null
+    window.speechSynthesis.speak(utterance)
+    track(eventName)
+  }
   const addToCart = (dish: Dish) => {
     if (getDiningStatus(dish) === 'CONFLICT') {
       setToast(p.toastConflict)
@@ -1494,7 +1504,7 @@ function App() {
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
         {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onRemove={removeFromCart} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
-        {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} />}
+        {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
         {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
@@ -2088,17 +2098,24 @@ function orderRequirements(passport: Passport, language: Language, t: (key: Copy
   return requirements
 }
 
-function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete, onAddMore, onSplitBill, onHome }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void }) {
+function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete, onAddMore, onSplitBill, onHome, onSpeak }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void; onSpeak: (text: string) => void }) {
   const t = (key: CopyKey) => tFor(language, key)
   const isSavedOrder = Boolean(savedOrder)
   const requirements = orderRequirements(passport, language, t)
   const total = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
   const count = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const waiterSpeech = [
+    '你好，我们想点以下菜品。',
+    ...cart.map(({ dish, quantity }) => `${dish.zh}${quantity > 1 ? `，${quantity}份` : ''}`),
+    requirements.length ? '另外请注意以下忌口和过敏要求。' : '',
+    ...requirements.map((requirement) => requirement.chinese),
+    '请先帮我们确认配料和制作过程。如果无法确认，请先告诉我们。',
+  ].filter(Boolean).join(' ')
   return <div className="page page-narrow page-order-brief">
     <PageHeader title={p.orderBrief} kicker={p.orderStep} backLabel={p.back} onBack={isSavedOrder ? onHome : onBack} />
     <div className="order-brief-heading"><span className="eyebrow"><span className="orange-dot" /> {p.bilingualOrder}</span><h1>{p.showWaiter}</h1><p>{p.orderDescription}</p></div>
     <section className="order-brief-card order-brief-user"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forYou}</span><h2>{p.selectedDishes}</h2></div><span className="order-brief-language">{countText(language, count, p.dish, p.dishes)}</span></div><div className="order-brief-dishes">{cart.map(({ dish, quantity }) => <div className="order-brief-dish" key={dish.id}><DishVisual dish={dish} language={language} small /><div><strong>{dish.localized[language]}</strong><small>{dish.zh} · ×{quantity}</small></div><b>¥{dish.price * quantity}</b></div>)}</div><div className="order-brief-total"><span>{p.total}</span><strong>¥{total}</strong></div><div className="order-brief-translation order-brief-user-notes"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.dietaryNotes}</span><h2>{p.requirements}</h2></div><Icon name="shield" size={20} /></div>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.user}-${requirement.chinese}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.user}</span></div>)}</div> : <p className="order-no-requirements">{p.noRequirements}</p>}</div></section>
-    <section className="order-brief-card order-brief-waiter"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forWaiter}</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div></section>
+    <section className="order-brief-card order-brief-waiter"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forWaiter}</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div><Button className="waiter-speak-button" onClick={() => onSpeak(waiterSpeech)} icon="volume">{p.play}</Button><p className="waiter-speak-note"><Icon name="volume" size={13} /> 使用设备的中文语音朗读</p></section>
     <div className={`order-brief-actions ${isSavedOrder ? 'saved-order-actions' : ''}`}>{isSavedOrder ? <><Button className="full-button" onClick={() => savedOrder && onAddMore(savedOrder)} icon="plus">{p.addMore}</Button><Button variant="secondary" className="full-button" onClick={() => savedOrder && onSplitBill(savedOrder)} icon="receipt">{p.splitBill}</Button><Button variant="ghost" className="full-button" onClick={onHome} icon="home">{p.backHome}</Button></> : <><Button className="full-button" onClick={onBack} icon="cart">{p.returnCart}</Button><Button variant="secondary" className="full-button" onClick={onComplete} icon="check">{p.completeOrder}</Button></>}</div>
     <p className="order-brief-disclaimer"><Icon name="alert" size={14} /> {p.orderDisclaimer}</p>
   </div>

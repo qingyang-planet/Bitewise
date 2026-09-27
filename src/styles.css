@@ -1027,6 +1027,8 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .order-requirement.is-alert { background: #fff0c3; color: #8a6511; }
 .order-requirement .icon { flex: 0 0 auto; margin-top: 1px; }
 .order-no-requirements { color: var(--muted); font-size: 11px; line-height: 1.45; }
+.waiter-speak-button { width: 100%; margin-top: 16px; }
+.waiter-speak-note { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; color: var(--muted); font-size: 10px; }
 .order-table-note { display: flex; align-items: center; gap: 6px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #d8e6d4; color: var(--green-deep); font-size: 10px; font-weight: 800; }
 .order-companion-group { padding-top: 15px; border-top: 1px dashed #d8e6d4; }
 .order-brief-translation { background: rgba(255,253,250,.78); }
