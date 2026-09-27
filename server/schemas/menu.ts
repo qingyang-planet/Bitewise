@@ -2,6 +2,10 @@ import { z } from 'zod'
 
 export const languageSchema = z.enum(['en', 'ko', 'ja', 'ru', 'es', 'it'])
 const stringArray = z.array(z.string().trim().min(1)).default([])
+export const evidenceSourceSchema = z.enum(['menu', 'knowledge', 'unknown'])
+const ingredientEvidenceSchema = z.object({ label: z.string().trim().min(1), labelZh: z.string().trim().min(1).optional(), source: evidenceSourceSchema })
+const allergenEvidenceSchema = z.object({ id: z.string().trim().min(1), label: z.string().trim().min(1).optional(), source: evidenceSourceSchema })
+const knowledgeMatchSchema = z.object({ id: z.string().trim().min(1), nameZh: z.string().trim().min(1), nameEn: z.string().trim().min(1), aliases: stringArray })
 
 export const foodPassportSchema = z.object({
   allergies: stringArray,
@@ -42,6 +46,9 @@ export const menuDishSchema = z.object({
   hasOffal: z.boolean().optional(),
   hasCilantro: z.boolean().optional(),
   localized: z.record(z.string()).optional(),
+  ingredientEvidence: z.array(ingredientEvidenceSchema).optional(),
+  allergenEvidence: z.array(allergenEvidenceSchema).optional(),
+  knowledgeMatch: knowledgeMatchSchema.optional(),
 })
 
 export const menuRiskSchema = z.object({
@@ -49,6 +56,7 @@ export const menuRiskSchema = z.object({
   reasons: z.array(z.string()),
   matchedRestrictions: z.array(z.string()),
   recommendationEligible: z.boolean(),
+  source: evidenceSourceSchema.optional(),
 })
 
 export const menuAnalysisResponseSchema = z.object({
@@ -63,3 +71,4 @@ export type FoodPassport = z.infer<typeof foodPassportSchema>
 export type MenuDish = z.infer<typeof menuDishSchema>
 export type MenuAnalysisRequest = z.infer<typeof menuAnalysisRequestSchema>
 export type MenuAnalysisResponse = z.infer<typeof menuAnalysisResponseSchema>
+export type EvidenceSource = z.infer<typeof evidenceSourceSchema>

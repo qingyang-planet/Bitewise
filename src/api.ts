@@ -1,3 +1,8 @@
+export type EvidenceSource = 'menu' | 'knowledge' | 'unknown'
+export type BackendIngredientEvidence = { label: string; labelZh?: string; source: EvidenceSource }
+export type BackendAllergenEvidence = { id: string; label?: string; source: EvidenceSource }
+export type BackendKnowledgeMatch = { id: string; nameZh: string; nameEn: string; aliases: string[] }
+
 export type BackendDish = {
   id: string
   name: string
@@ -18,6 +23,9 @@ export type BackendDish = {
   hasOffal?: boolean
   hasCilantro?: boolean
   localized?: Record<string, string>
+  ingredientEvidence?: BackendIngredientEvidence[]
+  allergenEvidence?: BackendAllergenEvidence[]
+  knowledgeMatch?: BackendKnowledgeMatch
 }
 
 export type BackendRisk = {
@@ -25,6 +33,7 @@ export type BackendRisk = {
   reasons: string[]
   matchedRestrictions: string[]
   recommendationEligible: boolean
+  source?: EvidenceSource
 }
 
 export type MenuAnalysisResponse = {

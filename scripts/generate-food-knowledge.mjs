@@ -94,7 +94,7 @@ const dishGroups = [
   },
   {
     cuisine: '素食 / 快餐 / 小吃', restaurantType: '素食餐厅 / 小吃店 / 快餐店', names: [
-      '素春卷', '素烧鹅', '素狮子头', '素宫保鸡丁', '素鱼香肉丝', '素麻婆豆腐', '素回锅肉', '素三杯鸡', '素咕咾肉', '素蚝油生菜',
+      '素春卷', '素烧鹅', '素狮子头', '素宫保鸡丁', '素鱼香肉丝', '素麻婆豆腐', '素回锅肉', '素三杯鸡', '素咕咾肉', '素蚝油生菜', '蒜蓉时蔬', '糖醋藕片', '冬瓜菌菇汤',
       '罗汉斋', '八宝素菜', '上素锅贴', '素蒸饺', '素包子', '香菇青菜包', '荠菜包子', '白菜豆腐汤', '番茄蛋花汤', '紫菜蛋花汤',
       '酸辣汤（素）', '玉米羹', '南瓜粥', '八宝粥', '皮蛋瘦肉粥（替代）', '素炒饭', '扬州炒饭（素）', '蛋炒饭', '番茄鸡蛋面', '素炸酱面',
       '葱油拌面（素）', '阳春面（素）', '素担担面', '酸辣粉（素）', '螺蛳粉（素）', '桂林米粉', '过桥米线（素）', '热干面', '武汉豆皮', '三鲜豆皮',
@@ -132,6 +132,54 @@ const keywordRules = [
 
 const dedupe = (items) => [...new Set(items)]
 
+// Curated names cover the dishes most likely to appear in a photographed menu.
+// The fallback label is deliberately transparent: it is a searchable label, not
+// a claim that we have manually translated every long-tail dish in the 520-item
+// knowledge base.
+const englishNameOverrides = {
+  '麻婆豆腐': { nameEn: 'Mapo Tofu', aliases: ['mapo', 'mapo tofu'] },
+  '宫保鸡丁': { nameEn: 'Kung Pao Chicken', aliases: ['kung pao', 'kung pao chicken', 'gong bao ji ding'] },
+  '鱼香肉丝': { nameEn: 'Fish-fragrant Pork', aliases: ['fish fragrant pork', 'yu xiang rou si'] },
+  '鱼香茄子': { nameEn: 'Fish-fragrant Eggplant', aliases: ['fish fragrant eggplant', 'yuxiang eggplant', 'yu xiang qie zi'] },
+  '回锅肉': { nameEn: 'Twice-cooked Pork', aliases: ['twice cooked pork', 'hui guo rou'] },
+  '水煮鱼': { nameEn: 'Sichuan Boiled Fish', aliases: ['sichuan boiled fish', 'shui zhu yu'] },
+  '酸菜鱼': { nameEn: 'Fish with Pickled Mustard Greens', aliases: ['sour cabbage fish', 'suan cai yu'] },
+  '糖醋里脊': { nameEn: 'Sweet-and-sour Pork Tenderloin', aliases: ['sweet and sour pork', 'tang cu li ji'] },
+  '蒜蓉时蔬': { nameEn: 'Garlic Seasonal Greens', aliases: ['garlic greens', 'seasonal greens'] },
+  '糖醋藕片': { nameEn: 'Sweet-and-sour Lotus Root', aliases: ['sweet sour lotus root', 'sweet and sour lotus root'] },
+  '冬瓜菌菇汤': { nameEn: 'Winter Melon Mushroom Soup', aliases: ['winter melon mushroom soup', 'winter melon soup'] },
+  '北京烤鸭': { nameEn: 'Peking Duck', aliases: ['peking duck', 'beijing roast duck'] },
+  '担担面': { nameEn: 'Dan Dan Noodles', aliases: ['dan dan noodles', 'dandan noodles'] },
+  '兰州牛肉面': { nameEn: 'Lanzhou Beef Noodles', aliases: ['lanzhou beef noodles', 'lanzhou lamian'] },
+  '羊肉泡馍': { nameEn: 'Lamb Paomo', aliases: ['lamb paomo', 'yang rou pao mo'] },
+  '新疆大盘鸡': { nameEn: 'Xinjiang Big Plate Chicken', aliases: ['big plate chicken', 'da pan ji'] },
+  '锅包肉': { nameEn: 'Northeastern Sweet-and-sour Pork', aliases: ['guo bao rou', 'northeastern sweet and sour pork'] },
+  '地三鲜': { nameEn: 'Three Earthly Delicacies', aliases: ['di san xian', 'stir-fried eggplant potato pepper'] },
+  '小鸡炖蘑菇': { nameEn: 'Braised Chicken with Mushrooms', aliases: ['chicken with mushrooms', 'xiao ji dun mo gu'] },
+  '小笼包': { nameEn: 'Soup Dumplings', aliases: ['xiaolongbao', 'xiao long bao', 'soup dumpling'] },
+  '生煎包': { nameEn: 'Pan-fried Pork Buns', aliases: ['sheng jian bao', 'pan fried buns'] },
+  '虾饺': { nameEn: 'Shrimp Dumplings', aliases: ['har gow', 'shrimp dumpling', 'xia jiao'] },
+  '肠粉': { nameEn: 'Rice Noodle Rolls', aliases: ['cheung fun', 'rice noodle roll', 'chang fen'] },
+  '叉烧包': { nameEn: 'Char Siu Buns', aliases: ['char siu bao', 'bbq pork buns'] },
+  '白切鸡': { nameEn: 'White-cut Chicken', aliases: ['white cut chicken', 'bai qie ji'] },
+  '皮蛋瘦肉粥': { nameEn: 'Congee with Century Egg and Pork', aliases: ['century egg pork congee', 'pidan shourou zhou'] },
+  '扬州炒饭': { nameEn: 'Yangzhou Fried Rice', aliases: ['yangzhou fried rice'] },
+  '春卷': { nameEn: 'Spring Rolls', aliases: ['spring roll', 'chun juan'] },
+  '炒饭': { nameEn: 'Fried Rice', aliases: ['fried rice', 'chao fan'] },
+  '炒面': { nameEn: 'Stir-fried Noodles', aliases: ['chow mein', 'stir fried noodles'] },
+  '火锅': { nameEn: 'Chinese Hot Pot', aliases: ['hot pot', 'huo guo'] },
+  '酸辣汤': { nameEn: 'Hot and Sour Soup', aliases: ['hot and sour soup', 'suan la tang'] },
+  '蛋炒饭': { nameEn: 'Egg Fried Rice', aliases: ['egg fried rice', 'dan chao fan'] },
+  '奶茶': { nameEn: 'Milk Tea', aliases: ['milk tea', 'bubble tea', 'nai cha'] },
+  '双皮奶': { nameEn: 'Double-skin Milk Custard', aliases: ['double skin milk', 'shuang pi nai'] }
+}
+
+function searchableEnglishLabel(name) {
+  const override = englishNameOverrides[name]
+  if (override) return override
+  return { nameEn: `Chinese dish: ${name}`, aliases: [name] }
+}
+
 function enrich(group, name, index) {
   const base = baseProfiles[group.cuisine]
   const matched = keywordRules.filter((rule) => rule.words.some((word) => name.includes(word)))
@@ -142,9 +190,13 @@ function enrich(group, name, index) {
   if (name.includes('素') || name.includes('蔬') || name.includes('豆腐') || name.includes('青菜')) dietarySignals.push('可能为素食配方，需确认高汤、蚝油和动物油')
   if (name.includes('牛') || name.includes('羊') || name.includes('鸡') || name.includes('鸭') || name.includes('猪') || name.includes('肉') || name.includes('肘') || name.includes('腊')) dietarySignals.push('含肉类或动物性汤底')
   if (name.includes('辣') || name.includes('椒') || name.includes('麻') || name.includes('酸')) dietarySignals.push('可能辛辣或带酸味')
+  const english = searchableEnglishLabel(name)
   return {
     id: `cn-${String(index + 1).padStart(4, '0')}`,
     nameZh: name,
+    nameEn: english.nameEn,
+    aliases: dedupe([name, ...english.aliases]),
+    nameEnSource: englishNameOverrides[name] ? 'curated' : 'searchable-label',
     cuisine: group.cuisine,
     restaurantType: group.restaurantType,
     ingredients,

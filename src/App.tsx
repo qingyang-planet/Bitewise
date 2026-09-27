@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import * as React from 'react'
 import { createPortal } from 'react-dom'
-import { analyzeMenuImage, askDiningAssistant, validateMenuImage, type BackendDish, type BackendRisk } from './api'
+import { analyzeMenuImage, askDiningAssistant, validateMenuImage, type BackendDish, type BackendRisk, type EvidenceSource } from './api'
 
 type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
 type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
@@ -101,6 +101,9 @@ type Dish = {
   bestWith: string
   culture: string
   reason: string
+  ingredientEvidence?: { label: string; labelZh?: string; source: EvidenceSource }[]
+  allergenEvidence?: { id: string; label?: string; source: EvidenceSource }[]
+  knowledgeMatch?: { id: string; nameZh: string; nameEn: string; aliases: string[] }
 }
 
 const menuCategoryOrder: DishCategory[] = ['featured', 'appetizer', 'salad', 'soup', 'main', 'side', 'staple', 'combo', 'dessert', 'drink', 'alcohol', 'other']
@@ -536,7 +539,7 @@ const localizedPostMeta: Record<Language, { justNow: string; worthTrying: string
   it: { justNow: 'Proprio ora', worthTrying: 'Da provare' },
 }
 
-const dishes: Dish[] = [
+const baseDishes: Dish[] = [
   { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
   { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
   { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
@@ -544,6 +547,21 @@ const dishes: Dish[] = [
   { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.png', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
   { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
+
+const demoKnowledge: Record<string, { id: string; nameEn: string; aliases: string[]; ingredients: string[]; allergens: { id: string; label?: string }[] }> = {
+  '宫保鸡丁': { id: 'cn-0002', nameEn: 'Kung Pao Chicken', aliases: ['kung pao', 'gong bao ji ding'], ingredients: ['soy sauce', 'starch'], allergens: [{ id: 'soy', label: '大豆' }] },
+  '麻婆豆腐': { id: 'cn-0001', nameEn: 'Mapo Tofu', aliases: ['mapo', 'mapo tofu'], ingredients: ['soy products'], allergens: [{ id: 'soy', label: '大豆' }] },
+  '鱼香茄子': { id: 'cn-0038', nameEn: 'Fish-fragrant Eggplant', aliases: ['fish fragrant eggplant', 'yuxiang eggplant'], ingredients: ['soy sauce', 'sugar'], allergens: [{ id: 'soy', label: '大豆' }] },
+  '蒜蓉时蔬': { id: 'cn-0479', nameEn: 'Garlic Seasonal Greens', aliases: ['garlic greens'], ingredients: ['shared wok or oil'], allergens: [] },
+  '糖醋藕片': { id: 'cn-0480', nameEn: 'Sweet-and-sour Lotus Root', aliases: ['sweet sour lotus root'], ingredients: ['sesame or sesame oil'], allergens: [{ id: 'sesame', label: '芝麻' }] },
+  '冬瓜菌菇汤': { id: 'cn-0481', nameEn: 'Winter Melon Mushroom Soup', aliases: ['winter melon mushroom soup'], ingredients: [], allergens: [{ id: 'soy', label: '大豆' }, { id: 'shellfish', label: '甲壳类' }] },
+}
+const dishes: Dish[] = baseDishes.map((dish) => {
+  const knowledge = demoKnowledge[dish.zh]
+  const ingredientEvidence = [...dish.ingredients.map((label) => ({ label, source: 'menu' as const })), ...(knowledge?.ingredients || []).map((label) => ({ label, source: 'knowledge' as const }))].filter((item, index, items) => items.findIndex((candidate) => candidate.label.toLowerCase() === item.label.toLowerCase()) === index)
+  const allergenEvidence = [...dish.allergens.map((id) => ({ id, source: 'menu' as const })), ...(knowledge?.allergens || []).map(({ id, label }) => ({ id, label, source: 'knowledge' as const }))]
+  return { ...dish, ingredientEvidence, allergenEvidence, ...(knowledge ? { knowledgeMatch: { id: knowledge.id, nameZh: dish.zh, nameEn: knowledge.nameEn, aliases: knowledge.aliases } } : {}) }
+})
 
 const emptyLocalized: Record<Language, string> = { en: '', ko: '', ja: '', ru: '', es: '', it: '' }
 const mapBackendDish = (raw: BackendDish): Dish => {
@@ -574,9 +592,12 @@ const mapBackendDish = (raw: BackendDish): Dish => {
     hasOffal: raw.hasOffal ?? local?.hasOffal,
     hasCilantro: raw.hasCilantro ?? local?.hasCilantro,
     confidence: raw.confidence,
+    ingredientEvidence: raw.ingredientEvidence || raw.ingredients.map((label) => ({ label, source: 'menu' as const })),
+    allergenEvidence: raw.allergenEvidence || raw.allergens.map((id) => ({ id, source: 'menu' as const })),
+    knowledgeMatch: raw.knowledgeMatch,
   }
 }
-const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized })
+const serializeDish = (dish: Dish): BackendDish => ({ id: dish.id, name: dish.name, zh: dish.zh, price: dish.price, ingredients: dish.ingredients, allergens: dish.allergens, possibleAllergens: dish.possibleAllergens || [], confidence: dish.confidence, spicy: dish.spicy, vegetarian: dish.vegetarian, vegan: dish.vegan, tags: dish.tags, hasPork: dish.hasPork, hasBeef: dish.hasBeef, hasPoultry: dish.hasPoultry, hasSeafood: dish.hasSeafood, hasOffal: dish.hasOffal, hasCilantro: dish.hasCilantro, localized: dish.localized, ingredientEvidence: dish.ingredientEvidence, allergenEvidence: dish.allergenEvidence, knowledgeMatch: dish.knowledgeMatch })
 
 const makeBillItem = (id: string, dishId: string, label: string, zh: string, amount: number): BillItem => ({ id, label, zh, amount, dish: dishes.find((dish) => dish.id === dishId)! })
 
@@ -987,6 +1008,11 @@ function Icon({ name, size = 20, stroke = 1.8 }: { name: string; size?: number; 
     heart: <path d="M20.8 8.8c0 5.4-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.8A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.6Z"/>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
     leaf: <><path d="M20 4C10 4 5 8 5 14c0 3.3 2.3 6 5.5 6C17 20 20 12 20 4Z"/><path d="M4 21c2-4 5.3-6.7 10-8.5"/></>,
+    chili: <><path d="M19.5 5.5c-1.3 4.8-4.4 9.7-9.2 11.5-2.9 1.1-5.3-.4-5.1-2.7.2-2.4 2.7-3.5 5.1-3.8 3.2-.4 5.8-2.3 7.7-5.7"/><path d="M17.8 5.2c.9-1.2 2.1-1.8 3.2-1.2-.2 1.4-1.1 2.2-2.5 2.5"/></>,
+    tofuBowl: <><path d="M4 11.5c.8 5.2 3.6 7.8 8 7.8s7.2-2.6 8-7.8"/><path d="M3.5 11.5h17M6.5 8.8c1.1-2.3 2.9-3.5 5.5-3.5s4.4 1.2 5.5 3.5"/><path d="M8.5 8.8v-2M12 8.8v-2.8M15.5 8.8v-2"/></>,
+    pot: <><path d="M5 9h14v8.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 17.5V9Z"/><path d="M3.5 9h17M7 6.5h10M9 4.5h6M3.5 12h-1M21.5 12h-1"/></>,
+    riceBowl: <><path d="M4 12h16c-.6 4.6-3.2 7-8 7s-7.4-2.4-8-7Z"/><path d="M6 12c.2-2.6 2.4-4.5 6-4.5s5.8 1.9 6 4.5M8 6.5c.8-1 1.7-1.5 2.7-1.5M12 5c.5-1 .9-1.5 1.8-1.8"/><path d="M9 21h6"/></>,
+    book: <><path d="M3.5 5.5c2.8-1.5 5.7-1.2 8.5.8v13c-2.8-2-5.7-2.3-8.5-.8v-13Z"/><path d="M20.5 5.5c-2.8-1.5-5.7-1.2-8.5.8v13c2.8 2 5.7 2.3 8.5 .8v-13Z"/></>,
   }
   return <svg className="icon" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] ?? paths.spark}</svg>
 }
@@ -1027,7 +1053,10 @@ function App() {
   const [sessionMenu, setSessionMenu] = useState<Dish[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('cit:session-menu') || '') as Dish[]
-      return Array.isArray(saved) ? saved : []
+      return Array.isArray(saved) ? saved.map((dish) => {
+        const catalogDish = dishes.find((candidate) => candidate.id === dish.id)
+        return catalogDish ? { ...dish, ingredientEvidence: catalogDish.ingredientEvidence, allergenEvidence: catalogDish.allergenEvidence, knowledgeMatch: catalogDish.knowledgeMatch } : dish
+      }) : []
     } catch { return [] }
   })
   const [sessionRestaurant, setSessionRestaurant] = useState(() => localStorage.getItem('cit:session-restaurant') || '')
@@ -1883,6 +1912,19 @@ function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStat
 }
 
 function DishVisual({ dish, language = 'en', small = false }: { dish: Dish; language?: Language; small?: boolean }) { return <div className={`dish-visual ${dish.className} ${small ? 'dish-visual-small' : ''}`}><img className="dish-photo" src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /></div> }
+function IngredientVisual({ label }: { label: string }) {
+  const normalized = label.toLowerCase()
+  const kind = normalized.includes('tofu') ? 'tofu' : normalized.includes('bean paste') ? 'paste' : normalized.includes('pork') ? 'pork' : normalized.includes('pepper') ? 'pepper' : normalized.includes('soy') || normalized.includes('bean') ? 'soy' : 'leaf'
+  const art: Record<string, ReactNode> = {
+    tofu: <><path d="m7 7 5-3 5 3v7l-5 3-5-3V7Z"/><path d="M12 4v6m5-3-5 3-5-3"/></>,
+    paste: <><ellipse cx="12" cy="7.5" rx="7" ry="3"/><path d="M5 7.5v3.2c0 2.5 3.1 4.5 7 4.5s7-2 7-4.5V7.5M8 7.5c1.2-.8 2.6-1.2 4-1.2s2.8.4 4 1.2"/><path d="M9 5.8c.4-.6.9-.9 1.5-.9M13 5.4c.5-.5 1-.7 1.6-.5"/></>,
+    pork: <><path d="M7.2 11.8c-1.7 0-2.7-1.2-2.1-2.5.5-1 1.7-1.3 2.8-.8.4-1.7 2.3-2.5 3.5-1.5 1-1.7 3.5-1.5 4.1.5 1.7-.2 3 1 2.7 2.4-.3 1.2-1.5 1.9-2.8 1.7-.6 1.6-2.8 2-3.8.6-1.4.9-3.4.6-4.4-.4Z"/><path d="M8.5 10.1h.1M13.2 9.2h.1M15.1 11h.1"/></>,
+    pepper: <><circle cx="7" cy="8" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="17" cy="8" r="2.2"/><circle cx="9.5" cy="13" r="2.2"/><circle cx="14.5" cy="13" r="2.2"/><path d="M12 3.7c.1-1 .7-1.6 1.4-1.9"/></>,
+    soy: <><ellipse cx="8" cy="10" rx="3.2" ry="2.4" transform="rotate(-25 8 10)"/><ellipse cx="15.5" cy="8" rx="3.2" ry="2.4" transform="rotate(28 15.5 8)"/><ellipse cx="14" cy="14.5" rx="3.2" ry="2.4" transform="rotate(-18 14 14.5)"/><path d="M6.8 9.2c.8.4 1.5.4 2.3 0M14.3 7.2c.8.4 1.6.4 2.4 0M12.8 13.7c.8.4 1.6.4 2.4 0"/></>,
+    leaf: <><path d="M18.5 5.5C11 5.7 6 8.7 6 13.5c0 3 2.2 5 5.1 5 4.9 0 7.4-5.4 7.4-13Z"/><path d="M5 19c2.2-3.2 5-5.7 8.8-7.5"/></>,
+  }
+  return <svg className="ingredient-art" width="58" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{art[kind]}</svg>
+}
 function StatusBadge({ status, t }: { status: Status; t: (key: CopyKey) => string }) { const map = { MATCH: ['match', t('matchLabel'), 'check'], WARNING: ['warning', t('warningLabel'), 'alert'], CONFLICT: ['conflict', t('conflictLabel'), 'close'], UNKNOWN: ['unknown', t('unknownLabel'), 'alert'] } as const; const [color, label, icon] = map[status]; return <span className={`status-badge ${color}`}><Icon name={icon} size={14} /> {label}</span> }
 const dishTagTranslations: Record<Language, Record<string, string>> = {
   en: {},
@@ -1947,10 +1989,10 @@ const dishNarrativeTranslations: Record<Language, Record<string, DishNarrative>>
   },
 }
 const dishNarrativeLabel = (language: Language, dish: Dish, key: keyof DishNarrative) => dishNarrativeTranslations[language][dish.id]?.[key] || dish[key]
-function DishCard({ p, dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) { const info = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch'); const inCart = cartQuantity > 0; return <article className={`dish-card card-status-${status.toLowerCase()}`}><button className="dish-card-main" onClick={() => onDetail(dish)}><DishVisual dish={dish} language={language} /><div className="dish-card-content"><div className="dish-card-title"><div><h3>{dish.localized[language]}</h3><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div><div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{dishTagLabel(language, tag)}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div><div className="status-line"><StatusBadge status={status} t={t} /><span>{info}</span></div></div></button><div className="dish-card-actions"><button className="dish-detail-button" onClick={() => onDetail(dish)}>{t('viewDetails')} <Icon name="arrow" size={16} /></button><button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} disabled={status === 'CONFLICT'} aria-pressed={inCart} onClick={() => onAddToCart(dish)}>{status === 'CONFLICT' ? <><Icon name="close" size={15} /> {p.excluded}</> : inCart ? <><span className="cart-button-check"><Icon name="check" size={13} /></span><span>{p.inCart}</span><b className="cart-button-count">{cartQuantity}</b></> : <><Icon name="plus" size={15} /> {p.addToCart}</>}</button></div></article> }
+function DishCard({ p, dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) { const info = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch'); const inCart = cartQuantity > 0; return <article className={`dish-card card-status-${status.toLowerCase()}`}><button className="dish-card-main" onClick={() => onDetail(dish)}><DishVisual dish={dish} language={language} /><div className="dish-card-content"><div className="dish-card-title"><div><h3>{dish.localized[language]}</h3><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div><div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{dishTagLabel(language, tag)}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div><div className="status-line"><div className="status-line-copy"><StatusBadge status={status} t={t} /><span>{info}</span></div></div></div></button><div className="dish-card-actions"><button className="dish-detail-button" onClick={() => onDetail(dish)}>{t('viewDetails')} <Icon name="arrow" size={16} /></button><button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} disabled={status === 'CONFLICT'} aria-pressed={inCart} onClick={() => onAddToCart(dish)}>{status === 'CONFLICT' ? <><Icon name="close" size={15} /> {p.excluded}</> : inCart ? <><span className="cart-button-check"><Icon name="check" size={13} /></span><span>{p.inCart}</span><b className="cart-button-count">{cartQuantity}</b></> : <><Icon name="plus" size={15} /> {p.addToCart}</>}</button></div></article> }
 
 type IngredientRisk = 'clear' | 'conflict' | 'possible' | 'unknown'
-type IngredientCheck = { label: string; risk: IngredientRisk }
+type IngredientCheck = { label: string; risk: IngredientRisk; source: EvidenceSource }
 
 const ingredientAllergenTerms: Record<string, string[]> = {
   peanut: ['peanut'],
@@ -1995,26 +2037,27 @@ function ingredientDietConflict(label: string, dish: Dish, passport: Passport) {
 }
 
 function buildIngredientChecks(dish: Dish, passport: Passport, status: Status): IngredientCheck[] {
-  const checks = dish.ingredients.map<IngredientCheck>((label) => {
+  const evidence = dish.ingredientEvidence?.length ? dish.ingredientEvidence : dish.ingredients.map((label) => ({ label, source: 'menu' as const }))
+  const checks = evidence.map<IngredientCheck>(({ label, source }) => {
     const explicitConflict = passport.allergies.some((selected) => dish.allergens.some((allergen) => allergenMatchKeys(selected).includes(allergen)) && ingredientMatchesAllergen(label, selected))
     const dietaryConflict = ingredientDietConflict(label, dish, passport)
-    if (explicitConflict || dietaryConflict) return { label, risk: 'conflict' }
+    if (explicitConflict || dietaryConflict) return { label, risk: 'conflict', source }
     const possibleConflict = (dish.possibleAllergens || []).some((allergen) => passport.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)) && ingredientMatchesAllergen(label, allergen))
-    return { label, risk: possibleConflict ? 'possible' : 'clear' }
+    return { label, risk: possibleConflict ? 'possible' : 'clear', source }
   })
 
   const carrierIndex = checks.findIndex((item) => ingredientCarrier(item.label) && item.risk === 'clear')
   const relevantPossible = (dish.possibleAllergens || []).some((allergen) => passport.allergies.some((selected) => allergenMatchKeys(selected).includes(allergen)))
   if (relevantPossible && !checks.some((item) => item.risk === 'possible')) {
     if (carrierIndex >= 0) checks[carrierIndex].risk = 'possible'
-    else checks.push({ label: 'Unspecified recipe detail', risk: 'possible' })
+    else checks.push({ label: 'Unspecified recipe detail', risk: 'possible', source: 'unknown' })
   }
   if (status === 'UNKNOWN' && !checks.some((item) => item.risk === 'unknown')) {
     const unknownIndex = checks.findIndex((item) => ingredientCarrier(item.label) && item.risk === 'clear')
     if (unknownIndex >= 0) checks[unknownIndex].risk = 'unknown'
-    else checks.push({ label: 'Unspecified recipe detail', risk: 'unknown' })
+    else checks.push({ label: 'Unspecified recipe detail', risk: 'unknown', source: 'unknown' })
   }
-  if (status === 'CONFLICT' && !checks.some((item) => item.risk === 'conflict')) checks.push({ label: 'Passport conflict', risk: 'conflict' })
+  if (status === 'CONFLICT' && !checks.some((item) => item.risk === 'conflict')) checks.push({ label: 'Passport conflict', risk: 'conflict', source: 'menu' })
   return checks
 }
 
@@ -2027,28 +2070,20 @@ function ingredientRiskLabel(risk: IngredientRisk, t: (key: CopyKey) => string) 
 
 function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onAddToCart }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; passport: Passport; status: Status; onBack: () => void; onAsk: () => void; onAddToCart: () => void }) {
   const ingredientChecks = buildIngredientChecks(dish, passport, status)
-  const statusDetail = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')
   return <div className="page page-narrow page-detail">
-    <PageHeader title={t('mainIngredients')} kicker={`${p.step} 03 · ${p.helpfulContext}`} backLabel={p.back} onBack={onBack} />
+    <PageHeader title={t('viewDetails')} kicker={`${p.step} 03`} backLabel={p.back} onBack={onBack} />
     <div className="detail-hero"><DishVisual dish={dish} language={language} /></div>
     <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
     <div className="detail-status-row"><StatusBadge status={status} t={t} /><span className="spice-chip">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span></div>
-    <section className="detail-passport-check">
-      <div className="detail-passport-title"><Icon name="shield" size={17} /><strong>{t('checking')}</strong></div>
-      <p>{statusDetail}</p>
-      <div className="detail-evidence-legend"><span className="evidence-known"><i /> {t('conflictLabel')}</span><span className="evidence-possible"><i /> {t('warningLabel')}</span><span className="evidence-unknown"><i /> {t('unknownLabel')}</span></div>
-    </section>
     <section className="detail-ingredients-section">
       <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
       <div className="ingredient-scroller" role="list" aria-label={t('mainIngredients')}>
-        {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}`} role="listitem"><span className="ingredient-card-icon"><i /></span><strong>{ingredientDisplayLabel(language, item.label)}</strong><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
+        {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
       </div>
     </section>
     <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
-    <div className="fact-grid"><Fact title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
-    <SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div>
-    <div className="comparison-card"><Icon name="spark" size={18} /><p><strong>{p.helpfulContext}</strong><br />{p.contextNote}</p></div>
-    <div className="why-card"><span>{t('whySeeing')}</span><p>{statusDetail}</p></div>
+    <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
+    <SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div>
     <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
   </div>
 }
@@ -2122,7 +2157,7 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
 }
 
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
-function Fact({ title, value }: { title: string; value: string }) { return <div className="fact-card"><span>{title}</span><strong>{value}</strong></div> }
+function Fact({ icon, title, value }: { icon: string; title: string; value: string }) { return <div className="fact-card"><span className="fact-card-label"><Icon name={icon} size={19} stroke={1.8} />{title}</span><strong>{value}</strong></div> }
 
 function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: () => void; onSpeak: () => void }) { return <div className="sheet-backdrop" onClick={onClose}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><div className="eyebrow"><span className="orange-dot" /> {p.askStep}</div><button className="icon-button soft" onClick={onClose} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card"><strong>{p.chineseShowFirst}</strong>{loading ? <p className="assistant-loading"><span className="loader" /> Preparing a restaurant question…</p> : <p>{question}</p>}<hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={onSpeak} icon="volume" disabled={loading}>{t('playChinese')}</Button><Button variant="secondary" onClick={onCopy} icon="copy" disabled={loading}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div> }
 

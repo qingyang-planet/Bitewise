@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "generatedAt": "2026-09-27",
-  "count": 520,
+  "count": 523,
   "allergenVocabulary": [
     "小麦（含麸质）",
     "甲壳类",
@@ -20,6 +20,13 @@
     {
       "id": "cn-0001",
       "nameZh": "麻婆豆腐",
+      "nameEn": "Mapo Tofu",
+      "aliases": [
+        "麻婆豆腐",
+        "mapo",
+        "mapo tofu"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -48,6 +55,14 @@
     {
       "id": "cn-0002",
       "nameZh": "宫保鸡丁",
+      "nameEn": "Kung Pao Chicken",
+      "aliases": [
+        "宫保鸡丁",
+        "kung pao",
+        "kung pao chicken",
+        "gong bao ji ding"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -73,6 +88,13 @@
     {
       "id": "cn-0003",
       "nameZh": "鱼香肉丝",
+      "nameEn": "Fish-fragrant Pork",
+      "aliases": [
+        "鱼香肉丝",
+        "fish fragrant pork",
+        "yu xiang rou si"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -101,6 +123,13 @@
     {
       "id": "cn-0004",
       "nameZh": "回锅肉",
+      "nameEn": "Twice-cooked Pork",
+      "aliases": [
+        "回锅肉",
+        "twice cooked pork",
+        "hui guo rou"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -126,6 +155,13 @@
     {
       "id": "cn-0005",
       "nameZh": "水煮鱼",
+      "nameEn": "Sichuan Boiled Fish",
+      "aliases": [
+        "水煮鱼",
+        "sichuan boiled fish",
+        "shui zhu yu"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -152,6 +188,11 @@
     {
       "id": "cn-0006",
       "nameZh": "水煮牛肉",
+      "nameEn": "Chinese dish: 水煮牛肉",
+      "aliases": [
+        "水煮牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -177,6 +218,11 @@
     {
       "id": "cn-0007",
       "nameZh": "夫妻肺片",
+      "nameEn": "Chinese dish: 夫妻肺片",
+      "aliases": [
+        "夫妻肺片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -200,6 +246,11 @@
     {
       "id": "cn-0008",
       "nameZh": "口水鸡",
+      "nameEn": "Chinese dish: 口水鸡",
+      "aliases": [
+        "口水鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -225,6 +276,11 @@
     {
       "id": "cn-0009",
       "nameZh": "辣子鸡",
+      "nameEn": "Chinese dish: 辣子鸡",
+      "aliases": [
+        "辣子鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -251,6 +307,11 @@
     {
       "id": "cn-0010",
       "nameZh": "毛血旺",
+      "nameEn": "Chinese dish: 毛血旺",
+      "aliases": [
+        "毛血旺"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -274,6 +335,13 @@
     {
       "id": "cn-0011",
       "nameZh": "酸菜鱼",
+      "nameEn": "Fish with Pickled Mustard Greens",
+      "aliases": [
+        "酸菜鱼",
+        "sour cabbage fish",
+        "suan cai yu"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -302,6 +370,13 @@
     {
       "id": "cn-0012",
       "nameZh": "担担面",
+      "nameEn": "Dan Dan Noodles",
+      "aliases": [
+        "担担面",
+        "dan dan noodles",
+        "dandan noodles"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -328,6 +403,11 @@
     {
       "id": "cn-0013",
       "nameZh": "甜水面",
+      "nameEn": "Chinese dish: 甜水面",
+      "aliases": [
+        "甜水面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -354,6 +434,11 @@
     {
       "id": "cn-0014",
       "nameZh": "钟水饺",
+      "nameEn": "Chinese dish: 钟水饺",
+      "aliases": [
+        "钟水饺"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -380,6 +465,11 @@
     {
       "id": "cn-0015",
       "nameZh": "红油抄手",
+      "nameEn": "Chinese dish: 红油抄手",
+      "aliases": [
+        "红油抄手"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -403,6 +493,11 @@
     {
       "id": "cn-0016",
       "nameZh": "龙抄手",
+      "nameEn": "Chinese dish: 龙抄手",
+      "aliases": [
+        "龙抄手"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -426,6 +521,11 @@
     {
       "id": "cn-0017",
       "nameZh": "四川凉面",
+      "nameEn": "Chinese dish: 四川凉面",
+      "aliases": [
+        "四川凉面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -452,6 +552,11 @@
     {
       "id": "cn-0018",
       "nameZh": "川北凉粉",
+      "nameEn": "Chinese dish: 川北凉粉",
+      "aliases": [
+        "川北凉粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -478,6 +583,11 @@
     {
       "id": "cn-0019",
       "nameZh": "蒜泥白肉",
+      "nameEn": "Chinese dish: 蒜泥白肉",
+      "aliases": [
+        "蒜泥白肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -503,6 +613,11 @@
     {
       "id": "cn-0020",
       "nameZh": "棒棒鸡",
+      "nameEn": "Chinese dish: 棒棒鸡",
+      "aliases": [
+        "棒棒鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -528,6 +643,11 @@
     {
       "id": "cn-0021",
       "nameZh": "樟茶鸭",
+      "nameEn": "Chinese dish: 樟茶鸭",
+      "aliases": [
+        "樟茶鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -553,6 +673,11 @@
     {
       "id": "cn-0022",
       "nameZh": "东坡肘子",
+      "nameEn": "Chinese dish: 东坡肘子",
+      "aliases": [
+        "东坡肘子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -578,6 +703,11 @@
     {
       "id": "cn-0023",
       "nameZh": "乐山甜皮鸭",
+      "nameEn": "Chinese dish: 乐山甜皮鸭",
+      "aliases": [
+        "乐山甜皮鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -603,6 +733,11 @@
     {
       "id": "cn-0024",
       "nameZh": "冷吃兔",
+      "nameEn": "Chinese dish: 冷吃兔",
+      "aliases": [
+        "冷吃兔"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -626,6 +761,11 @@
     {
       "id": "cn-0025",
       "nameZh": "自贡鲜锅兔",
+      "nameEn": "Chinese dish: 自贡鲜锅兔",
+      "aliases": [
+        "自贡鲜锅兔"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -649,6 +789,11 @@
     {
       "id": "cn-0026",
       "nameZh": "干煸四季豆",
+      "nameEn": "Chinese dish: 干煸四季豆",
+      "aliases": [
+        "干煸四季豆"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -672,6 +817,11 @@
     {
       "id": "cn-0027",
       "nameZh": "干煸鳝鱼",
+      "nameEn": "Chinese dish: 干煸鳝鱼",
+      "aliases": [
+        "干煸鳝鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -698,6 +848,11 @@
     {
       "id": "cn-0028",
       "nameZh": "蚂蚁上树",
+      "nameEn": "Chinese dish: 蚂蚁上树",
+      "aliases": [
+        "蚂蚁上树"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -721,6 +876,11 @@
     {
       "id": "cn-0029",
       "nameZh": "豆瓣鱼",
+      "nameEn": "Chinese dish: 豆瓣鱼",
+      "aliases": [
+        "豆瓣鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -747,6 +907,11 @@
     {
       "id": "cn-0030",
       "nameZh": "豆花鱼",
+      "nameEn": "Chinese dish: 豆花鱼",
+      "aliases": [
+        "豆花鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -775,6 +940,11 @@
     {
       "id": "cn-0031",
       "nameZh": "香辣虾",
+      "nameEn": "Chinese dish: 香辣虾",
+      "aliases": [
+        "香辣虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -805,6 +975,11 @@
     {
       "id": "cn-0032",
       "nameZh": "干锅虾",
+      "nameEn": "Chinese dish: 干锅虾",
+      "aliases": [
+        "干锅虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -833,6 +1008,11 @@
     {
       "id": "cn-0033",
       "nameZh": "干锅花菜",
+      "nameEn": "Chinese dish: 干锅花菜",
+      "aliases": [
+        "干锅花菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -856,6 +1036,11 @@
     {
       "id": "cn-0034",
       "nameZh": "干锅土豆片",
+      "nameEn": "Chinese dish: 干锅土豆片",
+      "aliases": [
+        "干锅土豆片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -879,6 +1064,11 @@
     {
       "id": "cn-0035",
       "nameZh": "干锅牛蛙",
+      "nameEn": "Chinese dish: 干锅牛蛙",
+      "aliases": [
+        "干锅牛蛙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -904,6 +1094,11 @@
     {
       "id": "cn-0036",
       "nameZh": "泡椒凤爪",
+      "nameEn": "Chinese dish: 泡椒凤爪",
+      "aliases": [
+        "泡椒凤爪"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -929,6 +1124,11 @@
     {
       "id": "cn-0037",
       "nameZh": "泡椒牛肉",
+      "nameEn": "Chinese dish: 泡椒牛肉",
+      "aliases": [
+        "泡椒牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -955,6 +1155,14 @@
     {
       "id": "cn-0038",
       "nameZh": "鱼香茄子",
+      "nameEn": "Fish-fragrant Eggplant",
+      "aliases": [
+        "鱼香茄子",
+        "fish fragrant eggplant",
+        "yuxiang eggplant",
+        "yu xiang qie zi"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -981,6 +1189,11 @@
     {
       "id": "cn-0039",
       "nameZh": "香辣蟹",
+      "nameEn": "Chinese dish: 香辣蟹",
+      "aliases": [
+        "香辣蟹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1011,6 +1224,11 @@
     {
       "id": "cn-0040",
       "nameZh": "重庆小面",
+      "nameEn": "Chinese dish: 重庆小面",
+      "aliases": [
+        "重庆小面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1037,6 +1255,11 @@
     {
       "id": "cn-0041",
       "nameZh": "宜宾燃面",
+      "nameEn": "Chinese dish: 宜宾燃面",
+      "aliases": [
+        "宜宾燃面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1063,6 +1286,11 @@
     {
       "id": "cn-0042",
       "nameZh": "肥肠粉",
+      "nameEn": "Chinese dish: 肥肠粉",
+      "aliases": [
+        "肥肠粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1089,6 +1317,11 @@
     {
       "id": "cn-0043",
       "nameZh": "酸辣粉",
+      "nameEn": "Chinese dish: 酸辣粉",
+      "aliases": [
+        "酸辣粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1117,6 +1350,11 @@
     {
       "id": "cn-0044",
       "nameZh": "红油耳片",
+      "nameEn": "Chinese dish: 红油耳片",
+      "aliases": [
+        "红油耳片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1140,6 +1378,11 @@
     {
       "id": "cn-0045",
       "nameZh": "蒜泥茄子",
+      "nameEn": "Chinese dish: 蒜泥茄子",
+      "aliases": [
+        "蒜泥茄子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1163,6 +1406,11 @@
     {
       "id": "cn-0046",
       "nameZh": "火爆腰花",
+      "nameEn": "Chinese dish: 火爆腰花",
+      "aliases": [
+        "火爆腰花"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1186,6 +1434,11 @@
     {
       "id": "cn-0047",
       "nameZh": "芋儿鸡",
+      "nameEn": "Chinese dish: 芋儿鸡",
+      "aliases": [
+        "芋儿鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1211,6 +1464,11 @@
     {
       "id": "cn-0048",
       "nameZh": "啤酒鸭",
+      "nameEn": "Chinese dish: 啤酒鸭",
+      "aliases": [
+        "啤酒鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1236,6 +1494,11 @@
     {
       "id": "cn-0049",
       "nameZh": "冷吃牛肉",
+      "nameEn": "Chinese dish: 冷吃牛肉",
+      "aliases": [
+        "冷吃牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1261,6 +1524,11 @@
     {
       "id": "cn-0050",
       "nameZh": "麻辣香锅",
+      "nameEn": "Chinese dish: 麻辣香锅",
+      "aliases": [
+        "麻辣香锅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1286,6 +1554,11 @@
     {
       "id": "cn-0051",
       "nameZh": "串串香",
+      "nameEn": "Chinese dish: 串串香",
+      "aliases": [
+        "串串香"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1309,6 +1582,11 @@
     {
       "id": "cn-0052",
       "nameZh": "冒菜",
+      "nameEn": "Chinese dish: 冒菜",
+      "aliases": [
+        "冒菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "川菜",
       "restaurantType": "川菜馆 / 小炒店",
       "ingredients": [
@@ -1332,6 +1610,13 @@
     {
       "id": "cn-0053",
       "nameZh": "白切鸡",
+      "nameEn": "White-cut Chicken",
+      "aliases": [
+        "白切鸡",
+        "white cut chicken",
+        "bai qie ji"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1358,6 +1643,11 @@
     {
       "id": "cn-0054",
       "nameZh": "盐焗鸡",
+      "nameEn": "Chinese dish: 盐焗鸡",
+      "aliases": [
+        "盐焗鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1384,6 +1674,11 @@
     {
       "id": "cn-0055",
       "nameZh": "豉油鸡",
+      "nameEn": "Chinese dish: 豉油鸡",
+      "aliases": [
+        "豉油鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1410,6 +1705,11 @@
     {
       "id": "cn-0056",
       "nameZh": "脆皮烧鸡",
+      "nameEn": "Chinese dish: 脆皮烧鸡",
+      "aliases": [
+        "脆皮烧鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1436,6 +1736,11 @@
     {
       "id": "cn-0057",
       "nameZh": "烧鹅",
+      "nameEn": "Chinese dish: 烧鹅",
+      "aliases": [
+        "烧鹅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1460,6 +1765,11 @@
     {
       "id": "cn-0058",
       "nameZh": "叉烧",
+      "nameEn": "Chinese dish: 叉烧",
+      "aliases": [
+        "叉烧"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1484,6 +1794,11 @@
     {
       "id": "cn-0059",
       "nameZh": "蜜汁叉烧",
+      "nameEn": "Chinese dish: 蜜汁叉烧",
+      "aliases": [
+        "蜜汁叉烧"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1508,6 +1823,11 @@
     {
       "id": "cn-0060",
       "nameZh": "烧肉",
+      "nameEn": "Chinese dish: 烧肉",
+      "aliases": [
+        "烧肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1534,6 +1854,13 @@
     {
       "id": "cn-0061",
       "nameZh": "叉烧包",
+      "nameEn": "Char Siu Buns",
+      "aliases": [
+        "叉烧包",
+        "char siu bao",
+        "bbq pork buns"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1561,6 +1888,14 @@
     {
       "id": "cn-0062",
       "nameZh": "虾饺",
+      "nameEn": "Shrimp Dumplings",
+      "aliases": [
+        "虾饺",
+        "har gow",
+        "shrimp dumpling",
+        "xia jiao"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1590,6 +1925,11 @@
     {
       "id": "cn-0063",
       "nameZh": "烧卖",
+      "nameEn": "Chinese dish: 烧卖",
+      "aliases": [
+        "烧卖"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1614,6 +1954,11 @@
     {
       "id": "cn-0064",
       "nameZh": "豉汁蒸排骨",
+      "nameEn": "Chinese dish: 豉汁蒸排骨",
+      "aliases": [
+        "豉汁蒸排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1638,6 +1983,11 @@
     {
       "id": "cn-0065",
       "nameZh": "蒸凤爪",
+      "nameEn": "Chinese dish: 蒸凤爪",
+      "aliases": [
+        "蒸凤爪"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1662,6 +2012,14 @@
     {
       "id": "cn-0066",
       "nameZh": "肠粉",
+      "nameEn": "Rice Noodle Rolls",
+      "aliases": [
+        "肠粉",
+        "cheung fun",
+        "rice noodle roll",
+        "chang fen"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1689,6 +2047,11 @@
     {
       "id": "cn-0067",
       "nameZh": "牛肉肠粉",
+      "nameEn": "Chinese dish: 牛肉肠粉",
+      "aliases": [
+        "牛肉肠粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1718,6 +2081,11 @@
     {
       "id": "cn-0068",
       "nameZh": "鲜虾肠粉",
+      "nameEn": "Chinese dish: 鲜虾肠粉",
+      "aliases": [
+        "鲜虾肠粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1747,6 +2115,11 @@
     {
       "id": "cn-0069",
       "nameZh": "艇仔粥",
+      "nameEn": "Chinese dish: 艇仔粥",
+      "aliases": [
+        "艇仔粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1774,6 +2147,11 @@
     {
       "id": "cn-0070",
       "nameZh": "及第粥",
+      "nameEn": "Chinese dish: 及第粥",
+      "aliases": [
+        "及第粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1801,6 +2179,13 @@
     {
       "id": "cn-0071",
       "nameZh": "皮蛋瘦肉粥",
+      "nameEn": "Congee with Century Egg and Pork",
+      "aliases": [
+        "皮蛋瘦肉粥",
+        "century egg pork congee",
+        "pidan shourou zhou"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1833,6 +2218,11 @@
     {
       "id": "cn-0072",
       "nameZh": "干炒牛河",
+      "nameEn": "Chinese dish: 干炒牛河",
+      "aliases": [
+        "干炒牛河"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1859,6 +2249,11 @@
     {
       "id": "cn-0073",
       "nameZh": "湿炒牛河",
+      "nameEn": "Chinese dish: 湿炒牛河",
+      "aliases": [
+        "湿炒牛河"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1885,6 +2280,11 @@
     {
       "id": "cn-0074",
       "nameZh": "云吞面",
+      "nameEn": "Chinese dish: 云吞面",
+      "aliases": [
+        "云吞面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1912,6 +2312,11 @@
     {
       "id": "cn-0075",
       "nameZh": "竹升面",
+      "nameEn": "Chinese dish: 竹升面",
+      "aliases": [
+        "竹升面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1939,6 +2344,11 @@
     {
       "id": "cn-0076",
       "nameZh": "萝卜糕",
+      "nameEn": "Chinese dish: 萝卜糕",
+      "aliases": [
+        "萝卜糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1966,6 +2376,11 @@
     {
       "id": "cn-0077",
       "nameZh": "马蹄糕",
+      "nameEn": "Chinese dish: 马蹄糕",
+      "aliases": [
+        "马蹄糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -1993,6 +2408,11 @@
     {
       "id": "cn-0078",
       "nameZh": "芋头糕",
+      "nameEn": "Chinese dish: 芋头糕",
+      "aliases": [
+        "芋头糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2020,6 +2440,11 @@
     {
       "id": "cn-0079",
       "nameZh": "蛋挞",
+      "nameEn": "Chinese dish: 蛋挞",
+      "aliases": [
+        "蛋挞"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2047,6 +2472,13 @@
     {
       "id": "cn-0080",
       "nameZh": "双皮奶",
+      "nameEn": "Double-skin Milk Custard",
+      "aliases": [
+        "双皮奶",
+        "double skin milk",
+        "shuang pi nai"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2074,6 +2506,11 @@
     {
       "id": "cn-0081",
       "nameZh": "杨枝甘露",
+      "nameEn": "Chinese dish: 杨枝甘露",
+      "aliases": [
+        "杨枝甘露"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2098,6 +2535,11 @@
     {
       "id": "cn-0082",
       "nameZh": "龟苓膏",
+      "nameEn": "Chinese dish: 龟苓膏",
+      "aliases": [
+        "龟苓膏"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2122,6 +2564,11 @@
     {
       "id": "cn-0083",
       "nameZh": "老火靓汤",
+      "nameEn": "Chinese dish: 老火靓汤",
+      "aliases": [
+        "老火靓汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2146,6 +2593,11 @@
     {
       "id": "cn-0084",
       "nameZh": "花胶鸡汤",
+      "nameEn": "Chinese dish: 花胶鸡汤",
+      "aliases": [
+        "花胶鸡汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2175,6 +2627,11 @@
     {
       "id": "cn-0085",
       "nameZh": "虫草花炖鸡",
+      "nameEn": "Chinese dish: 虫草花炖鸡",
+      "aliases": [
+        "虫草花炖鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2201,6 +2658,11 @@
     {
       "id": "cn-0086",
       "nameZh": "冬瓜盅",
+      "nameEn": "Chinese dish: 冬瓜盅",
+      "aliases": [
+        "冬瓜盅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2225,6 +2687,11 @@
     {
       "id": "cn-0087",
       "nameZh": "煲仔饭",
+      "nameEn": "Chinese dish: 煲仔饭",
+      "aliases": [
+        "煲仔饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2249,6 +2716,11 @@
     {
       "id": "cn-0088",
       "nameZh": "腊味煲仔饭",
+      "nameEn": "Chinese dish: 腊味煲仔饭",
+      "aliases": [
+        "腊味煲仔饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2275,6 +2747,11 @@
     {
       "id": "cn-0089",
       "nameZh": "滑鸡煲仔饭",
+      "nameEn": "Chinese dish: 滑鸡煲仔饭",
+      "aliases": [
+        "滑鸡煲仔饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2301,6 +2778,11 @@
     {
       "id": "cn-0090",
       "nameZh": "豉汁蒸鱼",
+      "nameEn": "Chinese dish: 豉汁蒸鱼",
+      "aliases": [
+        "豉汁蒸鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2326,6 +2808,11 @@
     {
       "id": "cn-0091",
       "nameZh": "清蒸鲈鱼",
+      "nameEn": "Chinese dish: 清蒸鲈鱼",
+      "aliases": [
+        "清蒸鲈鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2351,6 +2838,11 @@
     {
       "id": "cn-0092",
       "nameZh": "豆豉鲮鱼油麦菜",
+      "nameEn": "Chinese dish: 豆豉鲮鱼油麦菜",
+      "aliases": [
+        "豆豉鲮鱼油麦菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2376,6 +2868,11 @@
     {
       "id": "cn-0093",
       "nameZh": "蚝油生菜",
+      "nameEn": "Chinese dish: 蚝油生菜",
+      "aliases": [
+        "蚝油生菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2402,6 +2899,11 @@
     {
       "id": "cn-0094",
       "nameZh": "白灼菜心",
+      "nameEn": "Chinese dish: 白灼菜心",
+      "aliases": [
+        "白灼菜心"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2426,6 +2928,11 @@
     {
       "id": "cn-0095",
       "nameZh": "上汤娃娃菜",
+      "nameEn": "Chinese dish: 上汤娃娃菜",
+      "aliases": [
+        "上汤娃娃菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2450,6 +2957,11 @@
     {
       "id": "cn-0096",
       "nameZh": "避风塘炒虾",
+      "nameEn": "Chinese dish: 避风塘炒虾",
+      "aliases": [
+        "避风塘炒虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2476,6 +2988,11 @@
     {
       "id": "cn-0097",
       "nameZh": "椒盐鱿鱼",
+      "nameEn": "Chinese dish: 椒盐鱿鱼",
+      "aliases": [
+        "椒盐鱿鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2505,6 +3022,11 @@
     {
       "id": "cn-0098",
       "nameZh": "椒盐排骨",
+      "nameEn": "Chinese dish: 椒盐排骨",
+      "aliases": [
+        "椒盐排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2531,6 +3053,11 @@
     {
       "id": "cn-0099",
       "nameZh": "菠萝咕咾肉",
+      "nameEn": "Chinese dish: 菠萝咕咾肉",
+      "aliases": [
+        "菠萝咕咾肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2557,6 +3084,11 @@
     {
       "id": "cn-0100",
       "nameZh": "咕咾虾球",
+      "nameEn": "Chinese dish: 咕咾虾球",
+      "aliases": [
+        "咕咾虾球"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2583,6 +3115,11 @@
     {
       "id": "cn-0101",
       "nameZh": "杏汁白肺汤",
+      "nameEn": "Chinese dish: 杏汁白肺汤",
+      "aliases": [
+        "杏汁白肺汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2607,6 +3144,11 @@
     {
       "id": "cn-0102",
       "nameZh": "潮州卤水鹅",
+      "nameEn": "Chinese dish: 潮州卤水鹅",
+      "aliases": [
+        "潮州卤水鹅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2631,6 +3173,11 @@
     {
       "id": "cn-0103",
       "nameZh": "潮州牛肉丸",
+      "nameEn": "Chinese dish: 潮州牛肉丸",
+      "aliases": [
+        "潮州牛肉丸"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2657,6 +3204,11 @@
     {
       "id": "cn-0104",
       "nameZh": "鱼皮角",
+      "nameEn": "Chinese dish: 鱼皮角",
+      "aliases": [
+        "鱼皮角"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "粤菜",
       "restaurantType": "粤菜馆 / 茶餐厅 / 点心店",
       "ingredients": [
@@ -2682,6 +3234,11 @@
     {
       "id": "cn-0105",
       "nameZh": "东坡肉",
+      "nameEn": "Chinese dish: 东坡肉",
+      "aliases": [
+        "东坡肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2709,6 +3266,11 @@
     {
       "id": "cn-0106",
       "nameZh": "红烧肉",
+      "nameEn": "Chinese dish: 红烧肉",
+      "aliases": [
+        "红烧肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2736,6 +3298,11 @@
     {
       "id": "cn-0107",
       "nameZh": "梅干菜扣肉",
+      "nameEn": "Chinese dish: 梅干菜扣肉",
+      "aliases": [
+        "梅干菜扣肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2763,6 +3330,11 @@
     {
       "id": "cn-0108",
       "nameZh": "西湖醋鱼",
+      "nameEn": "Chinese dish: 西湖醋鱼",
+      "aliases": [
+        "西湖醋鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2789,6 +3361,11 @@
     {
       "id": "cn-0109",
       "nameZh": "龙井虾仁",
+      "nameEn": "Chinese dish: 龙井虾仁",
+      "aliases": [
+        "龙井虾仁"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2816,6 +3393,11 @@
     {
       "id": "cn-0110",
       "nameZh": "叫花鸡",
+      "nameEn": "Chinese dish: 叫花鸡",
+      "aliases": [
+        "叫花鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2843,6 +3425,11 @@
     {
       "id": "cn-0111",
       "nameZh": "清蒸白鱼",
+      "nameEn": "Chinese dish: 清蒸白鱼",
+      "aliases": [
+        "清蒸白鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2869,6 +3456,11 @@
     {
       "id": "cn-0112",
       "nameZh": "松鼠桂鱼",
+      "nameEn": "Chinese dish: 松鼠桂鱼",
+      "aliases": [
+        "松鼠桂鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2895,6 +3487,11 @@
     {
       "id": "cn-0113",
       "nameZh": "糖醋排骨",
+      "nameEn": "Chinese dish: 糖醋排骨",
+      "aliases": [
+        "糖醋排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2920,6 +3517,11 @@
     {
       "id": "cn-0114",
       "nameZh": "无锡排骨",
+      "nameEn": "Chinese dish: 无锡排骨",
+      "aliases": [
+        "无锡排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2945,6 +3547,11 @@
     {
       "id": "cn-0115",
       "nameZh": "无锡小笼",
+      "nameEn": "Chinese dish: 无锡小笼",
+      "aliases": [
+        "无锡小笼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -2970,6 +3577,11 @@
     {
       "id": "cn-0116",
       "nameZh": "蟹粉小笼",
+      "nameEn": "Chinese dish: 蟹粉小笼",
+      "aliases": [
+        "蟹粉小笼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3000,6 +3612,11 @@
     {
       "id": "cn-0117",
       "nameZh": "鲜肉小笼",
+      "nameEn": "Chinese dish: 鲜肉小笼",
+      "aliases": [
+        "鲜肉小笼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3027,6 +3644,13 @@
     {
       "id": "cn-0118",
       "nameZh": "生煎包",
+      "nameEn": "Pan-fried Pork Buns",
+      "aliases": [
+        "生煎包",
+        "sheng jian bao",
+        "pan fried buns"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3055,6 +3679,11 @@
     {
       "id": "cn-0119",
       "nameZh": "锅贴",
+      "nameEn": "Chinese dish: 锅贴",
+      "aliases": [
+        "锅贴"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3083,6 +3712,11 @@
     {
       "id": "cn-0120",
       "nameZh": "阳春面",
+      "nameEn": "Chinese dish: 阳春面",
+      "aliases": [
+        "阳春面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3111,6 +3745,11 @@
     {
       "id": "cn-0121",
       "nameZh": "片儿川",
+      "nameEn": "Chinese dish: 片儿川",
+      "aliases": [
+        "片儿川"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3136,6 +3775,11 @@
     {
       "id": "cn-0122",
       "nameZh": "葱油拌面",
+      "nameEn": "Chinese dish: 葱油拌面",
+      "aliases": [
+        "葱油拌面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3166,6 +3810,11 @@
     {
       "id": "cn-0123",
       "nameZh": "大排面",
+      "nameEn": "Chinese dish: 大排面",
+      "aliases": [
+        "大排面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3194,6 +3843,11 @@
     {
       "id": "cn-0124",
       "nameZh": "虾爆鳝面",
+      "nameEn": "Chinese dish: 虾爆鳝面",
+      "aliases": [
+        "虾爆鳝面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3225,6 +3879,12 @@
     {
       "id": "cn-0125",
       "nameZh": "扬州炒饭",
+      "nameEn": "Yangzhou Fried Rice",
+      "aliases": [
+        "扬州炒饭",
+        "yangzhou fried rice"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3250,6 +3910,11 @@
     {
       "id": "cn-0126",
       "nameZh": "扬州狮子头",
+      "nameEn": "Chinese dish: 扬州狮子头",
+      "aliases": [
+        "扬州狮子头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3275,6 +3940,11 @@
     {
       "id": "cn-0127",
       "nameZh": "蟹粉狮子头",
+      "nameEn": "Chinese dish: 蟹粉狮子头",
+      "aliases": [
+        "蟹粉狮子头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3305,6 +3975,11 @@
     {
       "id": "cn-0128",
       "nameZh": "文思豆腐",
+      "nameEn": "Chinese dish: 文思豆腐",
+      "aliases": [
+        "文思豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3335,6 +4010,11 @@
     {
       "id": "cn-0129",
       "nameZh": "大煮干丝",
+      "nameEn": "Chinese dish: 大煮干丝",
+      "aliases": [
+        "大煮干丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3360,6 +4040,11 @@
     {
       "id": "cn-0130",
       "nameZh": "盐水鸭",
+      "nameEn": "Chinese dish: 盐水鸭",
+      "aliases": [
+        "盐水鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3387,6 +4072,11 @@
     {
       "id": "cn-0131",
       "nameZh": "南京鸭血粉丝汤",
+      "nameEn": "Chinese dish: 南京鸭血粉丝汤",
+      "aliases": [
+        "南京鸭血粉丝汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3417,6 +4107,11 @@
     {
       "id": "cn-0132",
       "nameZh": "桂花糖藕",
+      "nameEn": "Chinese dish: 桂花糖藕",
+      "aliases": [
+        "桂花糖藕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3442,6 +4137,11 @@
     {
       "id": "cn-0133",
       "nameZh": "酒酿圆子",
+      "nameEn": "Chinese dish: 酒酿圆子",
+      "aliases": [
+        "酒酿圆子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3467,6 +4167,11 @@
     {
       "id": "cn-0134",
       "nameZh": "定胜糕",
+      "nameEn": "Chinese dish: 定胜糕",
+      "aliases": [
+        "定胜糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3495,6 +4200,11 @@
     {
       "id": "cn-0135",
       "nameZh": "青团",
+      "nameEn": "Chinese dish: 青团",
+      "aliases": [
+        "青团"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3520,6 +4230,11 @@
     {
       "id": "cn-0136",
       "nameZh": "桂花糕",
+      "nameEn": "Chinese dish: 桂花糕",
+      "aliases": [
+        "桂花糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3548,6 +4263,11 @@
     {
       "id": "cn-0137",
       "nameZh": "八宝鸭",
+      "nameEn": "Chinese dish: 八宝鸭",
+      "aliases": [
+        "八宝鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3575,6 +4295,11 @@
     {
       "id": "cn-0138",
       "nameZh": "糟钵头",
+      "nameEn": "Chinese dish: 糟钵头",
+      "aliases": [
+        "糟钵头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3600,6 +4325,11 @@
     {
       "id": "cn-0139",
       "nameZh": "糟毛豆",
+      "nameEn": "Chinese dish: 糟毛豆",
+      "aliases": [
+        "糟毛豆"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3625,6 +4355,11 @@
     {
       "id": "cn-0140",
       "nameZh": "糟鸡",
+      "nameEn": "Chinese dish: 糟鸡",
+      "aliases": [
+        "糟鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3652,6 +4387,11 @@
     {
       "id": "cn-0141",
       "nameZh": "油爆虾",
+      "nameEn": "Chinese dish: 油爆虾",
+      "aliases": [
+        "油爆虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3679,6 +4419,11 @@
     {
       "id": "cn-0142",
       "nameZh": "醉虾",
+      "nameEn": "Chinese dish: 醉虾",
+      "aliases": [
+        "醉虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3706,6 +4451,11 @@
     {
       "id": "cn-0143",
       "nameZh": "醉蟹",
+      "nameEn": "Chinese dish: 醉蟹",
+      "aliases": [
+        "醉蟹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3733,6 +4483,11 @@
     {
       "id": "cn-0144",
       "nameZh": "响油鳝糊",
+      "nameEn": "Chinese dish: 响油鳝糊",
+      "aliases": [
+        "响油鳝糊"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3759,6 +4514,11 @@
     {
       "id": "cn-0145",
       "nameZh": "腌笃鲜",
+      "nameEn": "Chinese dish: 腌笃鲜",
+      "aliases": [
+        "腌笃鲜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3784,6 +4544,11 @@
     {
       "id": "cn-0146",
       "nameZh": "雪菜黄鱼",
+      "nameEn": "Chinese dish: 雪菜黄鱼",
+      "aliases": [
+        "雪菜黄鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3810,6 +4575,11 @@
     {
       "id": "cn-0147",
       "nameZh": "黄鱼面",
+      "nameEn": "Chinese dish: 黄鱼面",
+      "aliases": [
+        "黄鱼面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3839,6 +4609,11 @@
     {
       "id": "cn-0148",
       "nameZh": "鲃肺汤",
+      "nameEn": "Chinese dish: 鲃肺汤",
+      "aliases": [
+        "鲃肺汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3864,6 +4639,11 @@
     {
       "id": "cn-0149",
       "nameZh": "干菜焖肉",
+      "nameEn": "Chinese dish: 干菜焖肉",
+      "aliases": [
+        "干菜焖肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3891,6 +4671,11 @@
     {
       "id": "cn-0150",
       "nameZh": "本帮油爆虾",
+      "nameEn": "Chinese dish: 本帮油爆虾",
+      "aliases": [
+        "本帮油爆虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3918,6 +4703,11 @@
     {
       "id": "cn-0151",
       "nameZh": "香酥鸭",
+      "nameEn": "Chinese dish: 香酥鸭",
+      "aliases": [
+        "香酥鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3945,6 +4735,11 @@
     {
       "id": "cn-0152",
       "nameZh": "酱鸭",
+      "nameEn": "Chinese dish: 酱鸭",
+      "aliases": [
+        "酱鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3972,6 +4767,11 @@
     {
       "id": "cn-0153",
       "nameZh": "糟香带鱼",
+      "nameEn": "Chinese dish: 糟香带鱼",
+      "aliases": [
+        "糟香带鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -3998,6 +4798,11 @@
     {
       "id": "cn-0154",
       "nameZh": "蟹粉豆腐",
+      "nameEn": "Chinese dish: 蟹粉豆腐",
+      "aliases": [
+        "蟹粉豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -4031,6 +4836,11 @@
     {
       "id": "cn-0155",
       "nameZh": "荠菜春笋",
+      "nameEn": "Chinese dish: 荠菜春笋",
+      "aliases": [
+        "荠菜春笋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -4056,6 +4866,11 @@
     {
       "id": "cn-0156",
       "nameZh": "油焖笋",
+      "nameEn": "Chinese dish: 油焖笋",
+      "aliases": [
+        "油焖笋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "江浙菜",
       "restaurantType": "江浙菜馆 / 本帮菜馆",
       "ingredients": [
@@ -4081,6 +4896,11 @@
     {
       "id": "cn-0157",
       "nameZh": "剁椒鱼头",
+      "nameEn": "Chinese dish: 剁椒鱼头",
+      "aliases": [
+        "剁椒鱼头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4109,6 +4929,11 @@
     {
       "id": "cn-0158",
       "nameZh": "小炒黄牛肉",
+      "nameEn": "Chinese dish: 小炒黄牛肉",
+      "aliases": [
+        "小炒黄牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4134,6 +4959,11 @@
     {
       "id": "cn-0159",
       "nameZh": "辣椒炒肉",
+      "nameEn": "Chinese dish: 辣椒炒肉",
+      "aliases": [
+        "辣椒炒肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4160,6 +4990,11 @@
     {
       "id": "cn-0160",
       "nameZh": "农家小炒肉",
+      "nameEn": "Chinese dish: 农家小炒肉",
+      "aliases": [
+        "农家小炒肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4185,6 +5020,11 @@
     {
       "id": "cn-0161",
       "nameZh": "毛氏红烧肉",
+      "nameEn": "Chinese dish: 毛氏红烧肉",
+      "aliases": [
+        "毛氏红烧肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4210,6 +5050,11 @@
     {
       "id": "cn-0162",
       "nameZh": "腊味合蒸",
+      "nameEn": "Chinese dish: 腊味合蒸",
+      "aliases": [
+        "腊味合蒸"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4235,6 +5080,11 @@
     {
       "id": "cn-0163",
       "nameZh": "腊肉炒笋",
+      "nameEn": "Chinese dish: 腊肉炒笋",
+      "aliases": [
+        "腊肉炒笋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4260,6 +5110,11 @@
     {
       "id": "cn-0164",
       "nameZh": "腊肉炒蒜薹",
+      "nameEn": "Chinese dish: 腊肉炒蒜薹",
+      "aliases": [
+        "腊肉炒蒜薹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4285,6 +5140,11 @@
     {
       "id": "cn-0165",
       "nameZh": "湘西外婆菜",
+      "nameEn": "Chinese dish: 湘西外婆菜",
+      "aliases": [
+        "湘西外婆菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4308,6 +5168,11 @@
     {
       "id": "cn-0166",
       "nameZh": "干锅肥肠",
+      "nameEn": "Chinese dish: 干锅肥肠",
+      "aliases": [
+        "干锅肥肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4331,6 +5196,11 @@
     {
       "id": "cn-0167",
       "nameZh": "酸辣鸡杂",
+      "nameEn": "Chinese dish: 酸辣鸡杂",
+      "aliases": [
+        "酸辣鸡杂"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4357,6 +5227,11 @@
     {
       "id": "cn-0168",
       "nameZh": "永州血鸭",
+      "nameEn": "Chinese dish: 永州血鸭",
+      "aliases": [
+        "永州血鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4382,6 +5257,11 @@
     {
       "id": "cn-0169",
       "nameZh": "东安子鸡",
+      "nameEn": "Chinese dish: 东安子鸡",
+      "aliases": [
+        "东安子鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4407,6 +5287,11 @@
     {
       "id": "cn-0170",
       "nameZh": "口味虾",
+      "nameEn": "Chinese dish: 口味虾",
+      "aliases": [
+        "口味虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4435,6 +5320,11 @@
     {
       "id": "cn-0171",
       "nameZh": "香辣虾",
+      "nameEn": "Chinese dish: 香辣虾",
+      "aliases": [
+        "香辣虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4465,6 +5355,11 @@
     {
       "id": "cn-0172",
       "nameZh": "小龙虾",
+      "nameEn": "Chinese dish: 小龙虾",
+      "aliases": [
+        "小龙虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4493,6 +5388,11 @@
     {
       "id": "cn-0173",
       "nameZh": "香辣蟹",
+      "nameEn": "Chinese dish: 香辣蟹",
+      "aliases": [
+        "香辣蟹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4523,6 +5423,11 @@
     {
       "id": "cn-0174",
       "nameZh": "干锅牛蛙",
+      "nameEn": "Chinese dish: 干锅牛蛙",
+      "aliases": [
+        "干锅牛蛙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4548,6 +5453,11 @@
     {
       "id": "cn-0175",
       "nameZh": "平江酱干",
+      "nameEn": "Chinese dish: 平江酱干",
+      "aliases": [
+        "平江酱干"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4571,6 +5481,11 @@
     {
       "id": "cn-0176",
       "nameZh": "长沙臭豆腐",
+      "nameEn": "Chinese dish: 长沙臭豆腐",
+      "aliases": [
+        "长沙臭豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4598,6 +5513,11 @@
     {
       "id": "cn-0177",
       "nameZh": "糖油粑粑",
+      "nameEn": "Chinese dish: 糖油粑粑",
+      "aliases": [
+        "糖油粑粑"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4621,6 +5541,11 @@
     {
       "id": "cn-0178",
       "nameZh": "姊妹团子",
+      "nameEn": "Chinese dish: 姊妹团子",
+      "aliases": [
+        "姊妹团子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4644,6 +5569,11 @@
     {
       "id": "cn-0179",
       "nameZh": "米粉蒸肉",
+      "nameEn": "Chinese dish: 米粉蒸肉",
+      "aliases": [
+        "米粉蒸肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4672,6 +5602,11 @@
     {
       "id": "cn-0180",
       "nameZh": "常德牛肉粉",
+      "nameEn": "Chinese dish: 常德牛肉粉",
+      "aliases": [
+        "常德牛肉粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4700,6 +5635,11 @@
     {
       "id": "cn-0181",
       "nameZh": "长沙米粉",
+      "nameEn": "Chinese dish: 长沙米粉",
+      "aliases": [
+        "长沙米粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4726,6 +5666,11 @@
     {
       "id": "cn-0182",
       "nameZh": "衡阳鱼粉",
+      "nameEn": "Chinese dish: 衡阳鱼粉",
+      "aliases": [
+        "衡阳鱼粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4755,6 +5700,11 @@
     {
       "id": "cn-0183",
       "nameZh": "酸辣粉",
+      "nameEn": "Chinese dish: 酸辣粉",
+      "aliases": [
+        "酸辣粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4783,6 +5733,11 @@
     {
       "id": "cn-0184",
       "nameZh": "猪油拌粉",
+      "nameEn": "Chinese dish: 猪油拌粉",
+      "aliases": [
+        "猪油拌粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4811,6 +5766,11 @@
     {
       "id": "cn-0185",
       "nameZh": "蒸腊鱼",
+      "nameEn": "Chinese dish: 蒸腊鱼",
+      "aliases": [
+        "蒸腊鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4839,6 +5799,11 @@
     {
       "id": "cn-0186",
       "nameZh": "剁椒蒸排骨",
+      "nameEn": "Chinese dish: 剁椒蒸排骨",
+      "aliases": [
+        "剁椒蒸排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4864,6 +5829,11 @@
     {
       "id": "cn-0187",
       "nameZh": "剁椒蒸茄子",
+      "nameEn": "Chinese dish: 剁椒蒸茄子",
+      "aliases": [
+        "剁椒蒸茄子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4889,6 +5859,11 @@
     {
       "id": "cn-0188",
       "nameZh": "擂辣椒皮蛋",
+      "nameEn": "Chinese dish: 擂辣椒皮蛋",
+      "aliases": [
+        "擂辣椒皮蛋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4918,6 +5893,11 @@
     {
       "id": "cn-0189",
       "nameZh": "擂钵茄子",
+      "nameEn": "Chinese dish: 擂钵茄子",
+      "aliases": [
+        "擂钵茄子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4941,6 +5921,11 @@
     {
       "id": "cn-0190",
       "nameZh": "湘味合炒",
+      "nameEn": "Chinese dish: 湘味合炒",
+      "aliases": [
+        "湘味合炒"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4964,6 +5949,11 @@
     {
       "id": "cn-0191",
       "nameZh": "外婆菜炒蛋",
+      "nameEn": "Chinese dish: 外婆菜炒蛋",
+      "aliases": [
+        "外婆菜炒蛋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -4991,6 +5981,11 @@
     {
       "id": "cn-0192",
       "nameZh": "香干炒肉",
+      "nameEn": "Chinese dish: 香干炒肉",
+      "aliases": [
+        "香干炒肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5016,6 +6011,11 @@
     {
       "id": "cn-0193",
       "nameZh": "芹菜炒牛肉",
+      "nameEn": "Chinese dish: 芹菜炒牛肉",
+      "aliases": [
+        "芹菜炒牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5044,6 +6044,11 @@
     {
       "id": "cn-0194",
       "nameZh": "紫苏田螺",
+      "nameEn": "Chinese dish: 紫苏田螺",
+      "aliases": [
+        "紫苏田螺"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5072,6 +6077,11 @@
     {
       "id": "cn-0195",
       "nameZh": "紫苏黄瓜",
+      "nameEn": "Chinese dish: 紫苏黄瓜",
+      "aliases": [
+        "紫苏黄瓜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5095,6 +6105,11 @@
     {
       "id": "cn-0196",
       "nameZh": "酸豆角炒肉末",
+      "nameEn": "Chinese dish: 酸豆角炒肉末",
+      "aliases": [
+        "酸豆角炒肉末"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5121,6 +6136,11 @@
     {
       "id": "cn-0197",
       "nameZh": "酸菜炒粉皮",
+      "nameEn": "Chinese dish: 酸菜炒粉皮",
+      "aliases": [
+        "酸菜炒粉皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5149,6 +6169,11 @@
     {
       "id": "cn-0198",
       "nameZh": "藠头炒腊肉",
+      "nameEn": "Chinese dish: 藠头炒腊肉",
+      "aliases": [
+        "藠头炒腊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5174,6 +6199,11 @@
     {
       "id": "cn-0199",
       "nameZh": "血粑鸭",
+      "nameEn": "Chinese dish: 血粑鸭",
+      "aliases": [
+        "血粑鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5199,6 +6229,11 @@
     {
       "id": "cn-0200",
       "nameZh": "苗家酸汤鱼",
+      "nameEn": "Chinese dish: 苗家酸汤鱼",
+      "aliases": [
+        "苗家酸汤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5227,6 +6262,11 @@
     {
       "id": "cn-0201",
       "nameZh": "苗家腌鱼",
+      "nameEn": "Chinese dish: 苗家腌鱼",
+      "aliases": [
+        "苗家腌鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5253,6 +6293,11 @@
     {
       "id": "cn-0202",
       "nameZh": "烟笋炒腊肉",
+      "nameEn": "Chinese dish: 烟笋炒腊肉",
+      "aliases": [
+        "烟笋炒腊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5278,6 +6323,11 @@
     {
       "id": "cn-0203",
       "nameZh": "红烧肉粉",
+      "nameEn": "Chinese dish: 红烧肉粉",
+      "aliases": [
+        "红烧肉粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5306,6 +6356,11 @@
     {
       "id": "cn-0204",
       "nameZh": "酱板鸭",
+      "nameEn": "Chinese dish: 酱板鸭",
+      "aliases": [
+        "酱板鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5331,6 +6386,11 @@
     {
       "id": "cn-0205",
       "nameZh": "鸭血粉丝",
+      "nameEn": "Chinese dish: 鸭血粉丝",
+      "aliases": [
+        "鸭血粉丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5359,6 +6419,11 @@
     {
       "id": "cn-0206",
       "nameZh": "小炒鸡",
+      "nameEn": "Chinese dish: 小炒鸡",
+      "aliases": [
+        "小炒鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5384,6 +6449,11 @@
     {
       "id": "cn-0207",
       "nameZh": "辣椒炒蛋",
+      "nameEn": "Chinese dish: 辣椒炒蛋",
+      "aliases": [
+        "辣椒炒蛋"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5413,6 +6483,11 @@
     {
       "id": "cn-0208",
       "nameZh": "蒜苗炒腊肉",
+      "nameEn": "Chinese dish: 蒜苗炒腊肉",
+      "aliases": [
+        "蒜苗炒腊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "湘菜",
       "restaurantType": "湘菜馆 / 辣椒炒肉店",
       "ingredients": [
@@ -5438,6 +6513,13 @@
     {
       "id": "cn-0209",
       "nameZh": "北京烤鸭",
+      "nameEn": "Peking Duck",
+      "aliases": [
+        "北京烤鸭",
+        "peking duck",
+        "beijing roast duck"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5463,6 +6545,11 @@
     {
       "id": "cn-0210",
       "nameZh": "京酱肉丝",
+      "nameEn": "Chinese dish: 京酱肉丝",
+      "aliases": [
+        "京酱肉丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5488,6 +6575,11 @@
     {
       "id": "cn-0211",
       "nameZh": "木须肉",
+      "nameEn": "Chinese dish: 木须肉",
+      "aliases": [
+        "木须肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5513,6 +6605,11 @@
     {
       "id": "cn-0212",
       "nameZh": "宫保鸡丁（京味）",
+      "nameEn": "Chinese dish: 宫保鸡丁（京味）",
+      "aliases": [
+        "宫保鸡丁（京味）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5538,6 +6635,11 @@
     {
       "id": "cn-0213",
       "nameZh": "葱烧海参",
+      "nameEn": "Chinese dish: 葱烧海参",
+      "aliases": [
+        "葱烧海参"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5561,6 +6663,11 @@
     {
       "id": "cn-0214",
       "nameZh": "九转大肠",
+      "nameEn": "Chinese dish: 九转大肠",
+      "aliases": [
+        "九转大肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5584,6 +6691,11 @@
     {
       "id": "cn-0215",
       "nameZh": "糖醋鲤鱼",
+      "nameEn": "Chinese dish: 糖醋鲤鱼",
+      "aliases": [
+        "糖醋鲤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5610,6 +6722,11 @@
     {
       "id": "cn-0216",
       "nameZh": "鲁菜爆三样",
+      "nameEn": "Chinese dish: 鲁菜爆三样",
+      "aliases": [
+        "鲁菜爆三样"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5633,6 +6750,11 @@
     {
       "id": "cn-0217",
       "nameZh": "油爆双脆",
+      "nameEn": "Chinese dish: 油爆双脆",
+      "aliases": [
+        "油爆双脆"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5656,6 +6778,11 @@
     {
       "id": "cn-0218",
       "nameZh": "四喜丸子",
+      "nameEn": "Chinese dish: 四喜丸子",
+      "aliases": [
+        "四喜丸子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5679,6 +6806,11 @@
     {
       "id": "cn-0219",
       "nameZh": "把子肉",
+      "nameEn": "Chinese dish: 把子肉",
+      "aliases": [
+        "把子肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5704,6 +6836,11 @@
     {
       "id": "cn-0220",
       "nameZh": "德州扒鸡",
+      "nameEn": "Chinese dish: 德州扒鸡",
+      "aliases": [
+        "德州扒鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5729,6 +6866,11 @@
     {
       "id": "cn-0221",
       "nameZh": "奶汤蒲菜",
+      "nameEn": "Chinese dish: 奶汤蒲菜",
+      "aliases": [
+        "奶汤蒲菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5755,6 +6897,11 @@
     {
       "id": "cn-0222",
       "nameZh": "山东煎饼",
+      "nameEn": "Chinese dish: 山东煎饼",
+      "aliases": [
+        "山东煎饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5780,6 +6927,11 @@
     {
       "id": "cn-0223",
       "nameZh": "煎饼果子",
+      "nameEn": "Chinese dish: 煎饼果子",
+      "aliases": [
+        "煎饼果子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5805,6 +6957,11 @@
     {
       "id": "cn-0224",
       "nameZh": "锅塌豆腐",
+      "nameEn": "Chinese dish: 锅塌豆腐",
+      "aliases": [
+        "锅塌豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5832,6 +6989,11 @@
     {
       "id": "cn-0225",
       "nameZh": "锅塌里脊",
+      "nameEn": "Chinese dish: 锅塌里脊",
+      "aliases": [
+        "锅塌里脊"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5855,6 +7017,11 @@
     {
       "id": "cn-0226",
       "nameZh": "拔丝地瓜",
+      "nameEn": "Chinese dish: 拔丝地瓜",
+      "aliases": [
+        "拔丝地瓜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5878,6 +7045,11 @@
     {
       "id": "cn-0227",
       "nameZh": "拔丝苹果",
+      "nameEn": "Chinese dish: 拔丝苹果",
+      "aliases": [
+        "拔丝苹果"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5901,6 +7073,11 @@
     {
       "id": "cn-0228",
       "nameZh": "黄焖鸡",
+      "nameEn": "Chinese dish: 黄焖鸡",
+      "aliases": [
+        "黄焖鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5926,6 +7103,11 @@
     {
       "id": "cn-0229",
       "nameZh": "羊肉串",
+      "nameEn": "Chinese dish: 羊肉串",
+      "aliases": [
+        "羊肉串"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5951,6 +7133,13 @@
     {
       "id": "cn-0230",
       "nameZh": "羊肉泡馍",
+      "nameEn": "Lamb Paomo",
+      "aliases": [
+        "羊肉泡馍",
+        "lamb paomo",
+        "yang rou pao mo"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -5976,6 +7165,11 @@
     {
       "id": "cn-0231",
       "nameZh": "牛肉馅饼",
+      "nameEn": "Chinese dish: 牛肉馅饼",
+      "aliases": [
+        "牛肉馅饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6003,6 +7197,11 @@
     {
       "id": "cn-0232",
       "nameZh": "猪肉大葱饺子",
+      "nameEn": "Chinese dish: 猪肉大葱饺子",
+      "aliases": [
+        "猪肉大葱饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6030,6 +7229,11 @@
     {
       "id": "cn-0233",
       "nameZh": "三鲜饺子",
+      "nameEn": "Chinese dish: 三鲜饺子",
+      "aliases": [
+        "三鲜饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6055,6 +7259,11 @@
     {
       "id": "cn-0234",
       "nameZh": "韭菜鸡蛋饺子",
+      "nameEn": "Chinese dish: 韭菜鸡蛋饺子",
+      "aliases": [
+        "韭菜鸡蛋饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6085,6 +7294,11 @@
     {
       "id": "cn-0235",
       "nameZh": "鲅鱼饺子",
+      "nameEn": "Chinese dish: 鲅鱼饺子",
+      "aliases": [
+        "鲅鱼饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6113,6 +7327,11 @@
     {
       "id": "cn-0236",
       "nameZh": "酸菜猪肉饺子",
+      "nameEn": "Chinese dish: 酸菜猪肉饺子",
+      "aliases": [
+        "酸菜猪肉饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6141,6 +7360,11 @@
     {
       "id": "cn-0237",
       "nameZh": "锅贴饺子",
+      "nameEn": "Chinese dish: 锅贴饺子",
+      "aliases": [
+        "锅贴饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6166,6 +7390,11 @@
     {
       "id": "cn-0238",
       "nameZh": "馄饨",
+      "nameEn": "Chinese dish: 馄饨",
+      "aliases": [
+        "馄饨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6191,6 +7420,11 @@
     {
       "id": "cn-0239",
       "nameZh": "老北京炸酱面",
+      "nameEn": "Chinese dish: 老北京炸酱面",
+      "aliases": [
+        "老北京炸酱面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6216,6 +7450,11 @@
     {
       "id": "cn-0240",
       "nameZh": "打卤面",
+      "nameEn": "Chinese dish: 打卤面",
+      "aliases": [
+        "打卤面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6241,6 +7480,11 @@
     {
       "id": "cn-0241",
       "nameZh": "刀削面",
+      "nameEn": "Chinese dish: 刀削面",
+      "aliases": [
+        "刀削面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6266,6 +7510,11 @@
     {
       "id": "cn-0242",
       "nameZh": "炸酱面",
+      "nameEn": "Chinese dish: 炸酱面",
+      "aliases": [
+        "炸酱面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6291,6 +7540,11 @@
     {
       "id": "cn-0243",
       "nameZh": "卤煮火烧",
+      "nameEn": "Chinese dish: 卤煮火烧",
+      "aliases": [
+        "卤煮火烧"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6314,6 +7568,11 @@
     {
       "id": "cn-0244",
       "nameZh": "灌肠",
+      "nameEn": "Chinese dish: 灌肠",
+      "aliases": [
+        "灌肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6337,6 +7596,11 @@
     {
       "id": "cn-0245",
       "nameZh": "豆汁焦圈",
+      "nameEn": "Chinese dish: 豆汁焦圈",
+      "aliases": [
+        "豆汁焦圈"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6362,6 +7626,11 @@
     {
       "id": "cn-0246",
       "nameZh": "炒肝",
+      "nameEn": "Chinese dish: 炒肝",
+      "aliases": [
+        "炒肝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6385,6 +7654,11 @@
     {
       "id": "cn-0247",
       "nameZh": "爆肚",
+      "nameEn": "Chinese dish: 爆肚",
+      "aliases": [
+        "爆肚"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6408,6 +7682,11 @@
     {
       "id": "cn-0248",
       "nameZh": "驴打滚",
+      "nameEn": "Chinese dish: 驴打滚",
+      "aliases": [
+        "驴打滚"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6431,6 +7710,11 @@
     {
       "id": "cn-0249",
       "nameZh": "艾窝窝",
+      "nameEn": "Chinese dish: 艾窝窝",
+      "aliases": [
+        "艾窝窝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6454,6 +7738,11 @@
     {
       "id": "cn-0250",
       "nameZh": "豌豆黄",
+      "nameEn": "Chinese dish: 豌豆黄",
+      "aliases": [
+        "豌豆黄"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6477,6 +7766,11 @@
     {
       "id": "cn-0251",
       "nameZh": "面茶",
+      "nameEn": "Chinese dish: 面茶",
+      "aliases": [
+        "面茶"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6502,6 +7796,11 @@
     {
       "id": "cn-0252",
       "nameZh": "糖耳朵",
+      "nameEn": "Chinese dish: 糖耳朵",
+      "aliases": [
+        "糖耳朵"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6525,6 +7824,11 @@
     {
       "id": "cn-0253",
       "nameZh": "奶油炸糕",
+      "nameEn": "Chinese dish: 奶油炸糕",
+      "aliases": [
+        "奶油炸糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6553,6 +7857,13 @@
     {
       "id": "cn-0254",
       "nameZh": "锅包肉",
+      "nameEn": "Northeastern Sweet-and-sour Pork",
+      "aliases": [
+        "锅包肉",
+        "guo bao rou",
+        "northeastern sweet and sour pork"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6580,6 +7891,11 @@
     {
       "id": "cn-0255",
       "nameZh": "溜肉段",
+      "nameEn": "Chinese dish: 溜肉段",
+      "aliases": [
+        "溜肉段"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6605,6 +7921,13 @@
     {
       "id": "cn-0256",
       "nameZh": "地三鲜",
+      "nameEn": "Three Earthly Delicacies",
+      "aliases": [
+        "地三鲜",
+        "di san xian",
+        "stir-fried eggplant potato pepper"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6628,6 +7951,11 @@
     {
       "id": "cn-0257",
       "nameZh": "东北乱炖",
+      "nameEn": "Chinese dish: 东北乱炖",
+      "aliases": [
+        "东北乱炖"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6651,6 +7979,13 @@
     {
       "id": "cn-0258",
       "nameZh": "小鸡炖蘑菇",
+      "nameEn": "Braised Chicken with Mushrooms",
+      "aliases": [
+        "小鸡炖蘑菇",
+        "chicken with mushrooms",
+        "xiao ji dun mo gu"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6676,6 +8011,11 @@
     {
       "id": "cn-0259",
       "nameZh": "猪肉炖粉条",
+      "nameEn": "Chinese dish: 猪肉炖粉条",
+      "aliases": [
+        "猪肉炖粉条"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6703,6 +8043,11 @@
     {
       "id": "cn-0260",
       "nameZh": "酸菜白肉",
+      "nameEn": "Chinese dish: 酸菜白肉",
+      "aliases": [
+        "酸菜白肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "鲁菜 / 京菜",
       "restaurantType": "北方菜馆 / 饺子馆 / 烤鸭店",
       "ingredients": [
@@ -6729,6 +8074,11 @@
     {
       "id": "cn-0261",
       "nameZh": "佛跳墙",
+      "nameEn": "Chinese dish: 佛跳墙",
+      "aliases": [
+        "佛跳墙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6753,6 +8103,11 @@
     {
       "id": "cn-0262",
       "nameZh": "荔枝肉",
+      "nameEn": "Chinese dish: 荔枝肉",
+      "aliases": [
+        "荔枝肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6779,6 +8134,11 @@
     {
       "id": "cn-0263",
       "nameZh": "醉排骨",
+      "nameEn": "Chinese dish: 醉排骨",
+      "aliases": [
+        "醉排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6803,6 +8163,11 @@
     {
       "id": "cn-0264",
       "nameZh": "南煎肝",
+      "nameEn": "Chinese dish: 南煎肝",
+      "aliases": [
+        "南煎肝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6827,6 +8192,11 @@
     {
       "id": "cn-0265",
       "nameZh": "鸡汤汆海蚌",
+      "nameEn": "Chinese dish: 鸡汤汆海蚌",
+      "aliases": [
+        "鸡汤汆海蚌"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6854,6 +8224,11 @@
     {
       "id": "cn-0266",
       "nameZh": "淡糟香螺片",
+      "nameEn": "Chinese dish: 淡糟香螺片",
+      "aliases": [
+        "淡糟香螺片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6878,6 +8253,11 @@
     {
       "id": "cn-0267",
       "nameZh": "福州鱼丸",
+      "nameEn": "Chinese dish: 福州鱼丸",
+      "aliases": [
+        "福州鱼丸"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6905,6 +8285,11 @@
     {
       "id": "cn-0268",
       "nameZh": "肉燕",
+      "nameEn": "Chinese dish: 肉燕",
+      "aliases": [
+        "肉燕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6931,6 +8316,11 @@
     {
       "id": "cn-0269",
       "nameZh": "鱼皮燕",
+      "nameEn": "Chinese dish: 鱼皮燕",
+      "aliases": [
+        "鱼皮燕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6957,6 +8347,11 @@
     {
       "id": "cn-0270",
       "nameZh": "沙茶面",
+      "nameEn": "Chinese dish: 沙茶面",
+      "aliases": [
+        "沙茶面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -6985,6 +8380,11 @@
     {
       "id": "cn-0271",
       "nameZh": "厦门海蛎煎",
+      "nameEn": "Chinese dish: 厦门海蛎煎",
+      "aliases": [
+        "厦门海蛎煎"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7009,6 +8409,11 @@
     {
       "id": "cn-0272",
       "nameZh": "蚵仔煎",
+      "nameEn": "Chinese dish: 蚵仔煎",
+      "aliases": [
+        "蚵仔煎"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7033,6 +8438,11 @@
     {
       "id": "cn-0273",
       "nameZh": "土笋冻",
+      "nameEn": "Chinese dish: 土笋冻",
+      "aliases": [
+        "土笋冻"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7057,6 +8467,11 @@
     {
       "id": "cn-0274",
       "nameZh": "五香卷",
+      "nameEn": "Chinese dish: 五香卷",
+      "aliases": [
+        "五香卷"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7081,6 +8496,11 @@
     {
       "id": "cn-0275",
       "nameZh": "烧肉粽",
+      "nameEn": "Chinese dish: 烧肉粽",
+      "aliases": [
+        "烧肉粽"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7111,6 +8531,11 @@
     {
       "id": "cn-0276",
       "nameZh": "闽南咸饭",
+      "nameEn": "Chinese dish: 闽南咸饭",
+      "aliases": [
+        "闽南咸饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7135,6 +8560,11 @@
     {
       "id": "cn-0277",
       "nameZh": "海鲜粥",
+      "nameEn": "Chinese dish: 海鲜粥",
+      "aliases": [
+        "海鲜粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7164,6 +8594,11 @@
     {
       "id": "cn-0278",
       "nameZh": "砂锅粥",
+      "nameEn": "Chinese dish: 砂锅粥",
+      "aliases": [
+        "砂锅粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7192,6 +8627,11 @@
     {
       "id": "cn-0279",
       "nameZh": "潮州鱼生",
+      "nameEn": "Chinese dish: 潮州鱼生",
+      "aliases": [
+        "潮州鱼生"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7218,6 +8658,11 @@
     {
       "id": "cn-0280",
       "nameZh": "潮州打冷",
+      "nameEn": "Chinese dish: 潮州打冷",
+      "aliases": [
+        "潮州打冷"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7242,6 +8687,11 @@
     {
       "id": "cn-0281",
       "nameZh": "潮州卤鹅",
+      "nameEn": "Chinese dish: 潮州卤鹅",
+      "aliases": [
+        "潮州卤鹅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7266,6 +8716,11 @@
     {
       "id": "cn-0282",
       "nameZh": "卤水拼盘",
+      "nameEn": "Chinese dish: 卤水拼盘",
+      "aliases": [
+        "卤水拼盘"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7290,6 +8745,11 @@
     {
       "id": "cn-0283",
       "nameZh": "潮州牛肉火锅",
+      "nameEn": "Chinese dish: 潮州牛肉火锅",
+      "aliases": [
+        "潮州牛肉火锅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7316,6 +8776,11 @@
     {
       "id": "cn-0284",
       "nameZh": "吊龙牛肉",
+      "nameEn": "Chinese dish: 吊龙牛肉",
+      "aliases": [
+        "吊龙牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7342,6 +8807,11 @@
     {
       "id": "cn-0285",
       "nameZh": "匙柄牛肉",
+      "nameEn": "Chinese dish: 匙柄牛肉",
+      "aliases": [
+        "匙柄牛肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7368,6 +8838,11 @@
     {
       "id": "cn-0286",
       "nameZh": "手打牛肉丸",
+      "nameEn": "Chinese dish: 手打牛肉丸",
+      "aliases": [
+        "手打牛肉丸"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7394,6 +8869,11 @@
     {
       "id": "cn-0287",
       "nameZh": "粿条汤",
+      "nameEn": "Chinese dish: 粿条汤",
+      "aliases": [
+        "粿条汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7418,6 +8898,11 @@
     {
       "id": "cn-0288",
       "nameZh": "牛肉粿条",
+      "nameEn": "Chinese dish: 牛肉粿条",
+      "aliases": [
+        "牛肉粿条"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7444,6 +8929,11 @@
     {
       "id": "cn-0289",
       "nameZh": "潮州炒粿条",
+      "nameEn": "Chinese dish: 潮州炒粿条",
+      "aliases": [
+        "潮州炒粿条"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7468,6 +8958,11 @@
     {
       "id": "cn-0290",
       "nameZh": "蚝烙",
+      "nameEn": "Chinese dish: 蚝烙",
+      "aliases": [
+        "蚝烙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7493,6 +8988,11 @@
     {
       "id": "cn-0291",
       "nameZh": "潮州春饼",
+      "nameEn": "Chinese dish: 潮州春饼",
+      "aliases": [
+        "潮州春饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7521,6 +9021,11 @@
     {
       "id": "cn-0292",
       "nameZh": "菜头粿",
+      "nameEn": "Chinese dish: 菜头粿",
+      "aliases": [
+        "菜头粿"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7545,6 +9050,11 @@
     {
       "id": "cn-0293",
       "nameZh": "芋粿",
+      "nameEn": "Chinese dish: 芋粿",
+      "aliases": [
+        "芋粿"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7569,6 +9079,11 @@
     {
       "id": "cn-0294",
       "nameZh": "鼠曲粿",
+      "nameEn": "Chinese dish: 鼠曲粿",
+      "aliases": [
+        "鼠曲粿"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7593,6 +9108,11 @@
     {
       "id": "cn-0295",
       "nameZh": "红桃粿",
+      "nameEn": "Chinese dish: 红桃粿",
+      "aliases": [
+        "红桃粿"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7617,6 +9137,11 @@
     {
       "id": "cn-0296",
       "nameZh": "芋泥",
+      "nameEn": "Chinese dish: 芋泥",
+      "aliases": [
+        "芋泥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7641,6 +9166,11 @@
     {
       "id": "cn-0297",
       "nameZh": "花生汤",
+      "nameEn": "Chinese dish: 花生汤",
+      "aliases": [
+        "花生汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7669,6 +9199,11 @@
     {
       "id": "cn-0298",
       "nameZh": "四果汤",
+      "nameEn": "Chinese dish: 四果汤",
+      "aliases": [
+        "四果汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7693,6 +9228,11 @@
     {
       "id": "cn-0299",
       "nameZh": "烧仙草",
+      "nameEn": "Chinese dish: 烧仙草",
+      "aliases": [
+        "烧仙草"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7717,6 +9257,11 @@
     {
       "id": "cn-0300",
       "nameZh": "姜母鸭",
+      "nameEn": "Chinese dish: 姜母鸭",
+      "aliases": [
+        "姜母鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7743,6 +9288,11 @@
     {
       "id": "cn-0301",
       "nameZh": "盐焗虾",
+      "nameEn": "Chinese dish: 盐焗虾",
+      "aliases": [
+        "盐焗虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7768,6 +9318,11 @@
     {
       "id": "cn-0302",
       "nameZh": "白灼章鱼",
+      "nameEn": "Chinese dish: 白灼章鱼",
+      "aliases": [
+        "白灼章鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7795,6 +9350,11 @@
     {
       "id": "cn-0303",
       "nameZh": "清蒸石斑鱼",
+      "nameEn": "Chinese dish: 清蒸石斑鱼",
+      "aliases": [
+        "清蒸石斑鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7821,6 +9381,11 @@
     {
       "id": "cn-0304",
       "nameZh": "椒盐九肚鱼",
+      "nameEn": "Chinese dish: 椒盐九肚鱼",
+      "aliases": [
+        "椒盐九肚鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7849,6 +9414,11 @@
     {
       "id": "cn-0305",
       "nameZh": "蒜蓉粉丝蒸扇贝",
+      "nameEn": "Chinese dish: 蒜蓉粉丝蒸扇贝",
+      "aliases": [
+        "蒜蓉粉丝蒸扇贝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7878,6 +9448,11 @@
     {
       "id": "cn-0306",
       "nameZh": "蒸鲍鱼",
+      "nameEn": "Chinese dish: 蒸鲍鱼",
+      "aliases": [
+        "蒸鲍鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7905,6 +9480,11 @@
     {
       "id": "cn-0307",
       "nameZh": "海蛎汤",
+      "nameEn": "Chinese dish: 海蛎汤",
+      "aliases": [
+        "海蛎汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7929,6 +9509,11 @@
     {
       "id": "cn-0308",
       "nameZh": "鱼丸汤",
+      "nameEn": "Chinese dish: 鱼丸汤",
+      "aliases": [
+        "鱼丸汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7956,6 +9541,11 @@
     {
       "id": "cn-0309",
       "nameZh": "鸭母捻",
+      "nameEn": "Chinese dish: 鸭母捻",
+      "aliases": [
+        "鸭母捻"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -7982,6 +9572,11 @@
     {
       "id": "cn-0310",
       "nameZh": "甘草水果",
+      "nameEn": "Chinese dish: 甘草水果",
+      "aliases": [
+        "甘草水果"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -8006,6 +9601,11 @@
     {
       "id": "cn-0311",
       "nameZh": "潮汕生腌虾",
+      "nameEn": "Chinese dish: 潮汕生腌虾",
+      "aliases": [
+        "潮汕生腌虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -8031,6 +9631,11 @@
     {
       "id": "cn-0312",
       "nameZh": "生腌蟹",
+      "nameEn": "Chinese dish: 生腌蟹",
+      "aliases": [
+        "生腌蟹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "闽菜 / 潮州菜",
       "restaurantType": "闽南菜馆 / 潮汕菜馆 / 海鲜店",
       "ingredients": [
@@ -8056,6 +9661,11 @@
     {
       "id": "cn-0313",
       "nameZh": "过桥米线",
+      "nameEn": "Chinese dish: 过桥米线",
+      "aliases": [
+        "过桥米线"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8079,6 +9689,11 @@
     {
       "id": "cn-0314",
       "nameZh": "小锅米线",
+      "nameEn": "Chinese dish: 小锅米线",
+      "aliases": [
+        "小锅米线"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8102,6 +9717,11 @@
     {
       "id": "cn-0315",
       "nameZh": "豆花米线",
+      "nameEn": "Chinese dish: 豆花米线",
+      "aliases": [
+        "豆花米线"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8127,6 +9747,11 @@
     {
       "id": "cn-0316",
       "nameZh": "凉米线",
+      "nameEn": "Chinese dish: 凉米线",
+      "aliases": [
+        "凉米线"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8150,6 +9775,11 @@
     {
       "id": "cn-0317",
       "nameZh": "土鸡米线",
+      "nameEn": "Chinese dish: 土鸡米线",
+      "aliases": [
+        "土鸡米线"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8175,6 +9805,11 @@
     {
       "id": "cn-0318",
       "nameZh": "宣威火腿",
+      "nameEn": "Chinese dish: 宣威火腿",
+      "aliases": [
+        "宣威火腿"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8198,6 +9833,11 @@
     {
       "id": "cn-0319",
       "nameZh": "汽锅鸡",
+      "nameEn": "Chinese dish: 汽锅鸡",
+      "aliases": [
+        "汽锅鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8223,6 +9863,11 @@
     {
       "id": "cn-0320",
       "nameZh": "宜良烤鸭",
+      "nameEn": "Chinese dish: 宜良烤鸭",
+      "aliases": [
+        "宜良烤鸭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8248,6 +9893,11 @@
     {
       "id": "cn-0321",
       "nameZh": "云南菌子火锅",
+      "nameEn": "Chinese dish: 云南菌子火锅",
+      "aliases": [
+        "云南菌子火锅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8271,6 +9921,11 @@
     {
       "id": "cn-0322",
       "nameZh": "野生菌炒饭",
+      "nameEn": "Chinese dish: 野生菌炒饭",
+      "aliases": [
+        "野生菌炒饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8294,6 +9949,11 @@
     {
       "id": "cn-0323",
       "nameZh": "鲜花饼",
+      "nameEn": "Chinese dish: 鲜花饼",
+      "aliases": [
+        "鲜花饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8320,6 +9980,11 @@
     {
       "id": "cn-0324",
       "nameZh": "乳扇",
+      "nameEn": "Chinese dish: 乳扇",
+      "aliases": [
+        "乳扇"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8348,6 +10013,11 @@
     {
       "id": "cn-0325",
       "nameZh": "乳扇沙琪玛",
+      "nameEn": "Chinese dish: 乳扇沙琪玛",
+      "aliases": [
+        "乳扇沙琪玛"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8376,6 +10046,11 @@
     {
       "id": "cn-0326",
       "nameZh": "饵块",
+      "nameEn": "Chinese dish: 饵块",
+      "aliases": [
+        "饵块"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8399,6 +10074,11 @@
     {
       "id": "cn-0327",
       "nameZh": "炒饵块",
+      "nameEn": "Chinese dish: 炒饵块",
+      "aliases": [
+        "炒饵块"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8422,6 +10102,11 @@
     {
       "id": "cn-0328",
       "nameZh": "饵丝",
+      "nameEn": "Chinese dish: 饵丝",
+      "aliases": [
+        "饵丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8445,6 +10130,11 @@
     {
       "id": "cn-0329",
       "nameZh": "烧饵块",
+      "nameEn": "Chinese dish: 烧饵块",
+      "aliases": [
+        "烧饵块"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8468,6 +10158,11 @@
     {
       "id": "cn-0330",
       "nameZh": "洋芋粑粑",
+      "nameEn": "Chinese dish: 洋芋粑粑",
+      "aliases": [
+        "洋芋粑粑"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8491,6 +10186,11 @@
     {
       "id": "cn-0331",
       "nameZh": "包浆豆腐",
+      "nameEn": "Chinese dish: 包浆豆腐",
+      "aliases": [
+        "包浆豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8520,6 +10220,11 @@
     {
       "id": "cn-0332",
       "nameZh": "傣味手抓饭",
+      "nameEn": "Chinese dish: 傣味手抓饭",
+      "aliases": [
+        "傣味手抓饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8543,6 +10248,11 @@
     {
       "id": "cn-0333",
       "nameZh": "傣味烤鱼",
+      "nameEn": "Chinese dish: 傣味烤鱼",
+      "aliases": [
+        "傣味烤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8570,6 +10280,11 @@
     {
       "id": "cn-0334",
       "nameZh": "柠檬撒",
+      "nameEn": "Chinese dish: 柠檬撒",
+      "aliases": [
+        "柠檬撒"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8593,6 +10308,11 @@
     {
       "id": "cn-0335",
       "nameZh": "舂鸡脚",
+      "nameEn": "Chinese dish: 舂鸡脚",
+      "aliases": [
+        "舂鸡脚"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8618,6 +10338,11 @@
     {
       "id": "cn-0336",
       "nameZh": "舂木瓜",
+      "nameEn": "Chinese dish: 舂木瓜",
+      "aliases": [
+        "舂木瓜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8641,6 +10366,11 @@
     {
       "id": "cn-0337",
       "nameZh": "酸笋煮鱼",
+      "nameEn": "Chinese dish: 酸笋煮鱼",
+      "aliases": [
+        "酸笋煮鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8670,6 +10400,11 @@
     {
       "id": "cn-0338",
       "nameZh": "菠萝饭",
+      "nameEn": "Chinese dish: 菠萝饭",
+      "aliases": [
+        "菠萝饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8693,6 +10428,11 @@
     {
       "id": "cn-0339",
       "nameZh": "版纳烤鸡",
+      "nameEn": "Chinese dish: 版纳烤鸡",
+      "aliases": [
+        "版纳烤鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8718,6 +10458,11 @@
     {
       "id": "cn-0340",
       "nameZh": "香茅草烤鱼",
+      "nameEn": "Chinese dish: 香茅草烤鱼",
+      "aliases": [
+        "香茅草烤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8745,6 +10490,11 @@
     {
       "id": "cn-0341",
       "nameZh": "贵州酸汤鱼",
+      "nameEn": "Chinese dish: 贵州酸汤鱼",
+      "aliases": [
+        "贵州酸汤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8774,6 +10524,11 @@
     {
       "id": "cn-0342",
       "nameZh": "酸汤肥牛",
+      "nameEn": "Chinese dish: 酸汤肥牛",
+      "aliases": [
+        "酸汤肥牛"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8800,6 +10555,11 @@
     {
       "id": "cn-0343",
       "nameZh": "酸汤排骨",
+      "nameEn": "Chinese dish: 酸汤排骨",
+      "aliases": [
+        "酸汤排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8825,6 +10585,11 @@
     {
       "id": "cn-0344",
       "nameZh": "花溪牛肉粉",
+      "nameEn": "Chinese dish: 花溪牛肉粉",
+      "aliases": [
+        "花溪牛肉粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8853,6 +10618,11 @@
     {
       "id": "cn-0345",
       "nameZh": "肠旺面",
+      "nameEn": "Chinese dish: 肠旺面",
+      "aliases": [
+        "肠旺面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8879,6 +10649,11 @@
     {
       "id": "cn-0346",
       "nameZh": "羊肉粉",
+      "nameEn": "Chinese dish: 羊肉粉",
+      "aliases": [
+        "羊肉粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8907,6 +10682,11 @@
     {
       "id": "cn-0347",
       "nameZh": "遵义豆花面",
+      "nameEn": "Chinese dish: 遵义豆花面",
+      "aliases": [
+        "遵义豆花面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8934,6 +10714,11 @@
     {
       "id": "cn-0348",
       "nameZh": "丝娃娃",
+      "nameEn": "Chinese dish: 丝娃娃",
+      "aliases": [
+        "丝娃娃"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8957,6 +10742,11 @@
     {
       "id": "cn-0349",
       "nameZh": "恋爱豆腐果",
+      "nameEn": "Chinese dish: 恋爱豆腐果",
+      "aliases": [
+        "恋爱豆腐果"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -8984,6 +10774,11 @@
     {
       "id": "cn-0350",
       "nameZh": "洋芋片",
+      "nameEn": "Chinese dish: 洋芋片",
+      "aliases": [
+        "洋芋片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9007,6 +10802,11 @@
     {
       "id": "cn-0351",
       "nameZh": "糟辣脆皮鱼",
+      "nameEn": "Chinese dish: 糟辣脆皮鱼",
+      "aliases": [
+        "糟辣脆皮鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9036,6 +10836,11 @@
     {
       "id": "cn-0352",
       "nameZh": "辣子鸡（贵州）",
+      "nameEn": "Chinese dish: 辣子鸡（贵州）",
+      "aliases": [
+        "辣子鸡（贵州）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9062,6 +10867,11 @@
     {
       "id": "cn-0353",
       "nameZh": "折耳根炒腊肉",
+      "nameEn": "Chinese dish: 折耳根炒腊肉",
+      "aliases": [
+        "折耳根炒腊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9087,6 +10897,11 @@
     {
       "id": "cn-0354",
       "nameZh": "折耳根拌豆腐",
+      "nameEn": "Chinese dish: 折耳根拌豆腐",
+      "aliases": [
+        "折耳根拌豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9114,6 +10929,11 @@
     {
       "id": "cn-0355",
       "nameZh": "酸菜豆米",
+      "nameEn": "Chinese dish: 酸菜豆米",
+      "aliases": [
+        "酸菜豆米"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9141,6 +10961,11 @@
     {
       "id": "cn-0356",
       "nameZh": "青岩卤猪脚",
+      "nameEn": "Chinese dish: 青岩卤猪脚",
+      "aliases": [
+        "青岩卤猪脚"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9166,6 +10991,11 @@
     {
       "id": "cn-0357",
       "nameZh": "玫瑰冰粉",
+      "nameEn": "Chinese dish: 玫瑰冰粉",
+      "aliases": [
+        "玫瑰冰粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9192,6 +11022,11 @@
     {
       "id": "cn-0358",
       "nameZh": "冰浆",
+      "nameEn": "Chinese dish: 冰浆",
+      "aliases": [
+        "冰浆"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9215,6 +11050,11 @@
     {
       "id": "cn-0359",
       "nameZh": "木瓜水",
+      "nameEn": "Chinese dish: 木瓜水",
+      "aliases": [
+        "木瓜水"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9238,6 +11078,11 @@
     {
       "id": "cn-0360",
       "nameZh": "米凉虾",
+      "nameEn": "Chinese dish: 米凉虾",
+      "aliases": [
+        "米凉虾"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9267,6 +11112,11 @@
     {
       "id": "cn-0361",
       "nameZh": "糯米饭",
+      "nameEn": "Chinese dish: 糯米饭",
+      "aliases": [
+        "糯米饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9290,6 +11140,11 @@
     {
       "id": "cn-0362",
       "nameZh": "豆沙粑",
+      "nameEn": "Chinese dish: 豆沙粑",
+      "aliases": [
+        "豆沙粑"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9315,6 +11170,11 @@
     {
       "id": "cn-0363",
       "nameZh": "苗家酸汤粉",
+      "nameEn": "Chinese dish: 苗家酸汤粉",
+      "aliases": [
+        "苗家酸汤粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9343,6 +11203,11 @@
     {
       "id": "cn-0364",
       "nameZh": "菌香鸡汤",
+      "nameEn": "Chinese dish: 菌香鸡汤",
+      "aliases": [
+        "菌香鸡汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "云南 / 贵州菜",
       "restaurantType": "云南菜馆 / 贵州菜馆 / 米线店",
       "ingredients": [
@@ -9368,6 +11233,13 @@
     {
       "id": "cn-0365",
       "nameZh": "兰州牛肉面",
+      "nameEn": "Lanzhou Beef Noodles",
+      "aliases": [
+        "兰州牛肉面",
+        "lanzhou beef noodles",
+        "lanzhou lamian"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9397,6 +11269,11 @@
     {
       "id": "cn-0366",
       "nameZh": "兰州拉面",
+      "nameEn": "Chinese dish: 兰州拉面",
+      "aliases": [
+        "兰州拉面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9424,6 +11301,13 @@
     {
       "id": "cn-0367",
       "nameZh": "羊肉泡馍",
+      "nameEn": "Lamb Paomo",
+      "aliases": [
+        "羊肉泡馍",
+        "lamb paomo",
+        "yang rou pao mo"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9451,6 +11335,11 @@
     {
       "id": "cn-0368",
       "nameZh": "陕西肉夹馍",
+      "nameEn": "Chinese dish: 陕西肉夹馍",
+      "aliases": [
+        "陕西肉夹馍"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9478,6 +11367,11 @@
     {
       "id": "cn-0369",
       "nameZh": "腊汁肉夹馍",
+      "nameEn": "Chinese dish: 腊汁肉夹馍",
+      "aliases": [
+        "腊汁肉夹馍"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9505,6 +11399,11 @@
     {
       "id": "cn-0370",
       "nameZh": "凉皮",
+      "nameEn": "Chinese dish: 凉皮",
+      "aliases": [
+        "凉皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9532,6 +11431,11 @@
     {
       "id": "cn-0371",
       "nameZh": "擀面皮",
+      "nameEn": "Chinese dish: 擀面皮",
+      "aliases": [
+        "擀面皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9559,6 +11463,11 @@
     {
       "id": "cn-0372",
       "nameZh": "肉丸胡辣汤",
+      "nameEn": "Chinese dish: 肉丸胡辣汤",
+      "aliases": [
+        "肉丸胡辣汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9587,6 +11496,11 @@
     {
       "id": "cn-0373",
       "nameZh": "biangbiang面",
+      "nameEn": "Chinese dish: biangbiang面",
+      "aliases": [
+        "biangbiang面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9614,6 +11528,11 @@
     {
       "id": "cn-0374",
       "nameZh": "油泼面",
+      "nameEn": "Chinese dish: 油泼面",
+      "aliases": [
+        "油泼面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9641,6 +11560,11 @@
     {
       "id": "cn-0375",
       "nameZh": "臊子面",
+      "nameEn": "Chinese dish: 臊子面",
+      "aliases": [
+        "臊子面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9668,6 +11592,11 @@
     {
       "id": "cn-0376",
       "nameZh": "岐山臊子面",
+      "nameEn": "Chinese dish: 岐山臊子面",
+      "aliases": [
+        "岐山臊子面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9695,6 +11624,11 @@
     {
       "id": "cn-0377",
       "nameZh": "葫芦鸡",
+      "nameEn": "Chinese dish: 葫芦鸡",
+      "aliases": [
+        "葫芦鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9722,6 +11656,11 @@
     {
       "id": "cn-0378",
       "nameZh": "粉蒸肉（西北）",
+      "nameEn": "Chinese dish: 粉蒸肉（西北）",
+      "aliases": [
+        "粉蒸肉（西北）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9751,6 +11690,11 @@
     {
       "id": "cn-0379",
       "nameZh": "水盆羊肉",
+      "nameEn": "Chinese dish: 水盆羊肉",
+      "aliases": [
+        "水盆羊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9778,6 +11722,11 @@
     {
       "id": "cn-0380",
       "nameZh": "羊肉串",
+      "nameEn": "Chinese dish: 羊肉串",
+      "aliases": [
+        "羊肉串"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9805,6 +11754,11 @@
     {
       "id": "cn-0381",
       "nameZh": "烤羊排",
+      "nameEn": "Chinese dish: 烤羊排",
+      "aliases": [
+        "烤羊排"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9832,6 +11786,11 @@
     {
       "id": "cn-0382",
       "nameZh": "手抓羊肉",
+      "nameEn": "Chinese dish: 手抓羊肉",
+      "aliases": [
+        "手抓羊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9859,6 +11818,11 @@
     {
       "id": "cn-0383",
       "nameZh": "黄焖羊肉",
+      "nameEn": "Chinese dish: 黄焖羊肉",
+      "aliases": [
+        "黄焖羊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9886,6 +11850,11 @@
     {
       "id": "cn-0384",
       "nameZh": "羊肉焖饼",
+      "nameEn": "Chinese dish: 羊肉焖饼",
+      "aliases": [
+        "羊肉焖饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9915,6 +11884,13 @@
     {
       "id": "cn-0385",
       "nameZh": "新疆大盘鸡",
+      "nameEn": "Xinjiang Big Plate Chicken",
+      "aliases": [
+        "新疆大盘鸡",
+        "big plate chicken",
+        "da pan ji"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9942,6 +11918,11 @@
     {
       "id": "cn-0386",
       "nameZh": "椒麻鸡",
+      "nameEn": "Chinese dish: 椒麻鸡",
+      "aliases": [
+        "椒麻鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9970,6 +11951,11 @@
     {
       "id": "cn-0387",
       "nameZh": "新疆炒米粉",
+      "nameEn": "Chinese dish: 新疆炒米粉",
+      "aliases": [
+        "新疆炒米粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -9997,6 +11983,11 @@
     {
       "id": "cn-0388",
       "nameZh": "新疆拌面",
+      "nameEn": "Chinese dish: 新疆拌面",
+      "aliases": [
+        "新疆拌面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10026,6 +12017,11 @@
     {
       "id": "cn-0389",
       "nameZh": "拉条子",
+      "nameEn": "Chinese dish: 拉条子",
+      "aliases": [
+        "拉条子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10051,6 +12047,11 @@
     {
       "id": "cn-0390",
       "nameZh": "炒烤肉",
+      "nameEn": "Chinese dish: 炒烤肉",
+      "aliases": [
+        "炒烤肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10078,6 +12079,11 @@
     {
       "id": "cn-0391",
       "nameZh": "烤包子",
+      "nameEn": "Chinese dish: 烤包子",
+      "aliases": [
+        "烤包子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10105,6 +12111,11 @@
     {
       "id": "cn-0392",
       "nameZh": "馕坑肉",
+      "nameEn": "Chinese dish: 馕坑肉",
+      "aliases": [
+        "馕坑肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10134,6 +12145,11 @@
     {
       "id": "cn-0393",
       "nameZh": "馕",
+      "nameEn": "Chinese dish: 馕",
+      "aliases": [
+        "馕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10161,6 +12177,11 @@
     {
       "id": "cn-0394",
       "nameZh": "薄皮包子",
+      "nameEn": "Chinese dish: 薄皮包子",
+      "aliases": [
+        "薄皮包子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10188,6 +12209,11 @@
     {
       "id": "cn-0395",
       "nameZh": "抓饭",
+      "nameEn": "Chinese dish: 抓饭",
+      "aliases": [
+        "抓饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10213,6 +12239,11 @@
     {
       "id": "cn-0396",
       "nameZh": "羊肉抓饭",
+      "nameEn": "Chinese dish: 羊肉抓饭",
+      "aliases": [
+        "羊肉抓饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10240,6 +12271,11 @@
     {
       "id": "cn-0397",
       "nameZh": "烤馕",
+      "nameEn": "Chinese dish: 烤馕",
+      "aliases": [
+        "烤馕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10267,6 +12303,11 @@
     {
       "id": "cn-0398",
       "nameZh": "酸奶粽子",
+      "nameEn": "Chinese dish: 酸奶粽子",
+      "aliases": [
+        "酸奶粽子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10298,6 +12339,11 @@
     {
       "id": "cn-0399",
       "nameZh": "新疆奶茶",
+      "nameEn": "Chinese dish: 新疆奶茶",
+      "aliases": [
+        "新疆奶茶"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10325,6 +12371,11 @@
     {
       "id": "cn-0400",
       "nameZh": "葡萄干抓饭",
+      "nameEn": "Chinese dish: 葡萄干抓饭",
+      "aliases": [
+        "葡萄干抓饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10350,6 +12401,11 @@
     {
       "id": "cn-0401",
       "nameZh": "馕包肉",
+      "nameEn": "Chinese dish: 馕包肉",
+      "aliases": [
+        "馕包肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10379,6 +12435,11 @@
     {
       "id": "cn-0402",
       "nameZh": "架子肉",
+      "nameEn": "Chinese dish: 架子肉",
+      "aliases": [
+        "架子肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10406,6 +12467,11 @@
     {
       "id": "cn-0403",
       "nameZh": "胡辣羊蹄",
+      "nameEn": "Chinese dish: 胡辣羊蹄",
+      "aliases": [
+        "胡辣羊蹄"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10434,6 +12500,11 @@
     {
       "id": "cn-0404",
       "nameZh": "新疆烤鱼",
+      "nameEn": "Chinese dish: 新疆烤鱼",
+      "aliases": [
+        "新疆烤鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10462,6 +12533,11 @@
     {
       "id": "cn-0405",
       "nameZh": "孜然羊肉",
+      "nameEn": "Chinese dish: 孜然羊肉",
+      "aliases": [
+        "孜然羊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10489,6 +12565,11 @@
     {
       "id": "cn-0406",
       "nameZh": "葱爆羊肉",
+      "nameEn": "Chinese dish: 葱爆羊肉",
+      "aliases": [
+        "葱爆羊肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10516,6 +12597,11 @@
     {
       "id": "cn-0407",
       "nameZh": "大盘肚",
+      "nameEn": "Chinese dish: 大盘肚",
+      "aliases": [
+        "大盘肚"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10541,6 +12627,11 @@
     {
       "id": "cn-0408",
       "nameZh": "凉拌三丝",
+      "nameEn": "Chinese dish: 凉拌三丝",
+      "aliases": [
+        "凉拌三丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10566,6 +12657,11 @@
     {
       "id": "cn-0409",
       "nameZh": "酿皮",
+      "nameEn": "Chinese dish: 酿皮",
+      "aliases": [
+        "酿皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10591,6 +12687,11 @@
     {
       "id": "cn-0410",
       "nameZh": "酸汤水饺",
+      "nameEn": "Chinese dish: 酸汤水饺",
+      "aliases": [
+        "酸汤水饺"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10620,6 +12721,11 @@
     {
       "id": "cn-0411",
       "nameZh": "牛肉锅贴",
+      "nameEn": "Chinese dish: 牛肉锅贴",
+      "aliases": [
+        "牛肉锅贴"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10649,6 +12755,11 @@
     {
       "id": "cn-0412",
       "nameZh": "糖醋里脊（西北）",
+      "nameEn": "Chinese dish: 糖醋里脊（西北）",
+      "aliases": [
+        "糖醋里脊（西北）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10674,6 +12785,11 @@
     {
       "id": "cn-0413",
       "nameZh": "黄桂柿子饼",
+      "nameEn": "Chinese dish: 黄桂柿子饼",
+      "aliases": [
+        "黄桂柿子饼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10701,6 +12817,11 @@
     {
       "id": "cn-0414",
       "nameZh": "甑糕",
+      "nameEn": "Chinese dish: 甑糕",
+      "aliases": [
+        "甑糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10728,6 +12849,11 @@
     {
       "id": "cn-0415",
       "nameZh": "镜糕",
+      "nameEn": "Chinese dish: 镜糕",
+      "aliases": [
+        "镜糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10755,6 +12881,11 @@
     {
       "id": "cn-0416",
       "nameZh": "蜂蜜凉粽子",
+      "nameEn": "Chinese dish: 蜂蜜凉粽子",
+      "aliases": [
+        "蜂蜜凉粽子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "西北 / 新疆菜",
       "restaurantType": "西北菜馆 / 新疆餐厅 / 清真餐厅",
       "ingredients": [
@@ -10782,6 +12913,13 @@
     {
       "id": "cn-0417",
       "nameZh": "锅包肉",
+      "nameEn": "Northeastern Sweet-and-sour Pork",
+      "aliases": [
+        "锅包肉",
+        "guo bao rou",
+        "northeastern sweet and sour pork"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10810,6 +12948,11 @@
     {
       "id": "cn-0418",
       "nameZh": "溜肉段",
+      "nameEn": "Chinese dish: 溜肉段",
+      "aliases": [
+        "溜肉段"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10836,6 +12979,13 @@
     {
       "id": "cn-0419",
       "nameZh": "地三鲜",
+      "nameEn": "Three Earthly Delicacies",
+      "aliases": [
+        "地三鲜",
+        "di san xian",
+        "stir-fried eggplant potato pepper"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10860,6 +13010,13 @@
     {
       "id": "cn-0420",
       "nameZh": "小鸡炖蘑菇",
+      "nameEn": "Braised Chicken with Mushrooms",
+      "aliases": [
+        "小鸡炖蘑菇",
+        "chicken with mushrooms",
+        "xiao ji dun mo gu"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10886,6 +13043,11 @@
     {
       "id": "cn-0421",
       "nameZh": "猪肉炖粉条",
+      "nameEn": "Chinese dish: 猪肉炖粉条",
+      "aliases": [
+        "猪肉炖粉条"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10914,6 +13076,11 @@
     {
       "id": "cn-0422",
       "nameZh": "酸菜白肉",
+      "nameEn": "Chinese dish: 酸菜白肉",
+      "aliases": [
+        "酸菜白肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10941,6 +13108,11 @@
     {
       "id": "cn-0423",
       "nameZh": "东北乱炖",
+      "nameEn": "Chinese dish: 东北乱炖",
+      "aliases": [
+        "东北乱炖"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10965,6 +13137,11 @@
     {
       "id": "cn-0424",
       "nameZh": "铁锅炖大鹅",
+      "nameEn": "Chinese dish: 铁锅炖大鹅",
+      "aliases": [
+        "铁锅炖大鹅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -10989,6 +13166,11 @@
     {
       "id": "cn-0425",
       "nameZh": "铁锅炖鱼",
+      "nameEn": "Chinese dish: 铁锅炖鱼",
+      "aliases": [
+        "铁锅炖鱼"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11016,6 +13198,11 @@
     {
       "id": "cn-0426",
       "nameZh": "杀猪菜",
+      "nameEn": "Chinese dish: 杀猪菜",
+      "aliases": [
+        "杀猪菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11042,6 +13229,11 @@
     {
       "id": "cn-0427",
       "nameZh": "白肉血肠",
+      "nameEn": "Chinese dish: 白肉血肠",
+      "aliases": [
+        "白肉血肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11068,6 +13260,11 @@
     {
       "id": "cn-0428",
       "nameZh": "血肠",
+      "nameEn": "Chinese dish: 血肠",
+      "aliases": [
+        "血肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11092,6 +13289,11 @@
     {
       "id": "cn-0429",
       "nameZh": "东北大拉皮",
+      "nameEn": "Chinese dish: 东北大拉皮",
+      "aliases": [
+        "东北大拉皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11116,6 +13318,11 @@
     {
       "id": "cn-0430",
       "nameZh": "凉拌木耳",
+      "nameEn": "Chinese dish: 凉拌木耳",
+      "aliases": [
+        "凉拌木耳"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11140,6 +13347,11 @@
     {
       "id": "cn-0431",
       "nameZh": "东北蘸酱菜",
+      "nameEn": "Chinese dish: 东北蘸酱菜",
+      "aliases": [
+        "东北蘸酱菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11164,6 +13376,11 @@
     {
       "id": "cn-0432",
       "nameZh": "鸡蛋酱",
+      "nameEn": "Chinese dish: 鸡蛋酱",
+      "aliases": [
+        "鸡蛋酱"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11193,6 +13410,11 @@
     {
       "id": "cn-0433",
       "nameZh": "尖椒干豆腐",
+      "nameEn": "Chinese dish: 尖椒干豆腐",
+      "aliases": [
+        "尖椒干豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11222,6 +13444,11 @@
     {
       "id": "cn-0434",
       "nameZh": "干豆腐卷大葱",
+      "nameEn": "Chinese dish: 干豆腐卷大葱",
+      "aliases": [
+        "干豆腐卷大葱"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11250,6 +13477,11 @@
     {
       "id": "cn-0435",
       "nameZh": "葱烧木耳",
+      "nameEn": "Chinese dish: 葱烧木耳",
+      "aliases": [
+        "葱烧木耳"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11274,6 +13506,11 @@
     {
       "id": "cn-0436",
       "nameZh": "酱骨头",
+      "nameEn": "Chinese dish: 酱骨头",
+      "aliases": [
+        "酱骨头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11298,6 +13535,11 @@
     {
       "id": "cn-0437",
       "nameZh": "酱肘子",
+      "nameEn": "Chinese dish: 酱肘子",
+      "aliases": [
+        "酱肘子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11324,6 +13566,11 @@
     {
       "id": "cn-0438",
       "nameZh": "扒猪脸",
+      "nameEn": "Chinese dish: 扒猪脸",
+      "aliases": [
+        "扒猪脸"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11350,6 +13597,11 @@
     {
       "id": "cn-0439",
       "nameZh": "熏鸡",
+      "nameEn": "Chinese dish: 熏鸡",
+      "aliases": [
+        "熏鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11376,6 +13628,11 @@
     {
       "id": "cn-0440",
       "nameZh": "道口烧鸡",
+      "nameEn": "Chinese dish: 道口烧鸡",
+      "aliases": [
+        "道口烧鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11402,6 +13659,11 @@
     {
       "id": "cn-0441",
       "nameZh": "哈尔滨红肠",
+      "nameEn": "Chinese dish: 哈尔滨红肠",
+      "aliases": [
+        "哈尔滨红肠"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11426,6 +13688,11 @@
     {
       "id": "cn-0442",
       "nameZh": "烤冷面",
+      "nameEn": "Chinese dish: 烤冷面",
+      "aliases": [
+        "烤冷面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11452,6 +13719,11 @@
     {
       "id": "cn-0443",
       "nameZh": "煎粉",
+      "nameEn": "Chinese dish: 煎粉",
+      "aliases": [
+        "煎粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11478,6 +13750,11 @@
     {
       "id": "cn-0444",
       "nameZh": "鸡西冷面",
+      "nameEn": "Chinese dish: 鸡西冷面",
+      "aliases": [
+        "鸡西冷面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11506,6 +13783,11 @@
     {
       "id": "cn-0445",
       "nameZh": "朝鲜冷面",
+      "nameEn": "Chinese dish: 朝鲜冷面",
+      "aliases": [
+        "朝鲜冷面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11532,6 +13814,11 @@
     {
       "id": "cn-0446",
       "nameZh": "酸菜鱼（东北）",
+      "nameEn": "Chinese dish: 酸菜鱼（东北）",
+      "aliases": [
+        "酸菜鱼（东北）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11561,6 +13848,11 @@
     {
       "id": "cn-0447",
       "nameZh": "豆角炖排骨",
+      "nameEn": "Chinese dish: 豆角炖排骨",
+      "aliases": [
+        "豆角炖排骨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11585,6 +13877,11 @@
     {
       "id": "cn-0448",
       "nameZh": "土豆炖豆角",
+      "nameEn": "Chinese dish: 土豆炖豆角",
+      "aliases": [
+        "土豆炖豆角"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11609,6 +13906,11 @@
     {
       "id": "cn-0449",
       "nameZh": "排骨炖豆角",
+      "nameEn": "Chinese dish: 排骨炖豆角",
+      "aliases": [
+        "排骨炖豆角"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11633,6 +13935,11 @@
     {
       "id": "cn-0450",
       "nameZh": "茄子炖土豆",
+      "nameEn": "Chinese dish: 茄子炖土豆",
+      "aliases": [
+        "茄子炖土豆"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11657,6 +13964,11 @@
     {
       "id": "cn-0451",
       "nameZh": "东北大饭包",
+      "nameEn": "Chinese dish: 东北大饭包",
+      "aliases": [
+        "东北大饭包"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11683,6 +13995,11 @@
     {
       "id": "cn-0452",
       "nameZh": "粘豆包",
+      "nameEn": "Chinese dish: 粘豆包",
+      "aliases": [
+        "粘豆包"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11709,6 +14026,11 @@
     {
       "id": "cn-0453",
       "nameZh": "豆包",
+      "nameEn": "Chinese dish: 豆包",
+      "aliases": [
+        "豆包"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11735,6 +14057,11 @@
     {
       "id": "cn-0454",
       "nameZh": "玉米面发糕",
+      "nameEn": "Chinese dish: 玉米面发糕",
+      "aliases": [
+        "玉米面发糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11761,6 +14088,11 @@
     {
       "id": "cn-0455",
       "nameZh": "锅贴豆腐",
+      "nameEn": "Chinese dish: 锅贴豆腐",
+      "aliases": [
+        "锅贴豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11790,6 +14122,11 @@
     {
       "id": "cn-0456",
       "nameZh": "三鲜锅烙",
+      "nameEn": "Chinese dish: 三鲜锅烙",
+      "aliases": [
+        "三鲜锅烙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11814,6 +14151,11 @@
     {
       "id": "cn-0457",
       "nameZh": "韭菜盒子",
+      "nameEn": "Chinese dish: 韭菜盒子",
+      "aliases": [
+        "韭菜盒子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11838,6 +14180,11 @@
     {
       "id": "cn-0458",
       "nameZh": "东北水饺",
+      "nameEn": "Chinese dish: 东北水饺",
+      "aliases": [
+        "东北水饺"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11864,6 +14211,11 @@
     {
       "id": "cn-0459",
       "nameZh": "酸菜馅饺子",
+      "nameEn": "Chinese dish: 酸菜馅饺子",
+      "aliases": [
+        "酸菜馅饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11892,6 +14244,11 @@
     {
       "id": "cn-0460",
       "nameZh": "鲅鱼馅饺子",
+      "nameEn": "Chinese dish: 鲅鱼馅饺子",
+      "aliases": [
+        "鲅鱼馅饺子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11921,6 +14278,11 @@
     {
       "id": "cn-0461",
       "nameZh": "杀猪烩菜",
+      "nameEn": "Chinese dish: 杀猪烩菜",
+      "aliases": [
+        "杀猪烩菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11947,6 +14309,11 @@
     {
       "id": "cn-0462",
       "nameZh": "雪衣豆沙",
+      "nameEn": "Chinese dish: 雪衣豆沙",
+      "aliases": [
+        "雪衣豆沙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11973,6 +14340,11 @@
     {
       "id": "cn-0463",
       "nameZh": "拔丝地瓜（东北）",
+      "nameEn": "Chinese dish: 拔丝地瓜（东北）",
+      "aliases": [
+        "拔丝地瓜（东北）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -11997,6 +14369,11 @@
     {
       "id": "cn-0464",
       "nameZh": "冻梨",
+      "nameEn": "Chinese dish: 冻梨",
+      "aliases": [
+        "冻梨"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -12021,6 +14398,11 @@
     {
       "id": "cn-0465",
       "nameZh": "冻柿子",
+      "nameEn": "Chinese dish: 冻柿子",
+      "aliases": [
+        "冻柿子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -12045,6 +14427,11 @@
     {
       "id": "cn-0466",
       "nameZh": "锅塌豆腐（东北）",
+      "nameEn": "Chinese dish: 锅塌豆腐（东北）",
+      "aliases": [
+        "锅塌豆腐（东北）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -12073,6 +14460,11 @@
     {
       "id": "cn-0467",
       "nameZh": "酱茄子",
+      "nameEn": "Chinese dish: 酱茄子",
+      "aliases": [
+        "酱茄子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -12097,6 +14489,11 @@
     {
       "id": "cn-0468",
       "nameZh": "蒜茄子",
+      "nameEn": "Chinese dish: 蒜茄子",
+      "aliases": [
+        "蒜茄子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "东北菜",
       "restaurantType": "东北菜馆 / 铁锅炖 / 家常菜馆",
       "ingredients": [
@@ -12121,6 +14518,11 @@
     {
       "id": "cn-0469",
       "nameZh": "素春卷",
+      "nameEn": "Chinese dish: 素春卷",
+      "aliases": [
+        "素春卷"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12150,6 +14552,11 @@
     {
       "id": "cn-0470",
       "nameZh": "素烧鹅",
+      "nameEn": "Chinese dish: 素烧鹅",
+      "aliases": [
+        "素烧鹅"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12177,6 +14584,11 @@
     {
       "id": "cn-0471",
       "nameZh": "素狮子头",
+      "nameEn": "Chinese dish: 素狮子头",
+      "aliases": [
+        "素狮子头"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12204,6 +14616,11 @@
     {
       "id": "cn-0472",
       "nameZh": "素宫保鸡丁",
+      "nameEn": "Chinese dish: 素宫保鸡丁",
+      "aliases": [
+        "素宫保鸡丁"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12232,6 +14649,11 @@
     {
       "id": "cn-0473",
       "nameZh": "素鱼香肉丝",
+      "nameEn": "Chinese dish: 素鱼香肉丝",
+      "aliases": [
+        "素鱼香肉丝"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12263,6 +14685,11 @@
     {
       "id": "cn-0474",
       "nameZh": "素麻婆豆腐",
+      "nameEn": "Chinese dish: 素麻婆豆腐",
+      "aliases": [
+        "素麻婆豆腐"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12293,6 +14720,11 @@
     {
       "id": "cn-0475",
       "nameZh": "素回锅肉",
+      "nameEn": "Chinese dish: 素回锅肉",
+      "aliases": [
+        "素回锅肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12321,6 +14753,11 @@
     {
       "id": "cn-0476",
       "nameZh": "素三杯鸡",
+      "nameEn": "Chinese dish: 素三杯鸡",
+      "aliases": [
+        "素三杯鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12349,6 +14786,11 @@
     {
       "id": "cn-0477",
       "nameZh": "素咕咾肉",
+      "nameEn": "Chinese dish: 素咕咾肉",
+      "aliases": [
+        "素咕咾肉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12377,6 +14819,11 @@
     {
       "id": "cn-0478",
       "nameZh": "素蚝油生菜",
+      "nameEn": "Chinese dish: 素蚝油生菜",
+      "aliases": [
+        "素蚝油生菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12408,7 +14855,46 @@
     },
     {
       "id": "cn-0479",
-      "nameZh": "罗汉斋",
+      "nameZh": "蒜蓉时蔬",
+      "nameEn": "Garlic Seasonal Greens",
+      "aliases": [
+        "蒜蓉时蔬",
+        "garlic greens",
+        "seasonal greens"
+      ],
+      "nameEnSource": "curated",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油"
+      ],
+      "commonAllergens": [
+        "大豆"
+      ],
+      "possibleAllergens": [
+        "小麦（含麸质）",
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0480",
+      "nameZh": "糖醋藕片",
+      "nameEn": "Chinese dish: 糖醋藕片",
+      "aliases": [
+        "糖醋藕片"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12432,8 +14918,75 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0480",
+      "id": "cn-0481",
+      "nameZh": "冬瓜菌菇汤",
+      "nameEn": "Winter Melon Mushroom Soup",
+      "aliases": [
+        "冬瓜菌菇汤",
+        "winter melon mushroom soup",
+        "winter melon soup"
+      ],
+      "nameEnSource": "curated",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油"
+      ],
+      "commonAllergens": [
+        "大豆"
+      ],
+      "possibleAllergens": [
+        "小麦（含麸质）",
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0482",
+      "nameZh": "罗汉斋",
+      "nameEn": "Chinese dish: 罗汉斋",
+      "aliases": [
+        "罗汉斋"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油"
+      ],
+      "commonAllergens": [
+        "大豆"
+      ],
+      "possibleAllergens": [
+        "小麦（含麸质）",
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0483",
       "nameZh": "八宝素菜",
+      "nameEn": "Chinese dish: 八宝素菜",
+      "aliases": [
+        "八宝素菜"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12459,95 +15012,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0481",
-      "nameZh": "上素锅贴",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
-      "id": "cn-0482",
-      "nameZh": "素蒸饺",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
-      "id": "cn-0483",
-      "nameZh": "素包子",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
       "id": "cn-0484",
-      "nameZh": "香菇青菜包",
+      "nameZh": "上素锅贴",
+      "nameEn": "Chinese dish: 上素锅贴",
+      "aliases": [
+        "上素锅贴"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12576,7 +15047,114 @@
     },
     {
       "id": "cn-0485",
+      "nameZh": "素蒸饺",
+      "nameEn": "Chinese dish: 素蒸饺",
+      "aliases": [
+        "素蒸饺"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0486",
+      "nameZh": "素包子",
+      "nameEn": "Chinese dish: 素包子",
+      "aliases": [
+        "素包子"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0487",
+      "nameZh": "香菇青菜包",
+      "nameEn": "Chinese dish: 香菇青菜包",
+      "aliases": [
+        "香菇青菜包"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0488",
       "nameZh": "荠菜包子",
+      "nameEn": "Chinese dish: 荠菜包子",
+      "aliases": [
+        "荠菜包子"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12602,8 +15180,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0486",
+      "id": "cn-0489",
       "nameZh": "白菜豆腐汤",
+      "nameEn": "Chinese dish: 白菜豆腐汤",
+      "aliases": [
+        "白菜豆腐汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12631,8 +15214,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0487",
+      "id": "cn-0490",
       "nameZh": "番茄蛋花汤",
+      "nameEn": "Chinese dish: 番茄蛋花汤",
+      "aliases": [
+        "番茄蛋花汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12659,8 +15247,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0488",
+      "id": "cn-0491",
       "nameZh": "紫菜蛋花汤",
+      "nameEn": "Chinese dish: 紫菜蛋花汤",
+      "aliases": [
+        "紫菜蛋花汤"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12687,8 +15280,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0489",
+      "id": "cn-0492",
       "nameZh": "酸辣汤（素）",
+      "nameEn": "Chinese dish: 酸辣汤（素）",
+      "aliases": [
+        "酸辣汤（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12715,8 +15313,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0490",
+      "id": "cn-0493",
       "nameZh": "玉米羹",
+      "nameEn": "Chinese dish: 玉米羹",
+      "aliases": [
+        "玉米羹"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12740,8 +15343,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0491",
+      "id": "cn-0494",
       "nameZh": "南瓜粥",
+      "nameEn": "Chinese dish: 南瓜粥",
+      "aliases": [
+        "南瓜粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12767,8 +15375,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0492",
+      "id": "cn-0495",
       "nameZh": "八宝粥",
+      "nameEn": "Chinese dish: 八宝粥",
+      "aliases": [
+        "八宝粥"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12794,8 +15407,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0493",
+      "id": "cn-0496",
       "nameZh": "皮蛋瘦肉粥（替代）",
+      "nameEn": "Chinese dish: 皮蛋瘦肉粥（替代）",
+      "aliases": [
+        "皮蛋瘦肉粥（替代）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12826,8 +15444,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0494",
+      "id": "cn-0497",
       "nameZh": "素炒饭",
+      "nameEn": "Chinese dish: 素炒饭",
+      "aliases": [
+        "素炒饭"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12853,8 +15476,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0495",
+      "id": "cn-0498",
       "nameZh": "扬州炒饭（素）",
+      "nameEn": "Chinese dish: 扬州炒饭（素）",
+      "aliases": [
+        "扬州炒饭（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12880,8 +15508,15 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0496",
+      "id": "cn-0499",
       "nameZh": "蛋炒饭",
+      "nameEn": "Egg Fried Rice",
+      "aliases": [
+        "蛋炒饭",
+        "egg fried rice",
+        "dan chao fan"
+      ],
+      "nameEnSource": "curated",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12908,8 +15543,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0497",
+      "id": "cn-0500",
       "nameZh": "番茄鸡蛋面",
+      "nameEn": "Chinese dish: 番茄鸡蛋面",
+      "aliases": [
+        "番茄鸡蛋面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12940,8 +15580,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0498",
+      "id": "cn-0501",
       "nameZh": "素炸酱面",
+      "nameEn": "Chinese dish: 素炸酱面",
+      "aliases": [
+        "素炸酱面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -12969,8 +15614,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0499",
+      "id": "cn-0502",
       "nameZh": "葱油拌面（素）",
+      "nameEn": "Chinese dish: 葱油拌面（素）",
+      "aliases": [
+        "葱油拌面（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13000,96 +15650,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0500",
-      "nameZh": "阳春面（素）",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
-      "id": "cn-0501",
-      "nameZh": "素担担面",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
-      "id": "cn-0502",
-      "nameZh": "酸辣粉（素）",
-      "cuisine": "素食 / 快餐 / 小吃",
-      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
-      "ingredients": [
-        "蔬菜",
-        "豆制品或面粉",
-        "米饭或面条",
-        "食用油",
-        "米或小麦面粉",
-        "葱蒜"
-      ],
-      "commonAllergens": [
-        "大豆",
-        "小麦（含麸质）"
-      ],
-      "possibleAllergens": [
-        "鸡蛋",
-        "芝麻",
-        "花生",
-        "坚果"
-      ],
-      "dietarySignals": [
-        "可能为素食配方，需确认高汤、蚝油和动物油",
-        "可能辛辣或带酸味"
-      ],
-      "evidenceLevel": "common recipe pattern",
-      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
-    },
-    {
       "id": "cn-0503",
-      "nameZh": "螺蛳粉（素）",
+      "nameZh": "阳春面（素）",
+      "nameEn": "Chinese dish: 阳春面（素）",
+      "aliases": [
+        "阳春面（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13118,7 +15685,115 @@
     },
     {
       "id": "cn-0504",
+      "nameZh": "素担担面",
+      "nameEn": "Chinese dish: 素担担面",
+      "aliases": [
+        "素担担面"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0505",
+      "nameZh": "酸辣粉（素）",
+      "nameEn": "Chinese dish: 酸辣粉（素）",
+      "aliases": [
+        "酸辣粉（素）"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油",
+        "可能辛辣或带酸味"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0506",
+      "nameZh": "螺蛳粉（素）",
+      "nameEn": "Chinese dish: 螺蛳粉（素）",
+      "aliases": [
+        "螺蛳粉（素）"
+      ],
+      "nameEnSource": "searchable-label",
+      "cuisine": "素食 / 快餐 / 小吃",
+      "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
+      "ingredients": [
+        "蔬菜",
+        "豆制品或面粉",
+        "米饭或面条",
+        "食用油",
+        "米或小麦面粉",
+        "葱蒜"
+      ],
+      "commonAllergens": [
+        "大豆",
+        "小麦（含麸质）"
+      ],
+      "possibleAllergens": [
+        "鸡蛋",
+        "芝麻",
+        "花生",
+        "坚果"
+      ],
+      "dietarySignals": [
+        "可能为素食配方，需确认高汤、蚝油和动物油"
+      ],
+      "evidenceLevel": "common recipe pattern",
+      "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
+    },
+    {
+      "id": "cn-0507",
       "nameZh": "桂林米粉",
+      "nameEn": "Chinese dish: 桂林米粉",
+      "aliases": [
+        "桂林米粉"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13144,8 +15819,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0505",
+      "id": "cn-0508",
       "nameZh": "过桥米线（素）",
+      "nameEn": "Chinese dish: 过桥米线（素）",
+      "aliases": [
+        "过桥米线（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13171,8 +15851,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0506",
+      "id": "cn-0509",
       "nameZh": "热干面",
+      "nameEn": "Chinese dish: 热干面",
+      "aliases": [
+        "热干面"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13198,8 +15883,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0507",
+      "id": "cn-0510",
       "nameZh": "武汉豆皮",
+      "nameEn": "Chinese dish: 武汉豆皮",
+      "aliases": [
+        "武汉豆皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13225,8 +15915,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0508",
+      "id": "cn-0511",
       "nameZh": "三鲜豆皮",
+      "nameEn": "Chinese dish: 三鲜豆皮",
+      "aliases": [
+        "三鲜豆皮"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13252,8 +15947,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0509",
+      "id": "cn-0512",
       "nameZh": "烧麦",
+      "nameEn": "Chinese dish: 烧麦",
+      "aliases": [
+        "烧麦"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13277,8 +15977,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0510",
+      "id": "cn-0513",
       "nameZh": "糯米鸡",
+      "nameEn": "Chinese dish: 糯米鸡",
+      "aliases": [
+        "糯米鸡"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13304,8 +16009,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0511",
+      "id": "cn-0514",
       "nameZh": "糍粑",
+      "nameEn": "Chinese dish: 糍粑",
+      "aliases": [
+        "糍粑"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13329,8 +16039,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0512",
+      "id": "cn-0515",
       "nameZh": "麻团",
+      "nameEn": "Chinese dish: 麻团",
+      "aliases": [
+        "麻团"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13356,8 +16071,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0513",
+      "id": "cn-0516",
       "nameZh": "糖不甩",
+      "nameEn": "Chinese dish: 糖不甩",
+      "aliases": [
+        "糖不甩"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13381,8 +16101,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0514",
+      "id": "cn-0517",
       "nameZh": "红糖糍粑",
+      "nameEn": "Chinese dish: 红糖糍粑",
+      "aliases": [
+        "红糖糍粑"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13406,8 +16131,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0515",
+      "id": "cn-0518",
       "nameZh": "驴打滚（素）",
+      "nameEn": "Chinese dish: 驴打滚（素）",
+      "aliases": [
+        "驴打滚（素）"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13433,8 +16163,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0516",
+      "id": "cn-0519",
       "nameZh": "芝麻球",
+      "nameEn": "Chinese dish: 芝麻球",
+      "aliases": [
+        "芝麻球"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13462,8 +16197,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0517",
+      "id": "cn-0520",
       "nameZh": "绿豆糕",
+      "nameEn": "Chinese dish: 绿豆糕",
+      "aliases": [
+        "绿豆糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13489,8 +16229,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0518",
+      "id": "cn-0521",
       "nameZh": "红豆糕",
+      "nameEn": "Chinese dish: 红豆糕",
+      "aliases": [
+        "红豆糕"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13516,8 +16261,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0519",
+      "id": "cn-0522",
       "nameZh": "椰汁西米露",
+      "nameEn": "Chinese dish: 椰汁西米露",
+      "aliases": [
+        "椰汁西米露"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
@@ -13541,8 +16291,13 @@
       "sourceNote": "常见菜谱归纳；同名菜会因餐厅、酱料、汤底和交叉接触而变化，点餐前需现场确认。"
     },
     {
-      "id": "cn-0520",
+      "id": "cn-0523",
       "nameZh": "红豆沙",
+      "nameEn": "Chinese dish: 红豆沙",
+      "aliases": [
+        "红豆沙"
+      ],
+      "nameEnSource": "searchable-label",
       "cuisine": "素食 / 快餐 / 小吃",
       "restaurantType": "素食餐厅 / 小吃店 / 快餐店",
       "ingredients": [
