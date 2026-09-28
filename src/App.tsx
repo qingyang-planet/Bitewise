@@ -8,6 +8,8 @@ type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
 type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'community' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
 type Status = 'MATCH' | 'WARNING' | 'CONFLICT' | 'UNKNOWN'
 type BillMode = 'equal' | 'item'
+type SplitItemAssignments = Record<string, string[]>
+type ProFeature = 'scan' | 'waiter' | 'splitBill'
 type AllergySeverity = 'mild' | 'moderate' | 'severe'
 type AllergyProfile = { severity: AllergySeverity; crossContact: boolean }
 type DietStyle = 'none' | 'vegetarian' | 'vegan' | 'lacto' | 'ovo' | 'lacto-ovo' | 'pescatarian' | 'flexitarian'
@@ -476,6 +478,24 @@ const subscriptionBenefits: SubscriptionBenefit[] = [
   { freeLabel: '—', proLabel: 'Personalized recommendations', free: false, pro: true },
 ]
 
+type ProFeatureCopy = {
+  title: string
+  body: string
+  upgrade: string
+  later: string
+  featureNames: Record<ProFeature, string>
+  lockedBody: string
+}
+
+const proFeatureCopy: Record<Language, ProFeatureCopy> = {
+  en: { title: 'This is a Pro feature', body: '{feature} is included with Pro. Choose a subscription to unlock it for your trip.', upgrade: 'View subscription', later: 'Not now', featureNames: { scan: 'Unlimited scans', waiter: 'Waiter Mode', splitBill: 'Split Bill' }, lockedBody: 'Translate your order and dietary requirements into a clear message for restaurant staff.' },
+  ko: { title: 'Pro 기능입니다', body: '{feature}은 Pro에서 제공됩니다. 구독을 선택하면 여행 중 이 기능을 사용할 수 있어요.', upgrade: '구독 보기', later: '나중에', featureNames: { scan: '무제한 스캔', waiter: '직원 소통 모드', splitBill: '더치페이' }, lockedBody: '주문과 식단 요구사항을 직원에게 보여줄 수 있는 메시지로 정리합니다.' },
+  ja: { title: 'Pro限定機能です', body: '{feature}はProで利用できます。サブスクリプションを選ぶと旅行中に使えます。', upgrade: 'サブスクリプションを見る', later: 'あとで', featureNames: { scan: '無制限スキャン', waiter: 'スタッフモード', splitBill: '割り勘' }, lockedBody: '注文と食事条件を、スタッフに見せられる明確なメッセージにまとめます。' },
+  ru: { title: 'Функция Pro', body: '{feature} доступна в Pro. Выберите подписку, чтобы открыть её на время поездки.', upgrade: 'Открыть подписку', later: 'Не сейчас', featureNames: { scan: 'Безлимитные сканы', waiter: 'Режим для официанта', splitBill: 'Разделение счёта' }, lockedBody: 'Переведите заказ и пищевые требования в понятное сообщение для персонала.' },
+  es: { title: 'Esta función es Pro', body: '{feature} está incluida en Pro. Elige una suscripción para desbloquearla durante tu viaje.', upgrade: 'Ver suscripción', later: 'Ahora no', featureNames: { scan: 'Escaneos ilimitados', waiter: 'Modo para el personal', splitBill: 'Dividir la cuenta' }, lockedBody: 'Convierte tu pedido y tus requisitos alimentarios en un mensaje claro para el personal.' },
+  it: { title: 'Questa è una funzione Pro', body: '{feature} è incluso in Pro. Scegli un abbonamento per sbloccarlo durante il viaggio.', upgrade: 'Vedi abbonamento', later: 'Non ora', featureNames: { scan: 'Scansioni illimitate', waiter: 'Modalità personale', splitBill: 'Dividi il conto' }, lockedBody: 'Trasforma ordine e requisiti alimentari in un messaggio chiaro per il personale.' },
+}
+
 type OrderCopy = { nav: string; title: string; subtitle: string; current: string; past: string; inProgress: string; completed: string; openTable: string; items: string; total: string; splitBill: string; viewMenu: string; emptyCurrent: string; emptyPast: string }
 const orderCopy: Record<Language, OrderCopy> = {
   en: { nav: 'Orders', title: 'Your orders', subtitle: 'Keep track of current and past restaurant orders.', current: 'Current order', past: 'Past orders', inProgress: 'In progress', completed: 'Completed', openTable: 'Table is open', items: 'items', total: 'Total', splitBill: 'Split the bill', viewMenu: 'View menu', emptyCurrent: 'No order yet. Scan the menu to start this dining session.', emptyPast: 'Past orders will appear here.' },
@@ -496,7 +516,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: 'Your cart', clear: 'Clear', cartEmpty: 'Your cart is empty', cartHint: 'Select dishes from your matched menu and they’ll appear here.', backToMenu: 'Back to menu', passportChecks: 'Passport checks stay visible', cartSafety: 'Only dishes without a clear conflict can be added. Warnings and unknowns stay attached to each dish.', removeDish: 'Remove dish', singleDish: 'Single dish', confirmSelections: 'Confirm selections', decrease: 'Decrease', increase: 'Increase',
     orderBrief: 'Order brief', orderStep: 'Step 04 · Order', bilingualOrder: 'Bilingual order page', showWaiter: 'Show this to your waiter.', orderDescription: 'Your selected dishes and Food Passport requirements are kept together in your language and Chinese.', forYou: 'For you', selectedDishes: 'Your selected dishes', dietaryNotes: 'Dietary notes', requirements: 'Your requirements', noRequirements: 'No additional dietary requirements.', forWaiter: 'For waiter', neededDishes: 'Dishes requested', waiterNotes: 'Dietary notes', noExtra: 'No extra dietary requirements. Please prepare according to the menu.', addMore: 'Add more dishes', splitBill: 'Split bill', backHome: 'Back to home', returnCart: 'Return to cart to edit', completeOrder: 'Complete order and return home', orderDisclaimer: 'This page translates your saved requirements for communication. The restaurant must still confirm ingredients and cross-contact.',
     askStep: 'Step 04 · Ask', chineseShowFirst: '中文 · Show first', askDisclaimer: 'If the restaurant cannot confirm, keep this dish excluded from recommendations. Menu evidence cannot determine kitchen cross-contact.',
-    items: 'items', receiptUpdated: 'Receipt updated', fromOrder: 'From order', replaceReceipt: 'Replace receipt', uploadReceipt: 'Upload receipt to update', useOrderTotals: 'Use order totals', lineItemsUpdated: 'Line items and total updated from', uploadedReceipt: 'the uploaded receipt', usingOrderPrices: 'Using the prices captured when this order was placed. Upload a receipt if the final bill changed.', receiptTotal: 'Receipt total', orderTotal: 'Order total', namesEditable: 'Names are editable', tapAssign: 'Tap an item to assign', everyonePays: 'Everyone pays', exactCheck: 'Exact total check', shareReady: 'Share sheet ready', editParticipant: 'Edit participant', removeParticipant: 'Remove participant', everyone: 'Everyone', guest: 'Guest', you: 'You',
+    items: 'items', receiptUpdated: 'Receipt updated', fromOrder: 'From order', replaceReceipt: 'Replace receipt', uploadReceipt: 'Upload receipt to update', useOrderTotals: 'Use order totals', lineItemsUpdated: 'Line items and total updated from', uploadedReceipt: 'the uploaded receipt', usingOrderPrices: 'Using the prices captured when this order was placed. Upload a receipt if the final bill changed.', receiptTotal: 'Receipt total', orderTotal: 'Order total', namesEditable: 'Names are editable', tapAssign: 'Tap an item to choose who ate it', everyonePays: 'Everyone pays', exactCheck: 'Exact total check', shareReady: 'Share sheet ready', editParticipant: 'Edit participant', removeParticipant: 'Remove participant', everyone: 'Everyone', guest: 'Guest', you: 'You',
     exploreKicker: 'P1 · Explore', createFoodPost: 'Create a food post', findHeading: 'Find your next favorite bite.', findDescription: 'Real dish notes from people nearby. Save the restaurant when something makes you hungry.', foodCategories: 'Food categories', communityPicks: 'Community picks, passport-aware', communityHint: 'Save a place now and check the menu when you visit.', mustTry: 'MUST TRY', save: 'Save', saved: 'Saved', noNotes: 'No notes in this category yet.', keepExploring: 'Try another cuisine and keep exploring.', shareYourBite: 'Share your bite', createFoodNote: 'Create a food note', historyOnly: 'Only restaurants from your order history can be selected.', visitedRestaurant: 'Visited restaurant', pastVisit: 'Past visit', noHistory: 'No matching historical order found.', postTitle: 'Post title', titlePlaceholder: 'e.g. A quiet favorite near the metro', signatureDish: 'Signature dish', dishName: 'Dish name', dishDetails: 'Dish details', dishDetailsPlaceholder: 'Texture · flavor · ¥ price', cuisineCategory: 'Cuisine category', yourExperience: 'Your experience', experiencePlaceholder: 'What made this meal memorable?', cancel: 'Cancel', publishNote: 'Publish note', closeComposer: 'Close post composer', moreOptions: 'More options for', sharePost: 'Share',
     savedRestaurants: 'Saved restaurants', profileFindFood: 'Profile · Find food', openFindFood: 'Open Find food', findFood: 'Find food', placesWorthReturning: 'Places worth coming back to.', savedRestaurantsHint: 'Your saved restaurants stay here, ready for the next meal.', exploreFindFood: 'Explore Find food', saveFromFeed: 'Save a restaurant from the feed', noSavedRestaurants: 'No saved restaurants yet.', removeFromSaved: 'Remove from saved restaurants',
     companions: 'Companions', profileAtTable: 'Profile · At the table', atTheTable: 'At the table', makeMenuWork: 'Make the menu work for everyone.', connectPassport: 'Connect a friend’s Food Passport once, then use it whenever you share a table.', connected: 'connected', invitationsToReview: 'invitations to review', privateSettings: 'Private food settings stay with each person.', newInvitation: 'New invitation', wantsToDine: 'Someone wants to dine with you.', shareConnection: 'They want to share their Food Passport connection with you.', accept: 'Accept', decline: 'Decline', waitingForThem: 'Waiting for them', invitationsSent: 'Invitations you sent', pending: 'Pending', addCompanion: 'Add a companion', inviteRegistered: 'Invite someone who has registered with Bitewise', companionEmail: 'Companion email', invite: 'Invite', registeredOnly: 'Only registered accounts can receive an invitation. Their Food Passport stays private until they accept.', noCompanions: 'No companions yet.', buildTableProfile: 'Invite a registered user to build a shared table profile.', viewFoodPassport: 'View Food Passport', companionFlow: 'After scanning a menu, choose companions to filter dishes for the whole table.', companionReadOnly: 'Companion · Read only', sharedPassport: 'Shared Food Passport', tableProfile: 'table profile', useSettings: 'You can use these settings to filter a scanned menu, but only', canEdit: 'can edit them.', readOnly: 'Read only', allergens: 'Allergens', dietaryStyle: 'Dietary style', foodsToAvoid: 'Foods to avoid', everydayPreferences: 'Everyday preferences', spicePreference: 'Spicy', notSet: 'Not set', upToLevel: 'Up to level', kitchenSafety: 'Kitchen safety', noShared: 'None shared', noDietShared: 'No dietary style shared', noRulesShared: 'No food rules shared', noPreferencesShared: 'No everyday preferences shared', avoidCrossContact: 'Avoid cross-contact', notSpecified: 'Not specified', readonlyNote: 'This is a read-only view. The account owner remains in control of their Food Passport.', unlinkCompanion: 'Unlink companion',
@@ -511,7 +531,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: '장바구니', clear: '비우기', cartEmpty: '장바구니가 비어 있어요', cartHint: '조건에 맞는 메뉴에서 음식을 선택하면 여기에 표시됩니다.', backToMenu: '메뉴로 돌아가기', passportChecks: '푸드 패스포트 확인 결과가 표시됩니다', cartSafety: '명확한 충돌이 없는 메뉴만 담을 수 있습니다. 주의와 불확실성은 각 메뉴에 계속 표시됩니다.', removeDish: '메뉴 삭제', singleDish: '단일 메뉴', confirmSelections: '선택 확인', decrease: '수량 줄이기', increase: '수량 늘리기',
     orderBrief: '주문 안내', orderStep: '4단계 · 주문', bilingualOrder: '이중 언어 주문 페이지', showWaiter: '직원에게 보여주세요.', orderDescription: '선택한 메뉴와 푸드 패스포트 요구사항을 내 언어와 중국어로 함께 정리했습니다.', forYou: '나를 위한 정보', selectedDishes: '선택한 메뉴', dietaryNotes: '식단 메모', requirements: '나의 요구사항', noRequirements: '추가 식단 요구사항이 없습니다.', forWaiter: '직원용', neededDishes: '주문할 메뉴', waiterNotes: '주의사항과 제외 음식', noExtra: '추가 요구사항이 없습니다. 메뉴에 따라 준비해 주세요.', addMore: '메뉴 더 추가', splitBill: '계산서 나누기', backHome: '홈으로', returnCart: '장바구니로 돌아가 수정', completeOrder: '주문 완료 후 홈으로', orderDisclaimer: '이 페이지는 저장된 요구사항을 전달하기 위한 번역을 제공합니다. 재료와 교차 접촉 여부는 식당에 다시 확인해야 합니다.',
     askStep: '4단계 · 문의', chineseShowFirst: '中文 · 먼저 보여주기', askDisclaimer: '식당에서 확인할 수 없다면 이 메뉴를 추천에서 제외하세요. 메뉴 정보만으로는 주방의 교차 접촉을 판단할 수 없습니다.',
-    items: '개 항목', receiptUpdated: '영수증 반영됨', fromOrder: '주문 기준', replaceReceipt: '영수증 교체', uploadReceipt: '영수증을 업로드해 업데이트', useOrderTotals: '주문 합계 사용', lineItemsUpdated: '항목과 합계가 다음에서 업데이트됨:', uploadedReceipt: '업로드한 영수증', usingOrderPrices: '주문 시 저장된 가격을 사용 중입니다. 최종 금액이 다르면 영수증을 업로드하세요.', receiptTotal: '영수증 합계', orderTotal: '주문 합계', namesEditable: '이름을 수정할 수 있어요', tapAssign: '항목을 눌러 담당자를 지정하세요', everyonePays: '각자 결제 금액', exactCheck: '합계 확인', shareReady: '공유할 준비가 됐어요', editParticipant: '참여자 수정', removeParticipant: '참여자 삭제', everyone: '모두', guest: '손님', you: '나',
+    items: '개 항목', receiptUpdated: '영수증 반영됨', fromOrder: '주문 기준', replaceReceipt: '영수증 교체', uploadReceipt: '영수증을 업로드해 업데이트', useOrderTotals: '주문 합계 사용', lineItemsUpdated: '항목과 합계가 다음에서 업데이트됨:', uploadedReceipt: '업로드한 영수증', usingOrderPrices: '주문 시 저장된 가격을 사용 중입니다. 최종 금액이 다르면 영수증을 업로드하세요.', receiptTotal: '영수증 합계', orderTotal: '주문 합계', namesEditable: '이름을 수정할 수 있어요', tapAssign: '항목을 눌러 먹은 사람을 선택하세요', everyonePays: '각자 결제 금액', exactCheck: '합계 확인', shareReady: '공유할 준비가 됐어요', editParticipant: '참여자 수정', removeParticipant: '참여자 삭제', everyone: '모두', guest: '손님', you: '나',
     exploreKicker: 'P1 · 둘러보기', createFoodPost: '음식 게시물 만들기', findHeading: '다음에 먹을 음식을 찾아보세요.', findDescription: '주변 사람들의 실제 메뉴 기록을 확인하고, 마음에 드는 식당을 저장하세요.', foodCategories: '음식 카테고리', communityPicks: '푸드 패스포트를 고려한 커뮤니티 추천', communityHint: '지금 장소를 저장하고 방문할 때 메뉴를 확인하세요.', mustTry: '추천 메뉴', save: '저장', saved: '저장됨', noNotes: '이 카테고리에는 아직 기록이 없어요.', keepExploring: '다른 요리를 선택해 계속 둘러보세요.', shareYourBite: '내 식사 공유', createFoodNote: '음식 기록 만들기', historyOnly: '주문 기록이 있는 식당만 선택할 수 있습니다.', visitedRestaurant: '방문한 식당', pastVisit: '지난 방문', noHistory: '일치하는 주문 기록이 없습니다.', postTitle: '게시물 제목', titlePlaceholder: '예: 지하철 근처의 조용한 단골집', signatureDish: '대표 메뉴', dishName: '메뉴 이름', dishDetails: '메뉴 정보', dishDetailsPlaceholder: '식감 · 맛 · ¥ 가격', cuisineCategory: '요리 카테고리', yourExperience: '나의 경험', experiencePlaceholder: '이 식사가 기억에 남은 이유는 무엇인가요?', cancel: '취소', publishNote: '기록 게시', closeComposer: '게시물 작성 닫기', moreOptions: '추가 옵션', sharePost: '공유',
     savedRestaurants: '저장한 식당', profileFindFood: '프로필 · 음식 찾기', openFindFood: '음식 찾기 열기', findFood: '음식 찾기', placesWorthReturning: '다시 가고 싶은 장소', savedRestaurantsHint: '저장한 식당을 여기에 모아 다음 식사를 준비하세요.', exploreFindFood: '음식 찾기 둘러보기', saveFromFeed: '피드에서 식당 저장', noSavedRestaurants: '저장한 식당이 아직 없습니다.', removeFromSaved: '저장한 식당에서 삭제',
     companions: '동행자', profileAtTable: '프로필 · 테이블', atTheTable: '테이블에서', makeMenuWork: '모두가 함께 먹을 수 있는 메뉴를 찾아보세요.', connectPassport: '친구의 푸드 패스포트를 한 번 연결하면 함께 식사할 때마다 사용할 수 있습니다.', connected: '명 연결됨', invitationsToReview: '개의 초대 확인 필요', privateSettings: '개인의 음식 설정은 각자의 계정에 보관됩니다.', newInvitation: '새 초대', wantsToDine: '함께 식사하자는 초대가 왔어요.', shareConnection: '상대방이 푸드 패스포트 연결을 공유하려고 합니다.', accept: '수락', decline: '거절', waitingForThem: '상대방의 응답 대기 중', invitationsSent: '보낸 초대', pending: '대기 중', addCompanion: '동행자 추가', inviteRegistered: 'Bitewise에 등록한 사람을 초대하세요', companionEmail: '동행자 이메일', invite: '초대', registeredOnly: '등록된 계정만 초대를 받을 수 있습니다. 수락하기 전까지 푸드 패스포트는 비공개로 유지됩니다.', noCompanions: '동행자가 아직 없습니다.', buildTableProfile: '등록된 사용자를 초대해 함께 사용할 테이블 프로필을 만들어 보세요.', viewFoodPassport: '푸드 패스포트 보기', companionFlow: '메뉴를 스캔한 뒤 동행자를 선택하면 테이블 전체에 맞게 메뉴를 필터링합니다.', companionReadOnly: '동행자 · 읽기 전용', sharedPassport: '공유된 푸드 패스포트', tableProfile: '테이블 프로필', useSettings: '이 설정으로 스캔한 메뉴를 필터링할 수 있지만, 수정할 수 있는 사람은', canEdit: '뿐입니다.', readOnly: '읽기 전용', allergens: '알레르기', dietaryStyle: '식단 유형', foodsToAvoid: '피하는 음식', everydayPreferences: '일상 선호', spicePreference: '매운맛 선호', notSet: '설정하지 않음', upToLevel: '최대', kitchenSafety: '주방 안전', noShared: '공유된 알레르기 없음', noDietShared: '공유된 식단 유형 없음', noRulesShared: '공유된 음식 규칙 없음', noPreferencesShared: '공유된 일상 선호 없음', avoidCrossContact: '교차 접촉 피하기', notSpecified: '지정되지 않음', readonlyNote: '읽기 전용 화면입니다. 푸드 패스포트의 소유자가 설정을 계속 관리합니다.', unlinkCompanion: '동행자 연결 해제',
@@ -526,7 +546,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: 'カート', clear: 'クリア', cartEmpty: 'カートは空です', cartHint: '条件に合うメニューから料理を選ぶと、ここに表示されます。', backToMenu: 'メニューに戻る', passportChecks: 'パスポートの確認結果を表示', cartSafety: '明確な衝突がない料理だけ追加できます。注意や不明点は料理ごとに表示されます。', removeDish: '料理を削除', singleDish: '1品', confirmSelections: '選択を確認', decrease: '数量を減らす', increase: '数量を増やす',
     orderBrief: '注文案内', orderStep: 'ステップ04 · 注文', bilingualOrder: '二言語の注文ページ', showWaiter: 'スタッフに見せてください。', orderDescription: '選択した料理とフードパスポートの条件を、あなたの言語と中国語でまとめています。', forYou: 'あなた向け', selectedDishes: '選択した料理', dietaryNotes: '食事メモ', requirements: 'あなたの条件', noRequirements: '追加の食事条件はありません。', forWaiter: 'スタッフ向け', neededDishes: '注文する料理', waiterNotes: '避けたいもの・注意点', noExtra: '追加の条件はありません。メニューどおりに調理してください。', addMore: '料理を追加', splitBill: '割り勘する', backHome: 'ホームに戻る', returnCart: 'カートに戻って編集', completeOrder: '注文を完了してホームへ', orderDisclaimer: 'このページは保存した条件を伝えるための翻訳です。食材と交差接触については、必ずお店に確認してください。',
     askStep: 'ステップ04 · 確認', chineseShowFirst: '中文 · 先に表示', askDisclaimer: 'お店で確認できない場合は、この料理をおすすめから除外してください。メニュー情報だけでは厨房での交差接触は判断できません。',
-    items: '品', receiptUpdated: 'レシート反映済み', fromOrder: '注文から', replaceReceipt: 'レシートを差し替え', uploadReceipt: 'レシートをアップロードして更新', useOrderTotals: '注文の合計を使う', lineItemsUpdated: '明細と合計を更新：', uploadedReceipt: 'アップロードしたレシート', usingOrderPrices: '注文時に保存した価格を使用しています。最終金額が違う場合はレシートをアップロードしてください。', receiptTotal: 'レシート合計', orderTotal: '注文合計', namesEditable: '名前は編集できます', tapAssign: '料理をタップして担当者を選択', everyonePays: '支払額', exactCheck: '合計を確認', shareReady: '共有の準備ができました', editParticipant: '参加者を編集', removeParticipant: '参加者を削除', everyone: '全員', guest: 'ゲスト', you: '自分',
+    items: '品', receiptUpdated: 'レシート反映済み', fromOrder: '注文から', replaceReceipt: 'レシートを差し替え', uploadReceipt: 'レシートをアップロードして更新', useOrderTotals: '注文の合計を使う', lineItemsUpdated: '明細と合計を更新：', uploadedReceipt: 'アップロードしたレシート', usingOrderPrices: '注文時に保存した価格を使用しています。最終金額が違う場合はレシートをアップロードしてください。', receiptTotal: 'レシート合計', orderTotal: '注文合計', namesEditable: '名前は編集できます', tapAssign: '料理をタップして食べた人を選択', everyonePays: '支払額', exactCheck: '合計を確認', shareReady: '共有の準備ができました', editParticipant: '参加者を編集', removeParticipant: '参加者を削除', everyone: '全員', guest: 'ゲスト', you: '自分',
     exploreKicker: 'P1 · 探す', createFoodPost: '食の投稿を作成', findHeading: '次のお気に入りを見つけましょう。', findDescription: '近くの人の料理メモを見て、気になるお店を保存できます。', foodCategories: '料理カテゴリー', communityPicks: 'パスポートを考慮したコミュニティのおすすめ', communityHint: '場所を保存して、訪問時にメニューを確認しましょう。', mustTry: 'おすすめ', save: '保存', saved: '保存済み', noNotes: 'このカテゴリーにはまだメモがありません。', keepExploring: '別の料理を選んで探し続けましょう。', shareYourBite: '食事を共有', createFoodNote: '料理メモを作成', historyOnly: '注文履歴のあるお店だけ選択できます。', visitedRestaurant: '訪れたお店', pastVisit: '過去の訪問', noHistory: '一致する注文履歴がありません。', postTitle: '投稿タイトル', titlePlaceholder: '例：駅の近くの静かなお気に入り', signatureDish: 'おすすめ料理', dishName: '料理名', dishDetails: '料理の詳細', dishDetailsPlaceholder: '食感 · 味 · ¥価格', cuisineCategory: '料理カテゴリー', yourExperience: 'あなたの体験', experiencePlaceholder: 'この食事が印象に残った理由は？', cancel: 'キャンセル', publishNote: 'メモを投稿', closeComposer: '投稿画面を閉じる', moreOptions: 'その他の操作', sharePost: '共有',
     savedRestaurants: '保存したお店', profileFindFood: 'プロフィール · 料理を探す', openFindFood: '料理を探す', findFood: '料理を探す', placesWorthReturning: 'また訪れたい場所', savedRestaurantsHint: '保存したお店をここで確認して、次の食事に備えましょう。', exploreFindFood: '料理を探す', saveFromFeed: 'フィードからお店を保存', noSavedRestaurants: '保存したお店はまだありません。', removeFromSaved: '保存から削除',
     companions: '同席者', profileAtTable: 'プロフィール · テーブル', atTheTable: 'テーブルで', makeMenuWork: 'みんなで楽しめるメニューを選びましょう。', connectPassport: '友だちのフードパスポートを一度つなぐと、一緒に食事するときに使えます。', connected: '人が接続済み', invitationsToReview: '件の招待を確認', privateSettings: '食に関する設定はそれぞれのアカウントで管理します。', newInvitation: '新しい招待', wantsToDine: '一緒に食事をしたい人がいます。', shareConnection: '相手がフードパスポートの接続を共有しようとしています。', accept: '承認', decline: '辞退', waitingForThem: '相手の承認待ち', invitationsSent: '送信した招待', pending: '保留中', addCompanion: '同席者を追加', inviteRegistered: 'Bitewiseに登録している人を招待', companionEmail: '同席者のメール', invite: '招待', registeredOnly: '登録済みアカウントだけ招待できます。承認されるまでフードパスポートは非公開です。', noCompanions: '同席者はまだいません。', buildTableProfile: '登録ユーザーを招待して、共有テーブルプロフィールを作りましょう。', viewFoodPassport: 'フードパスポートを見る', companionFlow: 'メニューをスキャンした後に同席者を選ぶと、テーブル全体に合う料理に絞り込めます。', companionReadOnly: '同席者 · 閲覧のみ', sharedPassport: '共有フードパスポート', tableProfile: 'テーブルプロフィール', useSettings: 'この設定でスキャンしたメニューを絞り込めますが、編集できるのは', canEdit: 'だけです。', readOnly: '閲覧のみ', allergens: 'アレルゲン', dietaryStyle: '食事スタイル', foodsToAvoid: '避ける食品', everydayPreferences: '日常の好み', spicePreference: '辛さの好み', notSet: '未設定', upToLevel: 'レベルまで', kitchenSafety: '厨房の安全', noShared: '共有されたアレルゲンなし', noDietShared: '共有された食事スタイルなし', noRulesShared: '共有された食品ルールなし', noPreferencesShared: '共有された日常の好みなし', avoidCrossContact: '交差接触を避ける', notSpecified: '未指定', readonlyNote: '閲覧専用の画面です。フードパスポートの所有者が設定を管理します。', unlinkCompanion: '同席者の接続を解除',
@@ -541,7 +561,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: 'Корзина', clear: 'Очистить', cartEmpty: 'Корзина пуста', cartHint: 'Выберите блюда из подходящего меню — они появятся здесь.', backToMenu: 'Вернуться к меню', passportChecks: 'Проверка паспорта остаётся видимой', cartSafety: 'Добавлять можно только блюда без явного конфликта. Предупреждения и неизвестные данные остаются у каждого блюда.', removeDish: 'Удалить блюдо', singleDish: 'Одно блюдо', confirmSelections: 'Подтвердить выбор', decrease: 'Уменьшить количество', increase: 'Увеличить количество',
     orderBrief: 'Информация для заказа', orderStep: 'Шаг 04 · Заказ', bilingualOrder: 'Двуязычная страница заказа', showWaiter: 'Покажите это официанту.', orderDescription: 'Выбранные блюда и требования пищевого паспорта собраны на вашем языке и на китайском.', forYou: 'Для вас', selectedDishes: 'Выбранные блюда', dietaryNotes: 'Пищевые заметки', requirements: 'Ваши требования', noRequirements: 'Дополнительных требований нет.', forWaiter: 'Для официанта', neededDishes: 'Нужные блюда', waiterNotes: 'Ограничения и предупреждения', noExtra: 'Дополнительных ограничений нет. Приготовьте по меню.', addMore: 'Добавить блюда', splitBill: 'Разделить счёт', backHome: 'На главную', returnCart: 'Вернуться в корзину и изменить', completeOrder: 'Завершить заказ и вернуться', orderDisclaimer: 'Эта страница переводит сохранённые требования для общения. Ингредиенты и перекрёстный контакт всё равно должен подтвердить ресторан.',
     askStep: 'Шаг 04 · Уточнить', chineseShowFirst: '中文 · Сначала показать', askDisclaimer: 'Если ресторан не может подтвердить состав, оставьте блюдо исключённым. Одно меню не позволяет определить перекрёстный контакт на кухне.',
-    items: 'позиций', receiptUpdated: 'Чек обновлён', fromOrder: 'Из заказа', replaceReceipt: 'Заменить чек', uploadReceipt: 'Загрузить чек для обновления', useOrderTotals: 'Использовать сумму заказа', lineItemsUpdated: 'Позиции и сумма обновлены по данным', uploadedReceipt: 'загруженного чека', usingOrderPrices: 'Используются цены, сохранённые при заказе. Если итог изменился, загрузите чек.', receiptTotal: 'Итого по чеку', orderTotal: 'Итого по заказу', namesEditable: 'Имена можно менять', tapAssign: 'Нажмите на позицию, чтобы назначить её', everyonePays: 'Каждый платит', exactCheck: 'Проверка точной суммы', shareReady: 'Готово к отправке', editParticipant: 'Изменить участника', removeParticipant: 'Удалить участника', everyone: 'Все', guest: 'Гость', you: 'Вы',
+    items: 'позиций', receiptUpdated: 'Чек обновлён', fromOrder: 'Из заказа', replaceReceipt: 'Заменить чек', uploadReceipt: 'Загрузить чек для обновления', useOrderTotals: 'Использовать сумму заказа', lineItemsUpdated: 'Позиции и сумма обновлены по данным', uploadedReceipt: 'загруженного чека', usingOrderPrices: 'Используются цены, сохранённые при заказе. Если итог изменился, загрузите чек.', receiptTotal: 'Итого по чеку', orderTotal: 'Итого по заказу', namesEditable: 'Имена можно менять', tapAssign: 'Нажмите на позицию, чтобы выбрать тех, кто её ел', everyonePays: 'Каждый платит', exactCheck: 'Проверка точной суммы', shareReady: 'Готово к отправке', editParticipant: 'Изменить участника', removeParticipant: 'Удалить участника', everyone: 'Все', guest: 'Гость', you: 'Вы',
     exploreKicker: 'P1 · Поиск', createFoodPost: 'Создать публикацию о еде', findHeading: 'Найдите следующий любимый вкус.', findDescription: 'Заметки о блюдах от людей рядом. Сохраняйте рестораны, которые хочется попробовать.', foodCategories: 'Категории еды', communityPicks: 'Выбор сообщества с учётом паспорта', communityHint: 'Сохраните место сейчас и проверьте меню при визите.', mustTry: 'СТОИТ ПОПРОБОВАТЬ', save: 'Сохранить', saved: 'Сохранено', noNotes: 'В этой категории пока нет заметок.', keepExploring: 'Выберите другую кухню и продолжайте поиск.', shareYourBite: 'Поделитесь впечатлением', createFoodNote: 'Создать заметку о блюде', historyOnly: 'Можно выбрать только ресторан из истории заказов.', visitedRestaurant: 'Посещённый ресторан', pastVisit: 'Прошлый визит', noHistory: 'Подходящая история заказов не найдена.', postTitle: 'Заголовок публикации', titlePlaceholder: 'например, тихое любимое место у метро', signatureDish: 'Главное блюдо', dishName: 'Название блюда', dishDetails: 'О блюде', dishDetailsPlaceholder: 'Текстура · вкус · цена ¥', cuisineCategory: 'Категория кухни', yourExperience: 'Ваше впечатление', experiencePlaceholder: 'Что запомнилось в этом блюде?', cancel: 'Отмена', publishNote: 'Опубликовать заметку', closeComposer: 'Закрыть редактор', moreOptions: 'Другие действия', sharePost: 'Поделиться',
     savedRestaurants: 'Сохранённые рестораны', profileFindFood: 'Профиль · Поиск еды', openFindFood: 'Открыть поиск еды', findFood: 'Поиск еды', placesWorthReturning: 'Места, куда хочется вернуться', savedRestaurantsHint: 'Здесь хранятся сохранённые рестораны для следующего ужина.', exploreFindFood: 'Открыть поиск еды', saveFromFeed: 'Сохранить ресторан из ленты', noSavedRestaurants: 'Сохранённых ресторанов пока нет.', removeFromSaved: 'Удалить из сохранённых',
     companions: 'Спутники', profileAtTable: 'Профиль · За столом', atTheTable: 'За столом', makeMenuWork: 'Подберите меню для всех.', connectPassport: 'Один раз подключите пищевой паспорт друга и используйте его за общим столом.', connected: 'подключено', invitationsToReview: 'приглашений на проверку', privateSettings: 'Личные пищевые настройки остаются у каждого человека.', newInvitation: 'Новое приглашение', wantsToDine: 'Кто-то хочет пообедать вместе с вами.', shareConnection: 'Пользователь хочет поделиться подключением пищевого паспорта.', accept: 'Принять', decline: 'Отклонить', waitingForThem: 'Ждём ответа', invitationsSent: 'Отправленные приглашения', pending: 'Ожидает ответа', addCompanion: 'Добавить спутника', inviteRegistered: 'Пригласите пользователя, зарегистрированного в Bitewise', companionEmail: 'Электронная почта спутника', invite: 'Пригласить', registeredOnly: 'Пригласить можно только зарегистрированные аккаунты. До принятия приглашения их паспорт остаётся закрытым.', noCompanions: 'Спутников пока нет.', buildTableProfile: 'Пригласите зарегистрированного пользователя, чтобы создать общий профиль стола.', viewFoodPassport: 'Открыть пищевой паспорт', companionFlow: 'После сканирования меню выберите спутников, чтобы отфильтровать блюда для всего стола.', companionReadOnly: 'Спутник · Только просмотр', sharedPassport: 'Общий пищевой паспорт', tableProfile: 'профиль стола', useSettings: 'Эти настройки можно использовать для фильтрации меню, но изменять их может только', canEdit: '.', readOnly: 'Только просмотр', allergens: 'Аллергены', dietaryStyle: 'Тип питания', foodsToAvoid: 'Исключаемые продукты', everydayPreferences: 'Повседневные предпочтения', spicePreference: 'Острота', notSet: 'Не задано', upToLevel: 'До уровня', kitchenSafety: 'Безопасность кухни', noShared: 'Аллергены не указаны', noDietShared: 'Тип питания не указан', noRulesShared: 'Правила питания не указаны', noPreferencesShared: 'Повседневные предпочтения не указаны', avoidCrossContact: 'Избегать перекрёстного контакта', notSpecified: 'Не указано', readonlyNote: 'Это режим только для просмотра. Владелец аккаунта управляет своим пищевым паспортом.', unlinkCompanion: 'Отключить спутника',
@@ -556,7 +576,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: 'Tu cesta', clear: 'Vaciar', cartEmpty: 'Tu cesta está vacía', cartHint: 'Elige platos del menú que encajan contigo y aparecerán aquí.', backToMenu: 'Volver al menú', passportChecks: 'Las comprobaciones del pasaporte siguen visibles', cartSafety: 'Solo se pueden añadir platos sin un conflicto claro. Los avisos y las dudas permanecen junto a cada plato.', removeDish: 'Quitar plato', singleDish: 'Un plato', confirmSelections: 'Confirmar selección', decrease: 'Reducir cantidad', increase: 'Aumentar cantidad',
     orderBrief: 'Resumen del pedido', orderStep: 'Paso 04 · Pedido', bilingualOrder: 'Página de pedido bilingüe', showWaiter: 'Enséñaselo al personal.', orderDescription: 'Tus platos y requisitos del Pasaporte de comida aparecen juntos en tu idioma y en chino.', forYou: 'Para ti', selectedDishes: 'Tus platos seleccionados', dietaryNotes: 'Notas alimentarias', requirements: 'Tus requisitos', noRequirements: 'No hay requisitos alimentarios adicionales.', forWaiter: 'Para el personal', neededDishes: 'Platos solicitados', waiterNotes: 'Alimentos que evitar y avisos', noExtra: 'No hay requisitos adicionales. Preparar según el menú.', addMore: 'Añadir más platos', splitBill: 'Dividir la cuenta', backHome: 'Volver al inicio', returnCart: 'Volver a la cesta para editar', completeOrder: 'Completar pedido y volver al inicio', orderDisclaimer: 'Esta página traduce tus requisitos guardados para comunicarlos. El restaurante debe confirmar los ingredientes y el contacto cruzado.',
     askStep: 'Paso 04 · Preguntar', chineseShowFirst: '中文 · Mostrar primero', askDisclaimer: 'Si el restaurante no puede confirmarlo, mantén este plato excluido de las recomendaciones. El menú no puede determinar el contacto cruzado en la cocina.',
-    items: 'artículos', receiptUpdated: 'Recibo actualizado', fromOrder: 'Del pedido', replaceReceipt: 'Sustituir recibo', uploadReceipt: 'Subir recibo para actualizar', useOrderTotals: 'Usar total del pedido', lineItemsUpdated: 'Partidas y total actualizados desde', uploadedReceipt: 'el recibo subido', usingOrderPrices: 'Usamos los precios guardados al hacer el pedido. Sube el recibo si cambió el total final.', receiptTotal: 'Total del recibo', orderTotal: 'Total del pedido', namesEditable: 'Los nombres se pueden editar', tapAssign: 'Toca un artículo para asignarlo', everyonePays: 'Cada persona paga', exactCheck: 'Comprobación del total exacto', shareReady: 'Listo para compartir', editParticipant: 'Editar participante', removeParticipant: 'Quitar participante', everyone: 'Todos', guest: 'Invitado', you: 'Tú',
+    items: 'artículos', receiptUpdated: 'Recibo actualizado', fromOrder: 'Del pedido', replaceReceipt: 'Sustituir recibo', uploadReceipt: 'Subir recibo para actualizar', useOrderTotals: 'Usar total del pedido', lineItemsUpdated: 'Partidas y total actualizados desde', uploadedReceipt: 'el recibo subido', usingOrderPrices: 'Usamos los precios guardados al hacer el pedido. Sube el recibo si cambió el total final.', receiptTotal: 'Total del recibo', orderTotal: 'Total del pedido', namesEditable: 'Los nombres se pueden editar', tapAssign: 'Toca un artículo para elegir quién lo comió', everyonePays: 'Cada persona paga', exactCheck: 'Comprobación del total exacto', shareReady: 'Listo para compartir', editParticipant: 'Editar participante', removeParticipant: 'Quitar participante', everyone: 'Todos', guest: 'Invitado', you: 'Tú',
     exploreKicker: 'P1 · Explorar', createFoodPost: 'Crear publicación gastronómica', findHeading: 'Encuentra tu próximo bocado favorito.', findDescription: 'Notas reales de platos de gente cercana. Guarda el restaurante cuando te apetezca probarlo.', foodCategories: 'Categorías gastronómicas', communityPicks: 'Recomendaciones de la comunidad, adaptadas a tu pasaporte', communityHint: 'Guarda un lugar y consulta el menú cuando lo visites.', mustTry: 'NO TE LO PIERDAS', save: 'Guardar', saved: 'Guardado', noNotes: 'Todavía no hay notas en esta categoría.', keepExploring: 'Prueba otra cocina y sigue explorando.', shareYourBite: 'Comparte tu bocado', createFoodNote: 'Crear una nota gastronómica', historyOnly: 'Solo puedes elegir restaurantes de tu historial de pedidos.', visitedRestaurant: 'Restaurante visitado', pastVisit: 'Visita anterior', noHistory: 'No se encontró ningún pedido coincidente.', postTitle: 'Título de la publicación', titlePlaceholder: 'p. ej., un sitio tranquilo cerca del metro', signatureDish: 'Plato estrella', dishName: 'Nombre del plato', dishDetails: 'Detalles del plato', dishDetailsPlaceholder: 'Textura · sabor · precio ¥', cuisineCategory: 'Categoría de cocina', yourExperience: 'Tu experiencia', experiencePlaceholder: '¿Qué hizo memorable esta comida?', cancel: 'Cancelar', publishNote: 'Publicar nota', closeComposer: 'Cerrar editor', moreOptions: 'Más opciones', sharePost: 'Compartir',
     savedRestaurants: 'Restaurantes guardados', profileFindFood: 'Perfil · Buscar comida', openFindFood: 'Abrir Buscar comida', findFood: 'Buscar comida', placesWorthReturning: 'Lugares a los que quieres volver', savedRestaurantsHint: 'Tus restaurantes guardados estarán aquí para tu próxima comida.', exploreFindFood: 'Explorar Buscar comida', saveFromFeed: 'Guardar un restaurante desde el feed', noSavedRestaurants: 'Aún no hay restaurantes guardados.', removeFromSaved: 'Quitar de guardados',
     companions: 'Acompañantes', profileAtTable: 'Perfil · En la mesa', atTheTable: 'En la mesa', makeMenuWork: 'Haz que el menú funcione para todos.', connectPassport: 'Conecta una vez el Pasaporte de comida de un amigo y úsalo cada vez que compartáis mesa.', connected: 'conectados', invitationsToReview: 'invitaciones por revisar', privateSettings: 'La configuración alimentaria privada permanece con cada persona.', newInvitation: 'Nueva invitación', wantsToDine: 'Alguien quiere comer contigo.', shareConnection: 'Quiere compartir contigo la conexión de su Pasaporte de comida.', accept: 'Aceptar', decline: 'Rechazar', waitingForThem: 'Esperando su respuesta', invitationsSent: 'Invitaciones enviadas', pending: 'Pendiente', addCompanion: 'Añadir acompañante', inviteRegistered: 'Invita a alguien registrado en Bitewise', companionEmail: 'Correo del acompañante', invite: 'Invitar', registeredOnly: 'Solo las cuentas registradas pueden recibir invitaciones. Su Pasaporte de comida será privado hasta que acepten.', noCompanions: 'Aún no hay acompañantes.', buildTableProfile: 'Invita a un usuario registrado para crear un perfil compartido de mesa.', viewFoodPassport: 'Ver Pasaporte de comida', companionFlow: 'Después de escanear un menú, elige acompañantes para filtrar platos para toda la mesa.', companionReadOnly: 'Acompañante · Solo lectura', sharedPassport: 'Pasaporte de comida compartido', tableProfile: 'perfil de mesa', useSettings: 'Puedes usar estos ajustes para filtrar un menú escaneado, pero solo', canEdit: 'puede editarlos.', readOnly: 'Solo lectura', allergens: 'Alérgenos', dietaryStyle: 'Tipo de dieta', foodsToAvoid: 'Alimentos que evitar', everydayPreferences: 'Preferencias diarias', spicePreference: 'Preferencia de picante', notSet: 'Sin configurar', upToLevel: 'Hasta el nivel', kitchenSafety: 'Seguridad en cocina', noShared: 'No se han compartido alérgenos', noDietShared: 'No se ha compartido el tipo de dieta', noRulesShared: 'No se han compartido reglas alimentarias', noPreferencesShared: 'No se han compartido preferencias', avoidCrossContact: 'Evitar el contacto cruzado', notSpecified: 'No especificado', readonlyNote: 'Esta vista es de solo lectura. La persona propietaria controla su Pasaporte de comida.', unlinkCompanion: 'Desconectar acompañante',
@@ -571,7 +591,7 @@ const pageCopy: Record<Language, PageCopy> = {
     yourCart: 'Il tuo carrello', clear: 'Svuota', cartEmpty: 'Il carrello è vuoto', cartHint: 'Scegli i piatti adatti a te dal menu e appariranno qui.', backToMenu: 'Torna al menu', passportChecks: 'I controlli del passaporto restano visibili', cartSafety: 'Puoi aggiungere solo piatti senza conflitti chiari. Avvisi e informazioni mancanti restano associati a ogni piatto.', removeDish: 'Rimuovi piatto', singleDish: 'Un piatto', confirmSelections: 'Conferma selezioni', decrease: 'Riduci quantità', increase: 'Aumenta quantità',
     orderBrief: 'Riepilogo ordine', orderStep: 'Passo 04 · Ordine', bilingualOrder: 'Pagina ordine bilingue', showWaiter: 'Mostralo al personale.', orderDescription: 'I piatti scelti e i requisiti del Passaporto alimentare sono riuniti nella tua lingua e in cinese.', forYou: 'Per te', selectedDishes: 'I tuoi piatti scelti', dietaryNotes: 'Note alimentari', requirements: 'I tuoi requisiti', noRequirements: 'Nessun requisito alimentare aggiuntivo.', forWaiter: 'Per il personale', neededDishes: 'Piatti richiesti', waiterNotes: 'Cibi da evitare e avvisi', noExtra: 'Nessun requisito aggiuntivo. Preparare secondo il menu.', addMore: 'Aggiungi altri piatti', splitBill: 'Dividi il conto', backHome: 'Torna alla home', returnCart: 'Torna al carrello per modificare', completeOrder: 'Completa l’ordine e torna alla home', orderDisclaimer: 'Questa pagina traduce i requisiti salvati per comunicarli. Il ristorante deve comunque confermare ingredienti e contatto incrociato.',
     askStep: 'Passo 04 · Chiedi', chineseShowFirst: '中文 · Mostra prima', askDisclaimer: 'Se il ristorante non può confermare, mantieni questo piatto escluso dai suggerimenti. Il menu non può determinare il contatto incrociato in cucina.',
-    items: 'elementi', receiptUpdated: 'Ricevuta aggiornata', fromOrder: 'Dall’ordine', replaceReceipt: 'Sostituisci ricevuta', uploadReceipt: 'Carica la ricevuta per aggiornare', useOrderTotals: 'Usa il totale dell’ordine', lineItemsUpdated: 'Voci e totale aggiornati da', uploadedReceipt: 'la ricevuta caricata', usingOrderPrices: 'Usiamo i prezzi salvati al momento dell’ordine. Carica una ricevuta se il totale finale è cambiato.', receiptTotal: 'Totale ricevuta', orderTotal: 'Totale ordine', namesEditable: 'I nomi sono modificabili', tapAssign: 'Tocca una voce per assegnarla', everyonePays: 'Ognuno paga', exactCheck: 'Controllo del totale esatto', shareReady: 'Pronto per la condivisione', editParticipant: 'Modifica partecipante', removeParticipant: 'Rimuovi partecipante', everyone: 'Tutti', guest: 'Ospite', you: 'Tu',
+    items: 'elementi', receiptUpdated: 'Ricevuta aggiornata', fromOrder: 'Dall’ordine', replaceReceipt: 'Sostituisci ricevuta', uploadReceipt: 'Carica la ricevuta per aggiornare', useOrderTotals: 'Usa il totale dell’ordine', lineItemsUpdated: 'Voci e totale aggiornati da', uploadedReceipt: 'la ricevuta caricata', usingOrderPrices: 'Usiamo i prezzi salvati al momento dell’ordine. Carica una ricevuta se il totale finale è cambiato.', receiptTotal: 'Totale ricevuta', orderTotal: 'Totale ordine', namesEditable: 'I nomi sono modificabili', tapAssign: 'Tocca una voce per scegliere chi l’ha mangiata', everyonePays: 'Ognuno paga', exactCheck: 'Controllo del totale esatto', shareReady: 'Pronto per la condivisione', editParticipant: 'Modifica partecipante', removeParticipant: 'Rimuovi partecipante', everyone: 'Tutti', guest: 'Ospite', you: 'Tu',
     exploreKicker: 'P1 · Esplora', createFoodPost: 'Crea un post sul cibo', findHeading: 'Trova il tuo prossimo piatto preferito.', findDescription: 'Note reali sui piatti da persone vicine. Salva il ristorante quando ti viene voglia di provarlo.', foodCategories: 'Categorie di cucina', communityPicks: 'Scelte della community, attente al passaporto', communityHint: 'Salva un posto e controlla il menu quando lo visiti.', mustTry: 'DA PROVARE', save: 'Salva', saved: 'Salvato', noNotes: 'Non ci sono ancora note in questa categoria.', keepExploring: 'Prova un’altra cucina e continua a esplorare.', shareYourBite: 'Condividi il tuo assaggio', createFoodNote: 'Crea una nota sul cibo', historyOnly: 'Puoi scegliere solo ristoranti presenti nella cronologia degli ordini.', visitedRestaurant: 'Ristorante visitato', pastVisit: 'Visita passata', noHistory: 'Nessun ordine storico corrispondente.', postTitle: 'Titolo del post', titlePlaceholder: 'es. Un posto tranquillo vicino alla metro', signatureDish: 'Piatto forte', dishName: 'Nome del piatto', dishDetails: 'Dettagli del piatto', dishDetailsPlaceholder: 'Consistenza · gusto · prezzo ¥', cuisineCategory: 'Categoria della cucina', yourExperience: 'La tua esperienza', experiencePlaceholder: 'Cosa ha reso memorabile questo pasto?', cancel: 'Annulla', publishNote: 'Pubblica nota', closeComposer: 'Chiudi editor', moreOptions: 'Altre opzioni', sharePost: 'Condividi',
     savedRestaurants: 'Ristoranti salvati', profileFindFood: 'Profilo · Cerca cibo', openFindFood: 'Apri Cerca cibo', findFood: 'Cerca cibo', placesWorthReturning: 'Posti in cui tornare', savedRestaurantsHint: 'I tuoi ristoranti salvati restano qui, pronti per il prossimo pasto.', exploreFindFood: 'Esplora Cerca cibo', saveFromFeed: 'Salva un ristorante dal feed', noSavedRestaurants: 'Nessun ristorante salvato.', removeFromSaved: 'Rimuovi dai salvati',
     companions: 'Commensali', profileAtTable: 'Profilo · A tavola', atTheTable: 'A tavola', makeMenuWork: 'Fai funzionare il menu per tutti.', connectPassport: 'Collega una volta il Passaporto alimentare di un amico e usalo ogni volta che condividete il tavolo.', connected: 'connessi', invitationsToReview: 'inviti da controllare', privateSettings: 'Le impostazioni alimentari private restano di ogni persona.', newInvitation: 'Nuovo invito', wantsToDine: 'Qualcuno vuole mangiare con te.', shareConnection: 'Vuole condividere con te il collegamento al proprio Passaporto alimentare.', accept: 'Accetta', decline: 'Rifiuta', waitingForThem: 'In attesa di risposta', invitationsSent: 'Inviti inviati', pending: 'In attesa', addCompanion: 'Aggiungi commensale', inviteRegistered: 'Invita qualcuno registrato su Bitewise', companionEmail: 'Email del commensale', invite: 'Invita', registeredOnly: 'Solo gli account registrati possono ricevere un invito. Il loro Passaporto alimentare resta privato finché non accettano.', noCompanions: 'Nessun commensale.', buildTableProfile: 'Invita un utente registrato per creare un profilo condiviso del tavolo.', viewFoodPassport: 'Vedi Passaporto alimentare', companionFlow: 'Dopo aver scansionato il menu, scegli i commensali per filtrare i piatti per tutto il tavolo.', companionReadOnly: 'Commensale · Sola lettura', sharedPassport: 'Passaporto alimentare condiviso', tableProfile: 'profilo del tavolo', useSettings: 'Puoi usare queste impostazioni per filtrare un menu scansionato, ma solo', canEdit: 'può modificarle.', readOnly: 'Sola lettura', allergens: 'Allergeni', dietaryStyle: 'Stile alimentare', foodsToAvoid: 'Cibi da evitare', everydayPreferences: 'Preferenze quotidiane', spicePreference: 'Preferenza per il piccante', notSet: 'Non impostato', upToLevel: 'Fino al livello', kitchenSafety: 'Sicurezza in cucina', noShared: 'Nessun allergene condiviso', noDietShared: 'Nessuno stile alimentare condiviso', noRulesShared: 'Nessuna regola alimentare condivisa', noPreferencesShared: 'Nessuna preferenza condivisa', avoidCrossContact: 'Evita il contatto incrociato', notSpecified: 'Non specificato', readonlyNote: 'Questa è una vista di sola lettura. Il proprietario dell’account controlla il proprio Passaporto alimentare.', unlinkCompanion: 'Scollega commensale',
@@ -987,72 +1007,81 @@ const foodCategories = [
   { id: 'bbq', label: '烧烤' },
 ]
 
-const findFoodCategoryDishIds: Record<string, string> = {
-  local: 'eggplant',
-  hotpot: 'soup',
-  sichuan: 'mapo-tofu',
-  snacks: 'kung-pao',
-  cantonese: 'lotus',
-  vegetarian: 'greens',
-  bbq: 'kung-pao',
+const findFoodCategoryImageSrc: Record<string, string> = {
+  local: '/dish-photos/old-town-kitchen-signature.png',
+  hotpot: '/dish-photos/hotpot.png',
+  sichuan: '/dish-photos/mapo-tofu.png',
+  snacks: '/dish-photos/jade-soup-dumpling-signature.png',
+  cantonese: '/dish-photos/lotus-table-signature.png',
+  vegetarian: '/dish-photos/seasonal-greens.png',
+  bbq: '/dish-photos/charcoal-yard-signature.png',
+}
+
+const findFoodDishCategoryIds: Record<string, string[]> = {
+  'kung-pao': ['sichuan'],
+  'mapo-tofu': ['sichuan'],
+  eggplant: ['sichuan', 'vegetarian'],
+  greens: ['vegetarian'],
+  lotus: ['local', 'vegetarian'],
+  soup: ['cantonese', 'vegetarian'],
 }
 
 const findFoodCategoryPreview: Record<string, FindDishCardItem[]> = {
   local: [
     { id: 'shanghai-braised-pork-ribs', name: 'Soy-glazed pork ribs', category: 'Shanghai cuisine', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Braised', 'Pork'] },
     { id: 'shanghai-soup-dumplings', name: 'Soup dumplings', category: 'Shanghai cuisine', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Steamed', 'Pork'] },
-    { id: 'shanghai-braised-pork', name: 'Red-braised pork belly', category: 'Shanghai cuisine', imageSrc: '/dish-photos/red-lantern-signature.png', tags: ['Slow-cooked', 'Savory'] },
-    { id: 'shanghai-lions-head', name: "Lion's head meatball", category: 'Shanghai cuisine', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Tender', 'Pork'] },
+    { id: 'shanghai-braised-pork', name: 'Red-braised pork belly', category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-red-braised-pork-belly.png', tags: ['Slow-cooked', 'Savory'] },
+    { id: 'shanghai-lions-head', name: "Lion's head meatball", category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-lions-head-meatball.png', tags: ['Tender', 'Pork'] },
     { id: 'shanghai-drunken-chicken', name: 'Drunken chicken', category: 'Shanghai cuisine', imageSrc: '/dish-photos/west-lake-signature.png', tags: ['Chilled', 'Rice wine'] },
     { id: 'shanghai-lotus-root', name: 'Sweet-sour lotus root', category: 'Shanghai cuisine', imageSrc: '/dish-photos/lotus-root.png', tags: ['Crisp', 'Sweet-sour'] },
   ],
   hotpot: [
-    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/winter-melon-soup.png', tags: ['Mild', 'Shared'] },
-    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/red-lantern-signature.png', tags: ['Spicy', 'Numbing'] },
-    { id: 'hotpot-beef-slices', name: 'Hand-sliced beef', category: 'Hotpot', imageSrc: '/dish-photos/charcoal-yard-signature.png', tags: ['Beef', 'Tender'] },
-    { id: 'hotpot-shrimp-balls', name: 'Shrimp paste balls', category: 'Hotpot', imageSrc: '/dish-photos/pepper-alley-signature.png', tags: ['Seafood', 'Bouncy'] },
-    { id: 'hotpot-napa-cabbage', name: 'Napa cabbage', category: 'Hotpot', imageSrc: '/dish-photos/seasonal-greens.png', tags: ['Vegetable', 'Fresh'] },
-    { id: 'hotpot-sesame-noodles', name: 'Sesame dipping noodles', category: 'Hotpot', imageSrc: '/dish-photos/kung-pao.png', tags: ['Sesame', 'Savory'] },
+    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-mushroom-broth.png', tags: ['Mild', 'Shared'] },
+    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sichuan-broth.png', tags: ['Spicy', 'Numbing'] },
+    { id: 'hotpot-beef-slices', name: 'Hand-sliced beef', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-beef-slices.png', tags: ['Beef', 'Tender'] },
+    { id: 'hotpot-shrimp-balls', name: 'Shrimp paste balls', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-shrimp-balls.png', tags: ['Seafood', 'Bouncy'] },
+    { id: 'hotpot-napa-cabbage', name: 'Napa cabbage', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-napa-cabbage.png', tags: ['Vegetable', 'Fresh'] },
+    { id: 'hotpot-sesame-noodles', name: 'Sesame dipping noodles', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sesame-noodles.png', tags: ['Sesame', 'Savory'] },
   ],
   sichuan: [
     { id: 'sichuan-mapo-tofu', name: 'Mapo tofu', category: 'Sichuan', imageSrc: '/dish-photos/mapo-tofu.png', tags: ['Spicy', 'Tofu'] },
     { id: 'sichuan-kung-pao-chicken', name: 'Kung Pao chicken', category: 'Sichuan', imageSrc: '/dish-photos/kung-pao.png', tags: ['Peanut', 'Sweet-spicy'] },
     { id: 'sichuan-fish-fragrant-eggplant', name: 'Fish-fragrant eggplant', category: 'Sichuan', imageSrc: '/dish-photos/eggplant.png', tags: ['Vegetarian', 'Garlic'] },
     { id: 'sichuan-dry-pot-prawns', name: 'Dry-pot prawns', category: 'Sichuan', imageSrc: '/dish-photos/pepper-alley-signature.png', tags: ['Crisp', 'Chili'] },
-    { id: 'sichuan-dan-dan-noodles', name: 'Dan Dan noodles', category: 'Sichuan', imageSrc: '/dish-photos/red-lantern-signature.png', tags: ['Noodles', 'Sesame'] },
-    { id: 'sichuan-twice-cooked-pork', name: 'Twice-cooked pork', category: 'Sichuan', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Pork', 'Chili'] },
+    { id: 'sichuan-dan-dan-noodles', name: 'Dan Dan noodles', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-dan-dan-noodles.png', tags: ['Noodles', 'Sesame'] },
+    { id: 'sichuan-twice-cooked-pork', name: 'Twice-cooked pork', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-twice-cooked-pork.png', tags: ['Pork', 'Chili'] },
   ],
   snacks: [
-    { id: 'snacks-pan-fried-buns', name: 'Pan-fried pork buns', category: 'Snacks', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Crisp', 'Pork'] },
+    { id: 'snacks-pan-fried-buns', name: 'Pan-fried pork buns', category: 'Snacks', imageSrc: '/dish-photos/snacks-pan-fried-pork-buns.png', tags: ['Crisp', 'Pork'] },
     { id: 'snacks-soup-dumplings', name: 'Soup dumplings', category: 'Snacks', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Steamed', 'Juicy'] },
-    { id: 'snacks-scallion-pancake', name: 'Scallion pancake', category: 'Snacks', imageSrc: '/dish-photos/lotus-table-signature.png', tags: ['Crisp', 'Scallion'] },
-    { id: 'snacks-sesame-balls', name: 'Sesame rice balls', category: 'Snacks', imageSrc: '/dish-photos/lotus-root.png', tags: ['Sesame', 'Sweet'] },
-    { id: 'snacks-rice-cakes', name: 'Sweet rice cake', category: 'Snacks', imageSrc: '/dish-photos/green-bamboo-signature.png', tags: ['Chewy', 'Sweet'] },
-    { id: 'snacks-braised-tofu', name: 'Five-spice braised tofu', category: 'Snacks', imageSrc: '/dish-photos/mapo-tofu.png', tags: ['Soy', 'Savory'] },
+    { id: 'snacks-scallion-pancake', name: 'Scallion pancake', category: 'Snacks', imageSrc: '/dish-photos/snacks-scallion-pancake.png', tags: ['Crisp', 'Scallion'] },
+    { id: 'snacks-sesame-balls', name: 'Sesame rice balls', category: 'Snacks', imageSrc: '/dish-photos/snacks-sesame-rice-balls.png', tags: ['Sesame', 'Sweet'] },
+    { id: 'snacks-rice-cakes', name: 'Sweet rice cake', category: 'Snacks', imageSrc: '/dish-photos/snacks-sweet-rice-cake.png', tags: ['Chewy', 'Sweet'] },
+    { id: 'snacks-braised-tofu', name: 'Five-spice braised tofu', category: 'Snacks', imageSrc: '/dish-photos/snacks-five-spice-tofu.png', tags: ['Soy', 'Savory'] },
   ],
   cantonese: [
-    { id: 'cantonese-shrimp-dumplings', name: 'Shrimp dumplings', category: 'Cantonese', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Seafood', 'Steamed'] },
-    { id: 'cantonese-char-siu', name: 'Honey char siu', category: 'Cantonese', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Roasted', 'Pork'] },
-    { id: 'cantonese-wonton-noodles', name: 'Wonton noodles', category: 'Cantonese', imageSrc: '/dish-photos/red-lantern-signature.png', tags: ['Noodles', 'Wheat'] },
-    { id: 'cantonese-steamed-fish', name: 'Steamed fish with ginger', category: 'Cantonese', imageSrc: '/dish-photos/pepper-alley-signature.png', tags: ['Fish', 'Ginger'] },
+    { id: 'cantonese-shrimp-dumplings', name: 'Shrimp dumplings', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-shrimp-dumplings.png', tags: ['Seafood', 'Steamed'] },
+    { id: 'cantonese-char-siu', name: 'Honey char siu', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-char-siu.png', tags: ['Roasted', 'Pork'] },
+    { id: 'cantonese-wonton-noodles', name: 'Wonton noodles', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-wonton-noodles.png', tags: ['Noodles', 'Wheat'] },
+    { id: 'cantonese-steamed-fish', name: 'Steamed fish with ginger', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-steamed-fish.png', tags: ['Fish', 'Ginger'] },
     { id: 'cantonese-winter-melon-soup', name: 'Winter melon soup', category: 'Cantonese', imageSrc: '/dish-photos/winter-melon-soup.png', tags: ['Warm', 'Broth'] },
-    { id: 'cantonese-egg-tart', name: 'Baked egg tart', category: 'Cantonese', imageSrc: '/dish-photos/lotus-table-signature.png', tags: ['Egg', 'Sweet'] },
+    { id: 'cantonese-egg-tart', name: 'Baked egg tart', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-egg-tart.png', tags: ['Egg', 'Sweet'] },
   ],
   vegetarian: [
     { id: 'vegetarian-garlic-greens', name: 'Garlic seasonal greens', category: 'Vegetarian', imageSrc: '/dish-photos/seasonal-greens.png', tags: ['Fresh', 'Mild'] },
     { id: 'vegetarian-lotus-root', name: 'Sweet-sour lotus root', category: 'Vegetarian', imageSrc: '/dish-photos/lotus-root.png', tags: ['Crisp', 'Sweet-sour'] },
     { id: 'vegetarian-mushroom-soup', name: 'Winter melon mushroom soup', category: 'Vegetarian', imageSrc: '/dish-photos/winter-melon-soup.png', tags: ['Warm', 'Mild'] },
-    { id: 'vegetarian-mapo-tofu', name: 'Vegetarian mapo tofu', category: 'Vegetarian', imageSrc: '/dish-photos/mapo-tofu.png', tags: ['Tofu', 'Spicy'] },
+    { id: 'vegetarian-mapo-tofu', name: 'Vegetarian mapo tofu', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-mapo-tofu.png', tags: ['Tofu', 'Spicy'] },
     { id: 'vegetarian-eggplant', name: 'Fish-fragrant eggplant', category: 'Vegetarian', imageSrc: '/dish-photos/eggplant.png', tags: ['Garlic', 'Tender'] },
-    { id: 'vegetarian-crispy-tofu', name: 'Crispy tofu bites', category: 'Vegetarian', imageSrc: '/dish-photos/lotus-table-signature.png', tags: ['Soy', 'Crisp'] },
+    { id: 'vegetarian-crispy-tofu', name: 'Crispy tofu bites', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-crispy-tofu.png', tags: ['Soy', 'Crisp'] },
   ],
   bbq: [
     { id: 'bbq-cumin-lamb', name: 'Cumin lamb skewers', category: 'Barbecue', imageSrc: '/dish-photos/charcoal-yard-signature.png', tags: ['Smoky', 'Lamb'] },
-    { id: 'bbq-grilled-fish', name: 'Charcoal grilled fish', category: 'Barbecue', imageSrc: '/dish-photos/pepper-alley-signature.png', tags: ['Fish', 'Spicy'] },
-    { id: 'bbq-chicken-wings', name: 'Chili grilled wings', category: 'Barbecue', imageSrc: '/dish-photos/kung-pao.png', tags: ['Chicken', 'Chili'] },
-    { id: 'bbq-grilled-eggplant', name: 'Garlic grilled eggplant', category: 'Barbecue', imageSrc: '/dish-photos/eggplant.png', tags: ['Garlic', 'Soft'] },
-    { id: 'bbq-oyster-mushrooms', name: 'King oyster mushroom skewers', category: 'Barbecue', imageSrc: '/dish-photos/seasonal-greens.png', tags: ['Vegetarian', 'Smoky'] },
-    { id: 'bbq-pork-belly', name: 'Pork belly skewers', category: 'Barbecue', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Pork', 'Charred'] },
+    { id: 'bbq-grilled-fish', name: 'Charcoal grilled fish', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-fish.png', tags: ['Fish', 'Spicy'] },
+    { id: 'bbq-chicken-wings', name: 'Chili grilled wings', category: 'Barbecue', imageSrc: '/dish-photos/bbq-chicken-wings.png', tags: ['Chicken', 'Chili'] },
+    { id: 'bbq-grilled-eggplant', name: 'Garlic grilled eggplant', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-eggplant.png', tags: ['Garlic', 'Soft'] },
+    { id: 'bbq-oyster-mushrooms', name: 'King oyster mushroom skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-oyster-mushrooms.png', tags: ['Vegetarian', 'Smoky'] },
+    { id: 'bbq-pork-belly', name: 'Pork belly skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-pork-belly-skewers.png', tags: ['Pork', 'Charred'] },
   ],
 }
 
@@ -1416,7 +1445,7 @@ function App() {
   const [billSource, setBillSource] = useState<'order' | 'receipt'>('order')
   const [billReceiptName, setBillReceiptName] = useState('')
   const [participants, setParticipants] = useState(['You'])
-  const [splitItems, setSplitItems] = useState<Record<string, string>>({ chicken: 'You', tofu: 'Everyone', eggplant: 'Everyone', greens: 'Everyone', lotus: 'Everyone' })
+  const [splitItems, setSplitItems] = useState<SplitItemAssignments>({})
   const [savedRestaurants, setSavedRestaurants] = useState<SavedRestaurant[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('cit:saved-restaurants') || '') as SavedRestaurant[]
@@ -1427,6 +1456,9 @@ function App() {
   const [selectedCompanionEmail, setSelectedCompanionEmail] = useState<string | null>(null)
   const [activeCompanionIds, setActiveCompanionIds] = useState<string[]>([])
   const [toast, setToast] = useState('')
+  const [proGateFeature, setProGateFeature] = useState<ProFeature | null>(null)
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false)
+  const [scanCount, setScanCount] = useState(0)
   const [showUploadOptions, setShowUploadOptions] = useState(false)
   const [homeScanTipsOpen, setHomeScanTipsOpen] = useState(false)
   const photoInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>
@@ -1442,6 +1474,9 @@ function App() {
   const selectedCompanion = selectedCompanionEmail ? currentCompanions.find((companion) => companion.email === selectedCompanionEmail) || null : null
   const p = pageCopy[language]
   const passportKey = JSON.stringify(passport)
+  const activePro = account?.subscriptionTier === 'pro' && (!account.subscriptionExpiresAt || account.subscriptionExpiresAt > Date.now())
+  const freeScanLimit = 1
+  const scanCountKey = account ? `cit:menu-scan-count:${normalizeEmail(account.email)}` : ''
 
   useEffect(() => { localStorage.setItem('cit:language', language); document.documentElement.lang = language }, [language])
   useEffect(() => { if (account) localStorage.setItem('cit:account', JSON.stringify(account)) }, [account])
@@ -1473,6 +1508,14 @@ function App() {
   useEffect(() => { localStorage.setItem('cit:session-menu', JSON.stringify(sessionMenu)) }, [sessionMenu])
   useEffect(() => { localStorage.setItem('cit:session-restaurant', sessionRestaurant) }, [sessionRestaurant])
   useEffect(() => { localStorage.setItem('cit:session-orders', JSON.stringify(sessionOrders)) }, [sessionOrders])
+  useEffect(() => {
+    if (!scanCountKey) {
+      setScanCount(0)
+      return
+    }
+    const storedCount = Number(localStorage.getItem(scanCountKey) || 0)
+    setScanCount(Number.isFinite(storedCount) ? storedCount : 0)
+  }, [scanCountKey])
   useEffect(() => { if (toast) { const timer = window.setTimeout(() => setToast(''), 2600); return () => window.clearTimeout(timer) } }, [toast])
   useEffect(() => () => { if (scanImage) URL.revokeObjectURL(scanImage) }, [scanImage])
   useEffect(() => {
@@ -1483,6 +1526,23 @@ function App() {
   }, [ready, screen, onboardingStep])
 
   const track = (event: string) => { console.info(`[Bitewise] ${event}`, { language, session_id: 'demo-session-001' }) }
+  const requirePro = (feature: ProFeature) => {
+    setProGateFeature(feature)
+    track(`pro_${feature}_blocked`)
+  }
+  const recordMenuScan = () => {
+    if (activePro || !scanCountKey) return
+    setScanCount((current) => {
+      const next = current + 1
+      localStorage.setItem(scanCountKey, String(next))
+      return next
+    })
+  }
+  const canStartMenuScan = () => {
+    if (activePro || scanCount < freeScanLimit) return true
+    requirePro('scan')
+    return false
+  }
   const updatePassport = (key: keyof Passport | string, value: string | boolean | number | null) => setPassport((current) => {
     if (typeof key === 'string' && key.startsWith('allergyProfile:')) {
       const [, id, profileKey] = key.split(':') as ['', string, keyof AllergyProfile]
@@ -1578,6 +1638,7 @@ function App() {
     track('logout')
   }
   const openScreen = (next: Screen) => {
+    if (next === 'scan' && !canStartMenuScan()) return
     if (next === 'scan') {
       setScanImage(null)
       setScanning(false)
@@ -1632,13 +1693,17 @@ function App() {
   const currentSessionOrder = sessionOrders.find((order) => order.status === 'current') || null
   const pastSessionOrders = [...sessionOrders.filter((order) => order.status === 'completed'), ...pastDiningOrders]
   const openBill = (order: DiningOrder, returnTo: Screen) => {
+    if (!activePro) {
+      requirePro('splitBill')
+      return
+    }
     setActiveBillOrder(order)
     setBillSource('order')
     setBillReceiptName('')
     setBillMode('equal')
     const tableParticipants = ['You', ...currentCompanions.map((companion) => companion.name)]
     setParticipants(tableParticipants)
-    setSplitItems(Object.fromEntries(order.billItems.map((item, index) => [item.id, index % 3 === 0 ? 'You' : 'Everyone'])))
+    setSplitItems(Object.fromEntries(order.billItems.map((item, index) => [item.id, index % 3 === 0 ? ['You'] : [...tableParticipants]])))
     setBillReturnScreen(returnTo)
     openScreen('bill')
   }
@@ -1660,6 +1725,7 @@ function App() {
     track('camera_open')
   }
   const requestHomeScan = (mode: 'camera' | 'upload') => {
+    if (!canStartMenuScan()) return
     if (mode === 'camera') {
       setHomeScanTipsOpen(true)
       track('home_camera_clicked')
@@ -1699,6 +1765,7 @@ function App() {
     track('menu_scan_success')
   }
   const startScan = async (file?: File, allowUnnamed = false) => {
+    if (file && !canStartMenuScan()) return
     const restaurantName = sessionRestaurant.trim() || (allowUnnamed ? t('recentSession') : '')
     if (!restaurantName && !allowUnnamed) {
       setToast(p.toastRestaurantFirst)
@@ -1733,6 +1800,7 @@ function App() {
       setAnalysisPassportKey(passportKey)
       setScanning(false)
       setScreen('menu')
+      recordMenuScan()
       track('menu_scan_success')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Menu analysis failed. Please retry or use Sample Menu.'
@@ -1746,6 +1814,7 @@ function App() {
     const file = event.target.files?.[0]
     event.target.value = ''
     if (!file) return
+    if (!canStartMenuScan()) return
     const validationError = validateMenuImage(file)
     if (validationError) {
       setScanError(validationError)
@@ -1761,6 +1830,7 @@ function App() {
     setAnalysisPassportKey('')
     setScanning(false)
     setScreen('menu')
+    recordMenuScan()
     track('camera_demo_loaded')
   }
   const handleFile = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void startScan(file) }
@@ -1933,7 +2003,11 @@ function App() {
   const billTotal = billItems.reduce((sum, item) => sum + item.amount, 0)
   const equalAmount = (billTotal / participants.length).toFixed(2)
   const itemTotals = participants.reduce<Record<string, number>>((acc, person) => { acc[person] = 0; return acc }, {})
-  billItems.forEach((item) => { const owner = splitItems[item.id]; if (owner === 'Everyone' || !participants.includes(owner)) participants.forEach((person) => { itemTotals[person] += item.amount / participants.length }); else itemTotals[owner] += item.amount })
+  billItems.forEach((item) => {
+    const assignedPeople = (splitItems[item.id] || participants).filter((person) => participants.includes(person))
+    const recipients = assignedPeople.length ? assignedPeople : participants
+    recipients.forEach((person) => { itemTotals[person] += item.amount / recipients.length })
+  })
   const resetDemo = () => { localStorage.clear(); window.location.reload() }
 
   if (!ready) {
@@ -1952,12 +2026,12 @@ function App() {
         {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'menu')} />}
         {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen(detailReturnScreen)} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
-        {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
+        {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} hasProAccess={Boolean(activePro)} onRequirePro={requirePro} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
         {screen === 'find' && <FindFood t={t} p={p} language={language} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'find')} />}
         {screen === 'community' && <CommunityPage variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
-        {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
+        {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onOpenSubscription={() => setSubscriptionOpen(true)} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
         {screen === 'savedRestaurants' && <SavedRestaurantsPage p={p} language={language} restaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onOpenFind={() => openScreen('find')} onBack={() => openScreen('profile')} />}
         {screen === 'companions' && account && <CompanionsPage p={p} account={account} accounts={accounts} companions={currentCompanions} incomingInvites={incomingCompanionInvites} outgoingInvites={outgoingCompanionInvites} onAddCompanion={addCompanion} onAcceptInvite={(inviteId) => updateInviteStatus(inviteId, 'accepted')} onDeclineInvite={(inviteId) => updateInviteStatus(inviteId, 'declined')} onRemoveCompanion={removeCompanion} onOpenCompanion={(email) => { setSelectedCompanionEmail(email); openScreen('companionDetail') }} onBack={() => openScreen(companionReturnScreen)} />}
@@ -1968,6 +2042,8 @@ function App() {
     </div>
     {homeScanTipsOpen && <HomeScanTipsSheet t={t} onClose={() => setHomeScanTipsOpen(false)} onContinue={continueHomeCamera} />}
     {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
+    {proGateFeature && <ProFeatureGateModal language={language} feature={proGateFeature} onClose={() => setProGateFeature(null)} onUpgrade={() => { setProGateFeature(null); setSubscriptionOpen(true) }} />}
+    {subscriptionOpen && account && <SubscriptionModal language={language} user={account} onSelect={updateSubscription} onClose={() => setSubscriptionOpen(false)} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
   </div>
 }
@@ -2370,15 +2446,18 @@ function PassportEditor({ language, t, passport, updatePassport, onBack, onFinis
 
 function HomeScanIllustration() {
   return <div className="home-scan-visual" aria-hidden="true">
+    <div className="home-scan-visual-topbar"><span className="home-scan-brand-label"><i /> BITEWISE VISION</span><span className="home-scan-live"><i /> LIVE</span></div>
     <div className="home-scan-visual-corners"><i /><i /><i /><i /></div>
     <div className="home-scan-menu-art">
-      <div className="home-menu-cartoon"><span className="home-menu-steam">⌁</span><span className="home-menu-bowl">🍜</span><span className="home-menu-leaf">✦</span></div>
-      <strong>今日菜单</strong>
-      <span>宫保鸡丁 <b>¥38</b></span>
-      <span>麻婆豆腐 <b>¥28</b></span>
-      <span>清炒时蔬 <b>¥22</b></span>
+      <div className="home-menu-sheet-heading"><span className="home-menu-sheet-logo">B</span><span><strong>今日菜单</strong><small>PEPPER ALLEY</small></span><em>TABLE 12</em></div>
+      <div className="home-menu-sheet-rule" />
+      <div className="home-menu-row"><span>宫保鸡丁</span><b>¥38</b></div>
+      <div className="home-menu-row"><span>麻婆豆腐</span><b>¥28</b></div>
+      <div className="home-menu-row"><span>清炒时蔬</span><b>¥22</b></div>
+      <div className="home-menu-sheet-footer"><span>4 items</span><span>MENU CAPTURE</span></div>
     </div>
     <div className="home-scan-visual-line" />
+    <div className="home-scan-visual-status"><span className="home-scan-status-check">✓</span><span><strong>MENU FOUND</strong><small>Passport ready</small></span></div>
   </div>
 }
 
@@ -2819,7 +2898,7 @@ function orderRequirements(passport: Passport, language: Language, t: (key: Copy
   return requirements
 }
 
-function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete, onAddMore, onSplitBill, onHome, onSpeak }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void; onSpeak: (text: string) => void }) {
+function OrderPage({ language, p, passport, cart, savedOrder, hasProAccess, onRequirePro, onBack, onComplete, onAddMore, onSplitBill, onHome, onSpeak }: { language: Language; p: PageCopy; passport: Passport; cart: CartItem[]; savedOrder: DiningOrder | null; hasProAccess: boolean; onRequirePro: (feature: ProFeature) => void; onBack: () => void; onComplete: () => void; onAddMore: (order: DiningOrder) => void; onSplitBill: (order: DiningOrder) => void; onHome: () => void; onSpeak: (text: string) => void }) {
   const t = (key: CopyKey) => tFor(language, key)
   const isSavedOrder = Boolean(savedOrder)
   const requirements = orderRequirements(passport, language, t, cart)
@@ -2836,7 +2915,9 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
     <PageHeader title={p.orderBrief} kicker={p.orderStep} backLabel={p.back} onBack={isSavedOrder ? onHome : onBack} />
     <div className="order-brief-heading"><h1>{p.showWaiter}</h1><p>{p.orderDescription}</p></div>
     <section className="order-brief-card order-brief-user"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forYou}</span><h2>{p.selectedDishes}</h2></div><span className="order-brief-language">{countText(language, count, p.dish, p.dishes)}</span></div><div className="order-brief-dishes">{cart.map(({ dish, quantity }) => <div className="order-brief-dish" key={dish.id}><DishVisual dish={dish} language={language} small /><div><strong>{dish.localized[language]}</strong><small>{dish.zh} · ×{quantity}</small></div><b>¥{dish.price * quantity}</b></div>)}</div><div className="order-brief-total"><span>{p.total}</span><strong>¥{total}</strong></div><div className="order-brief-translation order-brief-user-notes"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.dietaryNotes}</span><h2>{p.requirements}</h2></div><Icon name="shield" size={20} /></div>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.user}-${requirement.chinese}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.user}</span></div>)}</div> : <p className="order-no-requirements">{p.noRequirements}</p>}</div></section>
-    <section className="order-brief-card order-brief-waiter"><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forWaiter}</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div><Button className="waiter-speak-button" onClick={() => onSpeak(waiterSpeech)} icon="volume">{p.play}</Button><p className="waiter-speak-note"><Icon name="volume" size={13} /> 使用设备的中文语音朗读</p></section>
+    <section className={`order-brief-card order-brief-waiter ${hasProAccess ? '' : 'is-pro-locked'}`}>
+      {hasProAccess ? <><div className="order-brief-card-heading"><div><span className="order-brief-kicker">{p.forWaiter}</span><h2>点餐信息</h2></div><Icon name="users" size={20} /></div><div className="waiter-order-section"><h3>需要的菜品</h3><div className="waiter-order-list">{cart.map(({ dish, quantity }) => <div key={dish.id}><span><strong>{dish.zh}</strong></span><b>×{quantity}</b></div>)}</div></div><div className="waiter-order-section"><h3>忌口与注意事项</h3>{requirements.length ? <div className="order-requirements">{requirements.map((requirement) => <div className={`order-requirement ${requirement.tone === 'alert' ? 'is-alert' : ''}`} key={`${requirement.chinese}-${requirement.user}`}><Icon name={requirement.tone === 'alert' ? 'alert' : 'check'} size={15} /><span>{requirement.chinese}</span></div>)}</div> : <p className="order-no-requirements">暂无额外忌口要求，请按菜单正常出餐。</p>}</div><Button className="waiter-speak-button" onClick={() => onSpeak(waiterSpeech)} icon="volume">{p.play}</Button><p className="waiter-speak-note"><Icon name="volume" size={13} /> 使用设备的中文语音朗读</p></> : <ProFeatureLock language={language} feature="waiter" onUpgrade={() => onRequirePro('waiter')} />}
+    </section>
     <div className={`order-brief-actions ${isSavedOrder ? 'saved-order-actions' : ''}`}>{isSavedOrder ? <><Button className="full-button" onClick={() => savedOrder && onAddMore(savedOrder)} icon="plus">{p.addMore}</Button><Button variant="secondary" className="full-button" onClick={() => savedOrder && onSplitBill(savedOrder)} icon="receipt">{p.splitBill}</Button><Button variant="ghost" className="full-button" onClick={onHome} icon="home">{p.backHome}</Button></> : <><Button className="full-button" onClick={onBack} icon="cart">{p.returnCart}</Button><Button variant="secondary" className="full-button" onClick={onComplete} icon="check">{p.completeOrder}</Button></>}</div>
     <p className="order-brief-disclaimer"><Icon name="alert" size={14} /> {p.orderDisclaimer}</p>
   </div>
@@ -2844,6 +2925,11 @@ function OrderPage({ language, p, passport, cart, savedOrder, onBack, onComplete
 
 function SectionTitle({ children }: { children: ReactNode }) { return <h2 className="section-title">{children}</h2> }
 function Fact({ icon, title, value }: { icon: string; title: string; value: string }) { return <div className="fact-card"><span className="fact-card-label"><Icon name={icon} size={19} stroke={1.8} />{title}</span><strong>{value}</strong></div> }
+
+function ProFeatureLock({ language, feature, onUpgrade }: { language: Language; feature: ProFeature; onUpgrade: () => void }) {
+  const text = proFeatureCopy[language]
+  return <div className="pro-feature-lock"><span className="pro-feature-lock-icon"><Icon name="wallet" size={21} /></span><strong>{text.featureNames[feature]}</strong><p>{text.lockedBody}</p><Button variant="secondary" onClick={onUpgrade} icon="arrow">{text.upgrade}</Button></div>
+}
 
 function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void }) {
   const text = askEditorCopy[language]
@@ -2892,13 +2978,28 @@ function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, on
     }, 160)
   }
   const close = () => { stopSpeech(); onClose() }
-  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span aria-hidden="true" /><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={translate} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
+  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={translate} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
 }
 
+function ItemSplitPicker({ p, participants, selected, participantLabel, open, onToggle, onChange }: { p: PageCopy; participants: string[]; selected: string[]; participantLabel: (person: string) => string; open: boolean; onToggle: () => void; onChange: (people: string[]) => void }) {
+  const allSelected = selected.length === participants.length
+  const summary = allSelected ? p.everyone : selected.map(participantLabel).join(' + ')
+  const toggleEveryone = () => onChange(allSelected ? participants.slice(0, 1) : [...participants])
+  const toggleParticipant = (person: string) => {
+    if (selected.includes(person)) {
+      if (selected.length === 1) return
+      onChange(selected.filter((item) => item !== person))
+      return
+    }
+    onChange([...selected, person])
+  }
+  return <div className="item-split-picker"><button type="button" className="item-split-trigger" onClick={onToggle} aria-expanded={open}><span>{summary || p.everyone}</span><Icon name="chevron" size={14} /></button>{open && <div className="item-split-options" role="group" aria-label={p.tapAssign}><button type="button" className={`item-split-everyone${allSelected ? ' selected' : ''}`} aria-pressed={allSelected} onClick={toggleEveryone}><span className="item-split-checkbox">{allSelected && <Icon name="check" size={12} />}</span>{p.everyone}</button><div className="item-split-divider" />{participants.map((person) => { const checked = selected.includes(person); return <button type="button" key={person} className={checked ? 'selected' : ''} aria-pressed={checked} onClick={() => toggleParticipant(person)}><span className="item-split-checkbox">{checked && <Icon name="check" size={12} />}</span>{participantLabel(person)}</button> })}</div>}</div>
+}
 
-function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: Record<string, string>; setSplitItems: (items: Record<string, string>) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
+function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode, participants, setParticipants, splitItems, setSplitItems, billItems, billTotal, equalAmount, itemTotals, order, billSource, billReceiptName, setBillSource, onBack, onToast }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; billInputRef: React.RefObject<HTMLInputElement>; handleFile: (event: React.ChangeEvent<HTMLInputElement>) => void; billMode: BillMode; setBillMode: (mode: BillMode) => void; participants: string[]; setParticipants: (people: string[]) => void; splitItems: SplitItemAssignments; setSplitItems: (items: SplitItemAssignments) => void; billItems: BillItem[]; billTotal: number; equalAmount: string; itemTotals: Record<string, number>; order: DiningOrder; billSource: 'order' | 'receipt'; billReceiptName: string; setBillSource: (source: 'order' | 'receipt') => void; onBack: () => void; onToast: (toast: string) => void }) {
   const [editingParticipant, setEditingParticipant] = useState<number | null>(null)
   const [draftParticipant, setDraftParticipant] = useState('')
+  const [openItemPicker, setOpenItemPicker] = useState<string | null>(null)
   const participantLabel = (person: string) => person === 'You' ? p.you : person
   const editParticipant = (index: number) => { setEditingParticipant(index); setDraftParticipant(participants[index]) }
   const commitParticipant = (index: number) => {
@@ -2907,14 +3008,25 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     const duplicate = participants.some((person, personIndex) => personIndex !== index && person.toLowerCase() === nextName.toLowerCase())
     if (!nextName || duplicate) { setDraftParticipant(currentName); setEditingParticipant(null); return }
     setParticipants(participants.map((person, personIndex) => personIndex === index ? nextName : person))
-    setSplitItems(Object.fromEntries(Object.entries(splitItems).map(([itemId, owner]) => [itemId, owner === currentName ? nextName : owner])))
+    setSplitItems(Object.fromEntries(Object.entries(splitItems).map(([itemId, owners]) => [itemId, owners.map((owner) => owner === currentName ? nextName : owner)])))
     setEditingParticipant(null)
   }
-  const addParticipant = () => { const name = `${p.guest} ${participants.length + 1}`; setParticipants([...participants, name]); setDraftParticipant(name); setEditingParticipant(participants.length) }
+  const addParticipant = () => {
+    const name = `${p.guest} ${participants.length + 1}`
+    const nextParticipants = [...participants, name]
+    setParticipants(nextParticipants)
+    setSplitItems(Object.fromEntries(Object.entries(splitItems).map(([itemId, owners]) => [itemId, owners.length === participants.length ? nextParticipants : owners])))
+    setDraftParticipant(name)
+    setEditingParticipant(participants.length)
+  }
   const removeParticipant = (index: number) => {
     const removedName = participants[index]
-    setParticipants(participants.filter((_, personIndex) => personIndex !== index))
-    setSplitItems(Object.fromEntries(Object.entries(splitItems).map(([itemId, owner]) => [itemId, owner === removedName ? 'Everyone' : owner])))
+    const nextParticipants = participants.filter((_, personIndex) => personIndex !== index)
+    setParticipants(nextParticipants)
+    setSplitItems(Object.fromEntries(Object.entries(splitItems).map(([itemId, owners]) => {
+      const nextOwners = owners.filter((owner) => owner !== removedName)
+      return [itemId, nextOwners.length ? nextOwners : nextParticipants]
+    })))
     setEditingParticipant(null)
   }
 
@@ -2926,7 +3038,7 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     <div className="bill-summary"><div><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div><span className="status-chip match"><span className="status-dot" /> {billSource === 'receipt' ? p.receiptTotal : p.orderTotal}</span></div>
     <div className="bill-tabs segmented">{([['equal', t('equal')], ['item', t('byItem')]] as Array<[BillMode, string]>).map(([value, label]) => <button key={value} className={billMode === value ? 'active' : ''} onClick={() => setBillMode(value)}>{label}</button>)}</div>
     <div className="bill-section"><div className="section-heading compact-heading"><h2>{t('participants')}</h2><span className="muted-small">{p.namesEditable}</span><button className="text-link" onClick={addParticipant}><Icon name="plus" size={14} /> {p.add}</button></div><div className="participant-row">{participants.map((person, index) => { const isEditing = editingParticipant === index; const label = participantLabel(person); return <div className={`participant-chip ${isEditing ? 'is-editing' : ''}`} key={`${index}-${person}`}>{isEditing ? <input className="participant-name-input" value={draftParticipant} onChange={(event) => setDraftParticipant(event.target.value)} onBlur={() => commitParticipant(index)} onKeyDown={(event) => { if (event.key === 'Enter') commitParticipant(index); if (event.key === 'Escape') { setDraftParticipant(person); setEditingParticipant(null) } }} autoFocus aria-label={`${p.editParticipant} ${label}`} /> : <><button className="participant-name" onClick={() => editParticipant(index)} aria-label={`${p.editParticipant} ${label}`}><span>{label.trim().charAt(0).toUpperCase() || '?'}</span>{label}</button><button className="participant-edit" onClick={() => editParticipant(index)} aria-label={`${p.editParticipant} ${label}`}><Icon name="edit" size={11} /></button></>}{index > 0 && <button className="participant-remove" onClick={() => removeParticipant(index)} aria-label={`${p.removeParticipant} ${label}`}><Icon name="close" size={12} /></button>}</div> })}</div></div>
-    {billMode !== 'equal' && <div className="bill-section"><div className="section-heading compact-heading"><h2>{t('billItems')}</h2><span className="muted-small">{p.tapAssign}</span></div><div className="bill-item-list">{billItems.map((item) => <div className="bill-item" key={item.id}><DishVisual dish={item.dish} language={language} small /><span><strong>{item.dish.localized[language]}</strong><small>{item.zh}</small></span><select value={splitItems[item.id] || 'Everyone'} onChange={(event) => setSplitItems({ ...splitItems, [item.id]: event.target.value })}><option value="Everyone">{p.everyone}</option>{participants.map((person) => <option key={person} value={person}>{participantLabel(person)}</option>)}</select><b>¥{item.amount.toFixed(2)}</b></div>)}</div></div>}
+    {billMode !== 'equal' && <div className="bill-section"><div className="section-heading compact-heading"><h2>{t('billItems')}</h2><span className="muted-small">{p.tapAssign}</span></div><div className="bill-item-list">{billItems.map((item) => { const assignedPeople = (splitItems[item.id] || participants).filter((person) => participants.includes(person)); return <div className="bill-item" key={item.id}><DishVisual dish={item.dish} language={language} small /><span><strong>{item.dish.localized[language]}</strong><small>{item.zh}</small></span><ItemSplitPicker p={p} participants={participants} selected={assignedPeople.length ? assignedPeople : participants} participantLabel={participantLabel} open={openItemPicker === item.id} onToggle={() => setOpenItemPicker((current) => current === item.id ? null : item.id)} onChange={(nextOwners) => setSplitItems({ ...splitItems, [item.id]: nextOwners })} /><b>¥{item.amount.toFixed(2)}</b></div> })}</div></div>}
     <div className="split-result"><div className="result-heading"><h2>{p.everyonePays}</h2><span>{p.exactCheck} <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast(p.shareReady); navigator.share?.({ title: 'Bitewise bill split', text: `${p.everyonePays} ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
 }
 
@@ -2937,10 +3049,10 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
   const browseText = findBrowseCopy[language]
   const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
     ...category,
-    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
+    imageSrc: findFoodCategoryImageSrc[category.id] || dishes[0].imageSrc,
   }))
   const popularFood = dishes.map((dish) => {
-    const categoryIds = Object.entries(findFoodCategoryDishIds).filter(([, dishId]) => dishId === dish.id).map(([categoryId]) => categoryId)
+    const categoryIds = [...(findFoodDishCategoryIds[dish.id] || [])]
     if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
     return { dish, categoryIds }
   })
@@ -2978,7 +3090,7 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
       <div className="find-category-scroll" aria-label={browseText.category}>
         {categoryCards.map((category, index) => <button type="button" key={category.id} className={`find-category-card find-category-card-${index + 1} ${activeCategory === category.id ? 'active' : ''}`} onClick={() => { setActiveCategory(category.id); setCategoryPage(category.id) }} aria-pressed={activeCategory === category.id}>
           <span>{foodCategoryLabels[language][category.id]}</span>
-          <img src={category.dish.imageSrc} alt="" loading="lazy" />
+          <img src={category.imageSrc} alt="" loading="lazy" />
         </button>)}
       </div>
     </section>
@@ -3085,10 +3197,6 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
     return () => { document.body.style.overflow = previousOverflow }
   }, [composerOpen])
   const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
-  const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
-    ...category,
-    dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
-  }))
   const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
     const dish = dishes[index % dishes.length]
     const categoryIds = findFoodCategoryIds(restaurant)
@@ -3225,9 +3333,14 @@ function SubscriptionBenefits({ tier }: { tier: 'free' | 'pro' }) {
 
 function SubscriptionModal({ language, user, onClose, onSelect }: { language: Language; user: UserProfile; onClose: () => void; onSelect: (days: number | null) => void }) {
   const text = subscriptionTextFor(language)
-  const [selectedPlan, setSelectedPlan] = useState<number | null>(user.subscriptionTier === 'pro' ? user.subscriptionPlanDays || 7 : 7)
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(user.subscriptionTier === 'pro' ? user.subscriptionPlanDays || 7 : null)
   const selectPlan = (days: number | null) => { setSelectedPlan(days); onSelect(days) }
   return <div className="subscription-backdrop" onClick={onClose}><section className="subscription-modal" role="dialog" aria-modal="true" aria-labelledby="subscription-title" onClick={(event) => event.stopPropagation()}><div className="subscription-modal-top"><div><span className="eyebrow">{text.entry}</span><h2 id="subscription-title">{text.title}</h2><p>{text.subtitle}</p></div><button type="button" className="icon-button soft" onClick={onClose} aria-label={text.close}><Icon name="close" size={18} /></button></div><div className="subscription-tier-comparison"><button type="button" className={`subscription-tier-card subscription-tier-card-free ${selectedPlan === null ? 'selected' : ''}`} aria-pressed={selectedPlan === null} onClick={() => selectPlan(null)}><span className="subscription-tier-card-heading"><strong>{text.free}</strong><b>¥0</b></span><SubscriptionBenefits tier="free" /></button><button type="button" className={`subscription-tier-card subscription-tier-card-pro ${selectedPlan !== null ? 'selected' : ''}`} aria-pressed={selectedPlan !== null} onClick={() => selectPlan(selectedPlan || subscriptionPlans[1].days)}><span className="subscription-tier-card-heading"><strong>Pro</strong><b>{subscriptionPlans[0].price}+</b></span><SubscriptionBenefits tier="pro" /></button></div><div className="subscription-plan-grid">{subscriptionPlans.map((plan) => { const selected = selectedPlan === plan.days; return <button type="button" key={plan.days} aria-label={`${plan.days} days · ${plan.price}`} className={`subscription-plan ${plan.featured ? 'subscription-plan-featured' : ''} ${selected ? 'selected' : ''}`} aria-pressed={selected} onClick={() => selectPlan(plan.days)}>{plan.featured && <span className="subscription-featured">{text.bestValue}</span>}<strong>{plan.days} days</strong><b>{plan.price}</b>{selected && <span className="subscription-selected-mark"><Icon name="check" size={13} /></span>}</button> })}</div></section></div>
+}
+
+function ProFeatureGateModal({ language, feature, onClose, onUpgrade }: { language: Language; feature: ProFeature; onClose: () => void; onUpgrade: () => void }) {
+  const text = proFeatureCopy[language]
+  return <div className="subscription-backdrop pro-feature-gate-backdrop" onClick={onClose}><section className="pro-feature-gate" role="dialog" aria-modal="true" aria-labelledby="pro-feature-title" onClick={(event) => event.stopPropagation()}><span className="pro-feature-gate-icon"><Icon name="wallet" size={24} /></span><h2 id="pro-feature-title">{text.title}</h2><p>{text.body.replace('{feature}', text.featureNames[feature])}</p><div className="pro-feature-gate-actions"><Button variant="ghost" onClick={onClose}>{text.later}</Button><Button onClick={onUpgrade} icon="arrow">{text.upgrade}</Button></div></section></div>
 }
 
 function ProfileInfoModal({ language, user, activePro, onClose }: { language: Language; user: UserProfile; activePro: boolean; onClose: () => void }) {
@@ -3238,11 +3351,10 @@ function ProfileInfoModal({ language, user, activePro, onClose }: { language: La
   return <div className="profile-info-backdrop" onClick={onClose}><section className="profile-info-modal" role="dialog" aria-modal="true" aria-labelledby="profile-info-title" onClick={(event) => event.stopPropagation()}><div className="profile-info-modal-header"><h2 id="profile-info-title">My Profile</h2><button type="button" className="icon-button soft" onClick={onClose} aria-label="Close"><Icon name="close" size={18} /></button></div><dl className="profile-info-list"><div><dt>Email</dt><dd>{user.email}</dd></div><div><dt>Subscription</dt><dd>{activePro ? subscriptionTierCopy[language].pro : text.free}</dd></div><div><dt>Expire</dt><dd>{expiry}</dd></div></dl></section></div>
 }
 
-function Profile({ t, p, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onAvatarChange, onSubscriptionChange, onLogout, onReset }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onAvatarChange: (avatarSrc: string) => void; onSubscriptionChange: (days: number | null) => void; onLogout: () => void; onReset: () => void }) {
+function Profile({ t, p, language, user, passport, restaurants, companions, pendingInviteCount, onOpenSavedRestaurants, onOpenCompanions, onOpenPassport, onLanguageChange, onAvatarChange, onOpenSubscription, onLogout, onReset }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; user: UserProfile; passport: Passport; restaurants: SavedRestaurant[]; companions: Companion[]; pendingInviteCount: number; onOpenSavedRestaurants: () => void; onOpenCompanions: () => void; onOpenPassport: () => void; onLanguageChange: (language: Language) => void; onAvatarChange: (avatarSrc: string) => void; onOpenSubscription: () => void; onLogout: () => void; onReset: () => void }) {
   const text = subscriptionTextFor(language)
   const accountText = accountCopy[language]
   const [languageOpen, setLanguageOpen] = useState(false)
-  const [subscriptionOpen, setSubscriptionOpen] = useState(false)
   const [profileInfoOpen, setProfileInfoOpen] = useState(false)
   const [avatarEditorSrc, setAvatarEditorSrc] = useState<string | null>(null)
   const [avatarScale, setAvatarScale] = useState(1)
@@ -3285,7 +3397,7 @@ function Profile({ t, p, language, user, passport, restaurants, companions, pend
       <button className="profile-setting-card profile-passport-entry" onClick={onOpenPassport}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="shield" size={21} /></span><span className="profile-setting-copy"><strong>{accountText.foodPassportTitle}</strong><small>{accountText.foodPassportDesc}</small></span><span className="profile-setting-meta">{passportCount}<small>{accountText.passportSummary}</small></span><Icon name="arrow" size={18} /></button>
       <button className="profile-setting-card profile-entry-card" onClick={onOpenCompanions}><span className="profile-setting-icon profile-setting-icon-green"><Icon name="users" size={20} /></span><span className="profile-setting-copy"><strong>{p.myCompanions}</strong><small>{p.sharedPassports}</small></span><span className="profile-setting-meta">{connectedCompanions}<small>{pendingInviteCount ? `${pendingInviteCount} ${p.new}` : p.connected}</small></span>{pendingInviteCount > 0 && <span className="profile-entry-alert"><Icon name="alert" size={14} /> {pendingInviteCount}</span>}<Icon name="arrow" size={18} /></button>
       <button className="profile-setting-card profile-entry-card" onClick={onOpenSavedRestaurants}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="bookmark" size={20} /></span><span className="profile-setting-copy"><strong>{p.savedRestaurants}</strong><small>{p.placesTryNext}</small></span><span className="profile-setting-meta">{restaurants.length}<small>{p.savedCountLabel}</small></span><Icon name="arrow" size={18} /></button>
-      <button className="profile-setting-card profile-entry-card profile-subscription-entry" onClick={() => setSubscriptionOpen(true)}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="wallet" size={20} /></span><span className="profile-setting-copy"><strong>{text.entry}</strong><small>{text.entryDesc}</small></span><Icon name="arrow" size={18} /></button>
+      <button className="profile-setting-card profile-entry-card profile-subscription-entry" onClick={onOpenSubscription}><span className="profile-setting-icon profile-setting-icon-coral"><Icon name="wallet" size={20} /></span><span className="profile-setting-copy"><strong>{text.entry}</strong><small>{text.entryDesc}</small></span><Icon name="arrow" size={18} /></button>
     </div></section>
     <section className="profile-section"><div className="profile-section-label">{sectionLabels.settings}</div><div className="profile-entry-list profile-settings-list">
       <button className="profile-setting-card" onClick={() => setLanguageOpen((open) => !open)}><span className="profile-setting-icon"><Icon name="compass" size={20} /></span><span className="profile-setting-copy"><strong>{accountText.languagePreference}</strong><small>{accountText.languagePreferenceDesc}</small></span><span className="profile-language-value">{language.toUpperCase()}</span><Icon name="chevron" size={17} /></button>
@@ -3295,7 +3407,6 @@ function Profile({ t, p, language, user, passport, restaurants, companions, pend
     </div></section>
     {profileInfoOpen && <ProfileInfoModal language={language} user={user} activePro={activePro} onClose={() => setProfileInfoOpen(false)} />}
     {avatarEditorSrc && <div className="avatar-editor-backdrop" onClick={() => setAvatarEditorSrc(null)}><section className="avatar-editor-modal" role="dialog" aria-modal="true" aria-labelledby="avatar-editor-title" onClick={(event) => event.stopPropagation()}><div className="avatar-editor-header"><h2 id="avatar-editor-title">Adjust profile photo</h2><button type="button" className="icon-button soft" onClick={() => setAvatarEditorSrc(null)} aria-label="Close"><Icon name="close" size={18} /></button></div><div className="avatar-editor-preview"><img src={avatarEditorSrc} alt="" style={{ transform: `scale(${avatarScale})` }} /></div><label className="avatar-editor-scale">Size<input type="range" min="1" max="2.4" step=".01" value={avatarScale} onChange={(event) => setAvatarScale(Number(event.target.value))} /></label><div className="avatar-editor-actions"><button type="button" className="button button-secondary" onClick={() => setAvatarEditorSrc(null)}>Cancel</button><button type="button" className="button button-primary" onClick={saveAvatar}>Save photo</button></div></section></div>}
-    {subscriptionOpen && <SubscriptionModal language={language} user={user} onSelect={onSubscriptionChange} onClose={() => setSubscriptionOpen(false)} />}
   </div>
 }
 
