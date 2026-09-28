@@ -627,30 +627,86 @@ const askEditorCopy: Record<Language, { chinese: string; english: string; transl
   it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in cinese prima di mostrarla al ristorante.', translationHint: 'Dopo aver modificato il testo, premi Traduci per generare un nuovo inglese.' },
 }
 
-function translateRestaurantQuestion(question: string) {
+const offlineChineseTranslations: Array<[string, string]> = [
+  ['、', ', '],
+  ['，', ', '],
+  ['或', ' or '],
+  ['花生油', 'peanut oil'],
+  ['花生酱', 'peanut sauce'],
+  ['牛奶或乳制品', 'milk or dairy'],
+  ['贝类或甲壳类', 'shellfish or crustaceans'],
+  ['小麦或麸质', 'wheat or gluten'],
+  ['共用锅具或炸油', 'shared cookware or frying oil'],
+  ['共用锅具', 'shared cookware'],
+  ['动物性高汤', 'animal-based stock'],
+  ['具体配料', 'specific ingredients'],
+  ['这些成分', 'these allergens'],
+  ['未列出的过敏原', 'unlisted allergens'],
+  ['过敏原', 'allergens'],
+  ['花生', 'peanuts'],
+  ['坚果', 'tree nuts'],
+  ['鸡蛋', 'eggs'],
+  ['牛奶', 'milk'],
+  ['鱼', 'fish'],
+  ['甲壳类', 'crustaceans'],
+  ['小麦', 'wheat'],
+  ['大豆', 'soy'],
+  ['芝麻', 'sesame'],
+]
+
+function translateChineseFragment(value: string, currentDish?: Dish) {
+  const knownDishes = [currentDish, ...dishes].filter((item): item is Dish => Boolean(item))
+    .sort((left, right) => right.zh.length - left.zh.length)
+  const withDishNames = knownDishes.reduce((text, item) => text.replaceAll(item.zh, item.localized.en), value)
+  return offlineChineseTranslations.reduce((text, [chinese, english]) => text.replaceAll(chinese, english), withDishNames)
+}
+
+function translateRestaurantQuestion(question: string, currentDish?: Dish) {
   const text = question.trim()
-  const allergyMatch = text.match(/^我对(.+?)严重过敏。请问这道菜是否含有花生、花生油或花生酱？制作时是否会接触花生？如果无法确认，请不要为我制作。$/)
-  if (allergyMatch) return `I have a severe allergy to ${allergyMatch[1].replace(/花生/g, 'peanuts')}. Could you please confirm whether this dish contains peanuts, peanut oil, or peanut sauce? Could it come into contact with peanuts during preparation? If this cannot be confirmed, please do not prepare it for me.`
-  const dishMatch = text.match(/^请问(.+?)是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？$/)
-  if (dishMatch) return `Could you please tell me whether ${dishMatch[1]} contains any unlisted allergens? Is it prepared using shared cookware or frying oil with other ingredients?`
+  const translate = (value: string) => translateChineseFragment(value, currentDish)
+
+  // Supports both the original fixed copy and the assistant's shorter,
+  // dish-specific wording (for example: “我对花生过敏。请问麻婆豆腐是否含有这些成分或共用锅具？”).
+  const allergyMatch = text.match(/^我对(.+?)(严重)?过敏。请问(.+?)是否含有这些成分或共用锅具？如果无法确认，请不要为我制作。$/)
+  if (allergyMatch) {
+    const severity = allergyMatch[2] ? 'a severe allergy' : 'allergic'
+    const allergy = translate(allergyMatch[1])
+    const dishName = translate(allergyMatch[3])
+    return allergyMatch[2]
+      ? `I have ${severity} to ${allergy}. Could you please confirm whether ${dishName} contains these allergens or is prepared using shared cookware? If you cannot confirm this, please do not prepare it for me.`
+      : `I am ${severity} to ${allergy}. Could you please confirm whether ${dishName} contains these allergens or is prepared using shared cookware? If you cannot confirm this, please do not prepare it for me.`
+  }
+
+  const detailedAllergyMatch = text.match(/^我对(.+?)严重过敏。请问这道菜是否含有(.+?)？制作时是否会接触(.+?)？如果无法确认，请不要为我制作。$/)
+  if (detailedAllergyMatch) {
+    return `I have a severe allergy to ${translate(detailedAllergyMatch[1])}. Could you please confirm whether this dish contains ${translate(detailedAllergyMatch[2])}? Could it come into contact with ${translate(detailedAllergyMatch[3])} during preparation? If you cannot confirm this, please do not prepare it for me.`
+  }
+
+  const unlistedMatch = text.match(/^请问(.+?)是否含有未列出的过敏原？制作时会与其他食材共用锅具或炸油吗？$/)
+  if (unlistedMatch) return `Could you please tell me whether ${translate(unlistedMatch[1])} contains any unlisted allergens? Is it prepared using shared cookware or frying oil with other ingredients?`
+
+  const ingredientMatch = text.match(/^请问(.+?)的具体配料是什么？如果无法确认，请先告诉我。$/)
+  if (ingredientMatch) return `Could you please tell me what ingredients are in ${translate(ingredientMatch[1])}? If you cannot confirm this, please let me know first.`
+
+  const veganMatch = text.match(/^请问(.+?)(是纯素|是素食)吗？是否使用了动物性高汤或共用锅具？$/)
+  if (veganMatch) return `Could you please confirm whether ${translate(veganMatch[1])} is ${veganMatch[2] === '是纯素' ? 'vegan' : 'vegetarian'}? Does it use animal-based stock or shared cookware?`
+
+  if (text === '请问这道菜辣度如何？可以做成不辣，并确认酱料里没有辣椒吗？') {
+    return 'Could you please tell me how spicy this dish is? Could you make it non-spicy and confirm that the sauce contains no chili?'
+  }
+
   const replacements: Array<[RegExp, string]> = [
-    [/如果无法确认，请不要为我制作。?/g, 'If this cannot be confirmed, please do not prepare it for me.'],
-    [/制作时是否会接触花生/g, 'Could it come into contact with peanuts during preparation'],
-    [/制作时会与其他食材共用锅具或炸油吗/g, 'Is it prepared using shared cookware or frying oil with other ingredients'],
-    [/是否含有未列出的过敏原/g, 'whether it contains any unlisted allergens'],
+    [/如果无法确认，请不要为我制作。?/g, 'If you cannot confirm this, please do not prepare it for me.'],
+    [/如果无法确认，请先告诉我。?/g, 'If you cannot confirm this, please let me know first.'],
+    [/制作时是否会接触/g, 'Could it come into contact with'],
     [/是否含有/g, 'whether it contains'],
     [/请问/g, 'Could you please tell me '],
     [/严重过敏/g, 'have a severe allergy to'],
     [/我对/g, 'I am allergic to '],
-    [/花生油/g, 'peanut oil'],
-    [/花生酱/g, 'peanut sauce'],
-    [/花生/g, 'peanuts'],
-    [/过敏原/g, 'allergens'],
-    [/这道菜/g, 'this dish'],
     [/吗[？?]?/g, '?'],
     [/。/g, '.'],
   ]
-  const translated = replacements.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text)
+  const translated = replacements.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), translate(text))
   return translated === text ? `Please confirm this with the restaurant: “${text}”` : translated
 }
 
@@ -2992,15 +3048,15 @@ function RiskConfirmSheet({ language, p, t, dish, status, onClose, onAsk, onConf
 function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void }) {
   const text = askEditorCopy[language]
   const [editedQuestion, setEditedQuestion] = useState(question)
-  const [translation, setTranslation] = useState(() => translateRestaurantQuestion(question))
+  const [translation, setTranslation] = useState(() => translateRestaurantQuestion(question, dish))
   const [translating, setTranslating] = useState(false)
   const [speechState, setSpeechState] = useState<'idle' | 'playing' | 'paused'>('idle')
 
   useEffect(() => {
     setEditedQuestion(question)
-    setTranslation(translateRestaurantQuestion(question))
+    setTranslation(translateRestaurantQuestion(question, dish))
     setSpeechState('idle')
-  }, [question])
+  }, [question, dish])
   useEffect(() => () => { window.speechSynthesis?.cancel() }, [])
 
   const stopSpeech = () => {
@@ -3031,7 +3087,7 @@ function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, on
     stopSpeech()
     setTranslating(true)
     window.setTimeout(() => {
-      setTranslation(translateRestaurantQuestion(editedQuestion))
+      setTranslation(translateRestaurantQuestion(editedQuestion, dish))
       setTranslating(false)
     }, 160)
   }
