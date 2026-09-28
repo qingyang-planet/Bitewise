@@ -2930,8 +2930,8 @@ function DishCard({ p, dish, language, passport, status, t, onDetail, onAddToCar
       <div className="tag-row dish-tags">{dish.tags.filter((tag) => !(dish.spicy === 0 && tag.toLowerCase() === 'mild')).map((tag) => <span key={tag} className={`tiny-tag ${tagConflictsWithPassport(dish, tag, passport) ? 'passport-conflict' : ''}`}>{dishTagLabel(language, tag)}</span>)}<span className={`tiny-tag spicy ${spiceConflict ? 'passport-conflict' : ''}`}>{dish.spicy ? '🌶️'.repeat(dish.spicy) : ''} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div>
     </div>
     <strong className="dish-card-price">¥{dish.price}</strong>
-    <button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} type="button" aria-label={`${p.addToCart} ${dish.localized[language]}`} onClick={() => onAddToCart(dish)}><Icon name="plus" size={16} /></button>
     <button className="dish-detail-button" type="button" aria-label={`${t('viewDetails')} ${dish.localized[language]}`} onClick={() => onDetail(dish)}><Icon name="arrow" size={17} /></button>
+    <button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} type="button" aria-label={`${p.addToCart} ${dish.localized[language]}`} onClick={() => onAddToCart(dish)}><Icon name="plus" size={16} /></button>
   </article>
 }
 

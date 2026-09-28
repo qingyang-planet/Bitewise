@@ -1879,15 +1879,15 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .page-menu .status-badge.warning { background: #ffebac; color: #9b6a10; }
 .page-menu .status-badge.conflict { background: #ffd8d2; color: #c24b40; }
 .page-menu .dish-card-price { grid-column: 3; color: var(--brown); font: 800 12px var(--font-ui); white-space: nowrap; }
-.page-menu .dish-cart-button { grid-column: 4; width: 30px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 10px; background: var(--brand-soft); color: var(--brand); box-shadow: none; }
+.page-menu .dish-cart-button { grid-column: 5; width: 30px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 10px; background: var(--brand-soft); color: var(--brand); box-shadow: none; }
 .page-menu .dish-cart-button:hover { background: var(--brand); color: #fff; }
 .page-menu .dish-cart-button.is-in-cart { background: var(--brand); color: #fff; }
 .page-menu .dish-cart-button:disabled { border: 0; background: var(--cream-deep); color: var(--muted); }
-.page-menu .dish-detail-button { grid-column: 5; width: 24px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--brown); }
+.page-menu .dish-detail-button { grid-column: 4; width: 24px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--brown); }
 .page-menu .dish-detail-button:hover { background: var(--cream); color: var(--brand); }
 
-@media (max-width: 370px) {
-  .page-menu .dish-card { grid-template-columns: 48px minmax(0, 1fr) auto 28px 22px; gap: 7px; min-height: 64px; padding: 7px 8px 7px 7px; }
+@media (max-width: 520px) {
+  .page-menu .dish-card { grid-template-columns: 48px minmax(0, 1fr) auto 22px 28px; gap: 6px; min-height: 64px; padding: 7px 8px 7px 7px; }
   .page-menu .dish-card .dish-visual { width: 48px; height: 48px; border-radius: 13px; }
   .page-menu .dish-card-title h3 { font-size: 13px; }
   .page-menu .dish-tags { margin-top: 5px; }
@@ -2551,7 +2551,7 @@ legend {
 
 .page-menu .dish-card-title h3 {
   color: var(--text);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
 }
 
@@ -2560,13 +2560,13 @@ legend {
   border-radius: var(--radius-control);
   background: var(--cream);
   color: var(--text-muted);
-  font-size: var(--text-xs);
+  font-size: 9px;
   font-weight: 600;
 }
 
 .page-menu .dish-card-price {
   color: var(--text);
-  font: 700 var(--text-md) var(--font-ui);
+  font: 700 var(--text-sm) var(--font-ui);
 }
 
 .page-menu .dish-cart-button {
@@ -2591,6 +2591,27 @@ legend {
 .page-menu .dish-detail-button:hover {
   background: var(--brand-soft);
   color: var(--brand);
+}
+
+/* Keep the menu scan readable on narrow phones: one type step down leaves more room for names and ingredient tags. */
+.page-menu .menu-category-heading strong,
+.page-menu .menu-group-heading h2 {
+  font-size: var(--text-md);
+}
+
+.page-menu .menu-category-heading small,
+.page-menu .menu-group-heading small {
+  font-size: 11px;
+}
+
+.page-menu .menu-category-nav button {
+  font-size: 11px;
+}
+
+.page-menu .status-badge {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
 }
 
 .status-badge {
