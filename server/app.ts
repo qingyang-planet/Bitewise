@@ -2,6 +2,7 @@ import cors from 'cors'
 import express, { type ErrorRequestHandler } from 'express'
 import menuRouter from './routes/menu.js'
 import assistantRouter from './routes/assistant.js'
+import translateRouter from './routes/translate.js'
 
 const app = express()
 const configuredOrigins = (process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean)
@@ -14,6 +15,7 @@ app.use(express.json({ limit: '1mb' }))
 app.get('/api/health', (_request, response) => response.json({ ok: true, service: 'bitewise-api' }))
 app.use('/api/menus', menuRouter)
 app.use('/api/assistant', assistantRouter)
+app.use('/api/translate', translateRouter)
 
 const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
   if (error?.code === 'LIMIT_FILE_SIZE') return response.status(413).json({ error: 'Image is too large. Please choose an image under 8 MB.' })

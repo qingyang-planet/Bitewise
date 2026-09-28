@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import * as React from 'react'
 import { createPortal } from 'react-dom'
-import { analyzeMenuImage, askDiningAssistant, validateMenuImage, type BackendDish, type BackendRisk, type EvidenceSource } from './api'
+import { analyzeMenuImage, askDiningAssistant, translateText, validateMenuImage, type BackendDish, type BackendRisk, type EvidenceSource } from './api'
 
 type Language = 'en' | 'ko' | 'ja' | 'ru' | 'es' | 'it'
 type Screen = 'home' | 'scan' | 'camera' | 'menu' | 'detail' | 'cart' | 'order' | 'bill' | 'find' | 'community' | 'orders' | 'profile' | 'passport' | 'savedRestaurants' | 'companions' | 'companionDetail'
@@ -618,13 +618,13 @@ const uploadSourceCopy: Record<Language, { title: string; subtitle: string; phot
   it: { title: 'Scegli la fonte', subtitle: 'Seleziona una foto dalla galleria o un file dal dispositivo.', photos: 'Scegli dalle foto', files: 'Scegli dai file', cancel: 'Annulla' },
 }
 
-const askEditorCopy: Record<Language, { chinese: string; english: string; translate: string; translating: string; pause: string; resume: string; editHint: string; translationHint: string }> = {
-  en: { chinese: 'Chinese', english: 'English', translate: 'Translate', translating: 'Translating…', pause: 'Pause', resume: 'Resume', editHint: 'Edit the Chinese question before showing it to the restaurant.', translationHint: 'Tap Translate after editing to generate a new English version.' },
-  ko: { chinese: '중국어', english: '영어', translate: '번역', translating: '번역 중…', pause: '일시정지', resume: '계속 재생', editHint: '식당에 보여줄 중국어 질문을 수정할 수 있어요.', translationHint: '수정 후 번역을 눌러 새 영어 문장을 만드세요.' },
-  ja: { chinese: '中国語', english: '英語', translate: '翻訳', translating: '翻訳中…', pause: '一時停止', resume: '再開', editHint: 'お店に見せる中国語の質問を編集できます。', translationHint: '編集後に「翻訳」を押すと英語を更新します。' },
-  ru: { chinese: 'Китайский', english: 'Английский', translate: 'Перевести', translating: 'Переводим…', pause: 'Пауза', resume: 'Продолжить', editHint: 'Отредактируйте вопрос на китайском перед показом ресторану.', translationHint: 'После правки нажмите «Перевести», чтобы создать новую английскую версию.' },
-  es: { chinese: 'Chino', english: 'Inglés', translate: 'Traducir', translating: 'Traduciendo…', pause: 'Pausar', resume: 'Reanudar', editHint: 'Edita la pregunta en chino antes de enseñarla al restaurante.', translationHint: 'Después de editar, pulsa Traducir para generar una nueva versión en inglés.' },
-  it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in cinese prima di mostrarla al ristorante.', translationHint: 'Dopo aver modificato il testo, premi Traduci per generare un nuovo inglese.' },
+const askEditorCopy: Record<Language, { chinese: string; english: string; translate: string; translating: string; translationError: string; pause: string; resume: string; editHint: string; translationHint: string }> = {
+  en: { chinese: 'Chinese', english: 'English', translate: 'Translate', translating: 'Translating…', translationError: 'Translation failed. Please try again.', pause: 'Pause', resume: 'Resume', editHint: 'Edit the Chinese question before showing it to the restaurant.', translationHint: 'Tap Translate after editing to generate a new English version.' },
+  ko: { chinese: '중국어', english: '영어', translate: '번역', translating: '번역 중…', translationError: '번역에 실패했습니다. 다시 시도해 주세요.', pause: '일시정지', resume: '계속 재생', editHint: '식당에 보여줄 중국어 질문을 수정할 수 있어요.', translationHint: '수정 후 번역을 눌러 새 영어 문장을 만드세요.' },
+  ja: { chinese: '中国語', english: '英語', translate: '翻訳', translating: '翻訳中…', translationError: '翻訳に失敗しました。もう一度お試しください。', pause: '一時停止', resume: '再開', editHint: 'お店に見せる中国語の質問を編集できます。', translationHint: '編集後に「翻訳」を押すと英語を更新します。' },
+  ru: { chinese: 'Китайский', english: 'Английский', translate: 'Перевести', translating: 'Переводим…', translationError: 'Не удалось перевести. Попробуйте ещё раз.', pause: 'Пауза', resume: 'Продолжить', editHint: 'Отредактируйте вопрос на китайском перед показом ресторану.', translationHint: 'После правки нажмите «Перевести», чтобы создать новую английскую версию.' },
+  es: { chinese: 'Chino', english: 'Inglés', translate: 'Traducir', translating: 'Traduciendo…', translationError: 'No se pudo traducir. Inténtalo de nuevo.', pause: 'Pausar', resume: 'Reanudar', editHint: 'Edita la pregunta en chino antes de enseñarla al restaurante.', translationHint: 'Después de editar, pulsa Traducir para generar una nueva versión.' },
+  it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', translationError: 'Traduzione non riuscita. Riprova.', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in cinese prima di mostrarla al ristorante.', translationHint: 'Dopo aver modificato il testo, premi Traduci per generare un nuovo inglese.' },
 }
 
 const offlineChineseTranslations: Array<[string, string]> = [
@@ -2127,7 +2127,7 @@ function App() {
     </div>
     {homeScanTipsOpen && <HomeScanTipsSheet t={t} onClose={() => setHomeScanTipsOpen(false)} onContinue={continueHomeCamera} />}
     {riskConfirmDish && <RiskConfirmSheet language={language} p={p} t={t} dish={riskConfirmDish} status={getDiningStatus(riskConfirmDish)} onClose={() => setRiskConfirmDish(null)} onAsk={askAboutRiskDish} onConfirm={confirmRiskDish} />}
-    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
+    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} onTranslate={(text) => translateText({ text, sourceLanguage: 'zh-CN', targetLanguage: 'en' })} />}
     {proGateFeature && <ProFeatureGateModal language={language} feature={proGateFeature} onClose={() => setProGateFeature(null)} onUpgrade={() => { setProGateFeature(null); setSubscriptionOpen(true) }} />}
     {subscriptionOpen && account && <SubscriptionModal language={language} user={account} onSelect={updateSubscription} onClose={() => setSubscriptionOpen(false)} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
@@ -3045,16 +3045,18 @@ function RiskConfirmSheet({ language, p, t, dish, status, onClose, onAsk, onConf
   </div>
 }
 
-function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void }) {
+function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak, onTranslate }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void; onTranslate: (text: string) => Promise<string> }) {
   const text = askEditorCopy[language]
   const [editedQuestion, setEditedQuestion] = useState(question)
   const [translation, setTranslation] = useState(() => translateRestaurantQuestion(question, dish))
+  const [translationError, setTranslationError] = useState('')
   const [translating, setTranslating] = useState(false)
   const [speechState, setSpeechState] = useState<'idle' | 'playing' | 'paused'>('idle')
 
   useEffect(() => {
     setEditedQuestion(question)
     setTranslation(translateRestaurantQuestion(question, dish))
+    setTranslationError('')
     setSpeechState('idle')
   }, [question, dish])
   useEffect(() => () => { window.speechSynthesis?.cancel() }, [])
@@ -3082,17 +3084,23 @@ function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, on
     stopSpeech()
     setEditedQuestion(value)
     setTranslation('')
+    setTranslationError('')
   }
-  const translate = () => {
+  const translate = async () => {
     stopSpeech()
     setTranslating(true)
-    window.setTimeout(() => {
-      setTranslation(translateRestaurantQuestion(editedQuestion, dish))
+    setTranslationError('')
+    try {
+      setTranslation(await onTranslate(editedQuestion))
+    } catch {
+      setTranslation('')
+      setTranslationError(text.translationError)
+    } finally {
       setTranslating(false)
-    }, 160)
+    }
   }
   const close = () => { stopSpeech(); onClose() }
-  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={translate} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
+  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading || translating} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translationError ? <p className="bilingual-empty">{translationError}</p> : translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={() => void translate()} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || translating || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || translating || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
 }
 
 function ItemSplitPicker({ p, participants, selected, participantLabel, open, onToggle, onChange }: { p: PageCopy; participants: string[]; selected: string[]; participantLabel: (person: string) => string; open: boolean; onToggle: () => void; onChange: (people: string[]) => void }) {

@@ -50,6 +50,7 @@ export type MenuAnalysisResponse = {
 }
 
 export type AssistantResponse = { answer: string; waiterChinese: string; needsRestaurantConfirmation: boolean }
+export type TranslationResponse = { translation: string }
 
 export const MAX_MENU_IMAGE_BYTES = 8 * 1024 * 1024
 export const MENU_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
@@ -87,4 +88,10 @@ export async function askDiningAssistant(input: { question: string; language: st
   const response = await fetch(`${API_BASE_URL}/api/assistant/ask`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) })
   if (!response.ok) throw new Error(await parseError(response))
   return await response.json() as AssistantResponse
+}
+
+export async function translateText(input: { text: string; sourceLanguage: string; targetLanguage: string }): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) })
+  if (!response.ok) throw new Error(await parseError(response))
+  return (await response.json() as TranslationResponse).translation
 }
