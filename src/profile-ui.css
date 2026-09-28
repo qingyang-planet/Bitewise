@@ -1,5 +1,6 @@
 /* Profile-only visual refresh. Keeps the rest of the app on its existing theme. */
 .topbar { display: none; }
+.home-route .topbar { display: flex; }
 
 .page-profile { border: 0; border-radius: 0; background: transparent; }
 .profile-dashboard { max-width: 720px; }
