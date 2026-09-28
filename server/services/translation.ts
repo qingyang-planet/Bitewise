@@ -24,7 +24,8 @@ export async function translateText(input: { text: string; sourceLanguage: strin
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model,
-      temperature: 0,
+      thinking: { type: 'disabled' },
+      max_tokens: 512,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: systemPrompt },
