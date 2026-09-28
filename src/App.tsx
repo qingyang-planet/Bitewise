@@ -1016,6 +1016,7 @@ const homeRestaurantImageSrc: Record<string, string> = {
   'jiejiao-taiwanese': '/dish-photos/kung-pao.png',
 }
 type HomeCopy = {
+  menuScan: string
   scanKicker: string
   scanTitle: string
   scanDescription: string
@@ -1031,21 +1032,21 @@ type HomeCopy = {
   restaurantPhotoAlt: string
 }
 const homeCopy: Record<Language, HomeCopy> = {
-  en: { scanKicker: 'SCAN YOUR MENU', scanTitle: 'Make every menu easier to read.', scanDescription: 'Take a photo or upload a menu to see dishes, ingredients and Food Passport checks in one place.', takePhoto: 'Take a photo', uploadFromFile: 'Upload from file', scanHint: 'Your menu stays attached to this dining session.', ongoingSession: 'Ongoing session', nearbyFood: 'Nearby food', nearbyDescription: 'Real dishes from restaurants around Fudan Zhengli campus.', location: 'Fudan · within 3 km', featured: 'Featured', distance: 'away', restaurantPhotoAlt: 'Featured dish at' },
-  ko: { scanKicker: '메뉴 스캔', scanTitle: '모든 메뉴를 더 쉽게 읽어 보세요.', scanDescription: '메뉴를 촬영하거나 업로드하면 음식, 재료와 푸드 패스포트 확인 결과를 한곳에서 볼 수 있어요.', takePhoto: '사진 촬영', uploadFromFile: '파일에서 업로드', scanHint: '메뉴는 현재 식사 세션에 연결됩니다.', ongoingSession: '진행 중인 세션', nearbyFood: '주변 음식', nearbyDescription: '푸단 정리 캠퍼스 주변 식당의 실제 메뉴예요.', location: '푸단 · 3km 이내', featured: '대표 메뉴', distance: '거리', restaurantPhotoAlt: '대표 메뉴' },
-  ja: { scanKicker: 'メニューをスキャン', scanTitle: 'どんなメニューも読みやすく。', scanDescription: '写真を撮るかアップロードすると、料理・食材・フードパスポートの確認結果をまとめて見られます。', takePhoto: '写真を撮る', uploadFromFile: 'ファイルからアップロード', scanHint: 'メニューは現在の食事セッションに保存されます。', ongoingSession: '進行中のセッション', nearbyFood: '近くの料理', nearbyDescription: '復旦・政立キャンパス周辺の実際の料理です。', location: '復旦 · 3km以内', featured: 'おすすめ', distance: '距離', restaurantPhotoAlt: 'おすすめ料理' },
-  ru: { scanKicker: 'СКАНИРОВАТЬ МЕНЮ', scanTitle: 'Читайте любое меню проще.', scanDescription: 'Сфотографируйте или загрузите меню, чтобы увидеть блюда, ингредиенты и проверки пищевого паспорта.', takePhoto: 'Сфотографировать', uploadFromFile: 'Загрузить файл', scanHint: 'Меню сохранится в текущей сессии.', ongoingSession: 'Текущая сессия', nearbyFood: 'Еда рядом', nearbyDescription: 'Настоящие блюда из ресторанов у кампуса Фудань на Чжэнли.', location: 'Фудань · до 3 км', featured: 'Рекомендуем', distance: 'расстояние', restaurantPhotoAlt: 'Рекомендуемое блюдо' },
-  es: { scanKicker: 'ESCANEA TU MENÚ', scanTitle: 'Lee cualquier menú con más claridad.', scanDescription: 'Haz una foto o sube un menú para ver platos, ingredientes y comprobaciones de tu pasaporte en un solo lugar.', takePhoto: 'Hacer una foto', uploadFromFile: 'Subir desde archivo', scanHint: 'El menú queda guardado en esta sesión.', ongoingSession: 'Sesión en curso', nearbyFood: 'Comida cercana', nearbyDescription: 'Platos reales de restaurantes alrededor del campus Fudan Zhengli.', location: 'Fudan · hasta 3 km', featured: 'Recomendado', distance: 'distancia', restaurantPhotoAlt: 'Plato recomendado en' },
-  it: { scanKicker: 'SCANSIONA IL MENU', scanTitle: 'Leggi ogni menu più facilmente.', scanDescription: 'Scatta una foto o carica un menu per vedere piatti, ingredienti e controlli del Food Passport in un solo posto.', takePhoto: 'Scatta una foto', uploadFromFile: 'Carica da file', scanHint: 'Il menu resta collegato a questa sessione.', ongoingSession: 'Sessione in corso', nearbyFood: 'Cibo vicino', nearbyDescription: 'Piatti reali dai ristoranti intorno al campus Fudan Zhengli.', location: 'Fudan · entro 3 km', featured: 'In evidenza', distance: 'distanza', restaurantPhotoAlt: 'Piatto in evidenza da' },
+  en: { menuScan: 'Menu Scan', scanKicker: 'SCAN YOUR MENU', scanTitle: 'Make every menu easier to read.', scanDescription: 'Take a photo or upload a menu to see dishes, ingredients and Food Passport checks in one place.', takePhoto: 'Take a photo', uploadFromFile: 'Upload from file', scanHint: 'Your menu stays attached to this dining session.', ongoingSession: 'Ongoing session', nearbyFood: 'Nearby food', nearbyDescription: 'Real dishes from restaurants around Fudan Zhengli campus.', location: 'Fudan · within 3 km', featured: 'Featured', distance: 'away', restaurantPhotoAlt: 'Featured dish at' },
+  ko: { menuScan: '메뉴 스캔', scanKicker: '메뉴 스캔', scanTitle: '모든 메뉴를 더 쉽게 읽어 보세요.', scanDescription: '메뉴를 촬영하거나 업로드하면 음식, 재료와 푸드 패스포트 확인 결과를 한곳에서 볼 수 있어요.', takePhoto: '사진 촬영', uploadFromFile: '파일에서 업로드', scanHint: '메뉴는 현재 식사 세션에 연결됩니다.', ongoingSession: '진행 중인 세션', nearbyFood: '주변 음식', nearbyDescription: '푸단 정리 캠퍼스 주변 식당의 실제 메뉴예요.', location: '푸단 · 3km 이내', featured: '대표 메뉴', distance: '거리', restaurantPhotoAlt: '대표 메뉴' },
+  ja: { menuScan: 'メニュースキャン', scanKicker: 'メニューをスキャン', scanTitle: 'どんなメニューも読みやすく。', scanDescription: '写真を撮るかアップロードすると、料理・食材・フードパスポートの確認結果をまとめて見られます。', takePhoto: '写真を撮る', uploadFromFile: 'ファイルからアップロード', scanHint: 'メニューは現在の食事セッションに保存されます。', ongoingSession: '進行中のセッション', nearbyFood: '近くの料理', nearbyDescription: '復旦・政立キャンパス周辺の実際の料理です。', location: '復旦 · 3km以内', featured: 'おすすめ', distance: '距離', restaurantPhotoAlt: 'おすすめ料理' },
+  ru: { menuScan: 'Скан меню', scanKicker: 'СКАНИРОВАТЬ МЕНЮ', scanTitle: 'Читайте любое меню проще.', scanDescription: 'Сфотографируйте или загрузите меню, чтобы увидеть блюда, ингредиенты и проверки пищевого паспорта.', takePhoto: 'Сфотографировать', uploadFromFile: 'Загрузить файл', scanHint: 'Меню сохранится в текущей сессии.', ongoingSession: 'Текущая сессия', nearbyFood: 'Еда рядом', nearbyDescription: 'Настоящие блюда из ресторанов у кампуса Фудань на Чжэнли.', location: 'Фудань · до 3 км', featured: 'Рекомендуем', distance: 'расстояние', restaurantPhotoAlt: 'Рекомендуемое блюдо' },
+  es: { menuScan: 'Escanear menú', scanKicker: 'ESCANEA TU MENÚ', scanTitle: 'Lee cualquier menú con más claridad.', scanDescription: 'Haz una foto o sube un menú para ver platos, ingredientes y comprobaciones de tu pasaporte en un solo lugar.', takePhoto: 'Hacer una foto', uploadFromFile: 'Subir desde archivo', scanHint: 'El menú queda guardado en esta sesión.', ongoingSession: 'Sesión en curso', nearbyFood: 'Comida cercana', nearbyDescription: 'Platos reales de restaurantes alrededor del campus Fudan Zhengli.', location: 'Fudan · hasta 3 km', featured: 'Recomendado', distance: 'distancia', restaurantPhotoAlt: 'Plato recomendado en' },
+  it: { menuScan: 'Scansione menu', scanKicker: 'SCANSIONA IL MENU', scanTitle: 'Leggi ogni menu più facilmente.', scanDescription: 'Scatta una foto o carica un menu per vedere piatti, ingredienti e controlli del Food Passport in un solo posto.', takePhoto: 'Scatta una foto', uploadFromFile: 'Carica da file', scanHint: 'Il menu resta collegato a questa sessione.', ongoingSession: 'Sessione in corso', nearbyFood: 'Cibo vicino', nearbyDescription: 'Piatti reali dai ristoranti intorno al campus Fudan Zhengli.', location: 'Fudan · entro 3 km', featured: 'In evidenza', distance: 'distanza', restaurantPhotoAlt: 'Piatto in evidenza da' },
 }
 
-const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; nearbyFood: string; clearSearch: string }> = {
-  en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', nearbyFood: 'Nearby Food', clearSearch: 'Clear search' },
-  ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', nearbyFood: '주변 음식', clearSearch: '검색 지우기' },
-  ja: { searchPlaceholder: '食べたいものを検索…', category: 'カテゴリー', seeAll: 'すべて見る', nearbyFood: '近くの料理', clearSearch: '検索を消去' },
-  ru: { searchPlaceholder: 'Найдите что-нибудь вкусное…', category: 'Категории', seeAll: 'Все', nearbyFood: 'Еда рядом', clearSearch: 'Очистить поиск' },
-  es: { searchPlaceholder: 'Busca algo delicioso…', category: 'Categorías', seeAll: 'Ver todo', nearbyFood: 'Comida cercana', clearSearch: 'Borrar búsqueda' },
-  it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', nearbyFood: 'Cibo vicino', clearSearch: 'Cancella ricerca' },
+const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: string; seeAll: string; popularChoices: string; clearSearch: string }> = {
+  en: { searchPlaceholder: 'Search for something tasty...', category: 'Category', seeAll: 'See All', popularChoices: 'Popular choices', clearSearch: 'Clear search' },
+  ko: { searchPlaceholder: '맛있는 음식을 검색해 보세요…', category: '카테고리', seeAll: '모두 보기', popularChoices: '인기 메뉴', clearSearch: '검색 지우기' },
+  ja: { searchPlaceholder: '食べたいものを検索…', category: 'カテゴリー', seeAll: 'すべて見る', popularChoices: '人気の料理', clearSearch: '検索を消去' },
+  ru: { searchPlaceholder: 'Найдите что-нибудь вкусное…', category: 'Категории', seeAll: 'Все', popularChoices: 'Популярные блюда', clearSearch: 'Очистить поиск' },
+  es: { searchPlaceholder: 'Busca algo delicioso…', category: 'Categorías', seeAll: 'Ver todo', popularChoices: 'Opciones populares', clearSearch: 'Borrar búsqueda' },
+  it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', popularChoices: 'Scelte popolari', clearSearch: 'Cancella ricerca' },
 }
 
 const foodPosts: FoodPost[] = [
@@ -1312,6 +1313,7 @@ function App() {
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [screen, setScreen] = useState<Screen>('home')
   const [selectedDish, setSelectedDish] = useState<Dish>(dishes[0])
+  const [detailReturnScreen, setDetailReturnScreen] = useState<Screen>('menu')
   const [askSheet, setAskSheet] = useState(false)
   const [scanImage, setScanImage] = useState<string | null>(null)
   const [scanning, setScanning] = useState(false)
@@ -1520,6 +1522,12 @@ function App() {
     }
     setScreen(next)
     track(`${next}_open`)
+  }
+  const openDishDetail = (dish: Dish, returnScreen: Screen) => {
+    setSelectedDish(dish)
+    setDetailReturnScreen(returnScreen)
+    openScreen('detail')
+    track('dish_view')
   }
   const toggleSavedRestaurant = (restaurant: SavedRestaurant) => {
     setSavedRestaurants((current) => current.some((item) => item.id === restaurant.id) ? current.filter((item) => item.id !== restaurant.id) : [...current, restaurant])
@@ -1868,12 +1876,12 @@ function App() {
         {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} openScreen={openScreen} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} nearbyRestaurants={restaurantCatalog.filter((restaurant) => restaurant.source).slice(0, 6)} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onScanAction={requestHomeScan} />}
         {screen === 'scan' && <Scan t={t} p={p} language={language} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} photoInputRef={photoInputRef} fileInputRef={fileInputRef} cameraInputRef={cameraInputRef} showUploadOptions={showUploadOptions} setShowUploadOptions={setShowUploadOptions} handleFile={handleFile} handleCameraFile={handleCameraFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} onToast={setToast} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
-        {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => { setSelectedDish(dish); openScreen('detail'); track('dish_view') }} />}
-        {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen('menu')} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
+        {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'menu')} />}
+        {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen(detailReturnScreen)} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
-        {screen === 'find' && <FindFood t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'find' && <FindFood t={t} p={p} language={language} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'find')} />}
         {screen === 'community' && <CommunityPage variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
         {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onSubscriptionChange={updateSubscription} onLogout={logOut} onReset={resetDemo} />}
@@ -2297,13 +2305,14 @@ function Home({ t, p, language, userName, passport, dishes: sessionDishes, sessi
 
   return <div className="page page-home">
     <section className="home-scan-card home-scan-card-minimal" aria-label={`${homeText.takePhoto} / ${homeText.uploadFromFile}`}>
+      <div className="home-scan-heading"><h1>{homeText.menuScan}</h1></div>
       <div className="home-scan-actions">
         <button className="home-scan-action home-scan-action-photo" type="button" aria-label={homeText.takePhoto} onClick={() => onScanAction('camera')}><span className="home-scan-action-icon"><Icon name="camera" size={22} /></span><span><strong>{homeText.takePhoto}</strong></span></button>
         <button className="home-scan-action home-scan-action-upload" type="button" aria-label={homeText.uploadFromFile} onClick={() => onScanAction('upload')}><span className="home-scan-action-icon"><Icon name="upload" size={22} /></span><span><strong>{homeText.uploadFromFile}</strong></span></button>
       </div>
     </section>
-    {hasOngoingSession && <section className="session-section home-session-section"><div className="section-heading"><div><span className="home-section-kicker">{homeText.ongoingSession}</span></div></div><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-restaurant-name">{restaurantName}</strong><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{`${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}`}</small>}</span></div><div className="session-actions"><div className="session-primary-actions"><button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button>{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(sessionDishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}<button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button></div></div></div></section>}
-    <section className="home-nearby-section home-nearby-minimal" aria-labelledby="home-nearby-title"><div className="home-nearby-heading"><div><h2 id="home-nearby-title">{homeText.nearbyFood}</h2></div><Icon name="compass" size={22} /></div><div className="home-restaurant-grid">{nearbyRestaurants.map((restaurant, index) => {
+    {hasOngoingSession && <section className="session-section home-session-section"><div className="session-card"><div className="session-meta"><span className="restaurant-avatar">{restaurantInitials}</span><span className="session-meta-copy"><strong className="session-restaurant-name">{restaurantName}</strong><strong className="session-time">{hasSavedOrder && currentOrder ? currentOrder.time : p.tonight}</strong>{hasSavedOrder && currentOrder ? <small className="session-order-summary"><span>{currentOrder.itemCount} {p.dishesOrdered}</span><b className="session-total">¥{currentOrder.total}</b></small> : <small>{`${savedMenuCount} ${p.menuDishes} · ${passport.diets.includes('vegetarian') ? p.vegetarian : p.passportActive}`}</small>}</span></div><div className="session-actions"><div className="session-primary-actions"><button className="session-action-primary" type="button" onClick={() => hasSavedOrder && currentOrder ? onAddMore(currentOrder) : openScreen('menu')}><Icon name="plus" size={17} /> {hasSavedOrder ? p.addMoreDishes : t('openSession')}</button>{hasSavedOrder && currentOrder ? <button className="session-action-secondary" type="button" onClick={() => onOpenOrder(currentOrder)}><Icon name="receipt" size={17} /> {p.viewOrder}</button> : hasScannedMenu ? <button className="session-action-secondary" type="button" onClick={() => { setSelectedDish(sessionDishes[0]); setAskSheet(true) }}><Icon name="alert" size={17} /> {p.reviewFlags}</button> : null}<button className="session-delete-action" type="button" onClick={onDeleteSession}><Icon name="trash" size={16} /> {p.deleteSession}</button></div></div></div></section>}
+    <section className="home-nearby-section home-nearby-minimal" aria-labelledby="home-nearby-title"><div className="home-nearby-heading"><div><h2 id="home-nearby-title">{homeText.nearbyFood}</h2></div></div><div className="home-restaurant-grid">{nearbyRestaurants.map((restaurant, index) => {
       const restaurantText = localizedRestaurant(language, restaurant)
       const displayName = restaurantText.name || restaurant.name
       const categoryLabel = restaurantText.cuisine.split(' · ')[0] || homeText.featured
@@ -2388,7 +2397,6 @@ function PageHeader({ title, backLabel = 'Back', onBack, action }: { title: stri
 function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStatus, cart, onAddToCart, onOpenCart, companions, activeCompanionIds, onToggleCompanion, onOpenCompanions, onBack, onDetail }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; cart: CartItem[]; onAddToCart: (dish: Dish) => void; onOpenCart: () => void; companions: Companion[]; activeCompanionIds: string[]; onToggleCompanion: (id: string) => void; onOpenCompanions: () => void; onBack: () => void; onDetail: (dish: Dish) => void }) {
   const [selectedCategory, setSelectedCategory] = useState<DishCategory | 'all'>('all')
   const connectedCompanions = companions.filter((companion) => companion.passport)
-  const conflictCount = allDishes.filter((dish) => getStatus(dish) === 'CONFLICT').length
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
   const cartTotal = cart.reduce((sum, item) => sum + item.dish.price * item.quantity, 0)
   const groups = menuCategoryOrder
@@ -2399,7 +2407,6 @@ function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStat
 
   return <div className="page page-narrow page-menu">
     <PageHeader title={t('menuResults')} kicker={`${p.step} 02 · ${p.decisionFirst}`} backLabel={p.back} onBack={onBack} />
-    <div className="menu-notice"><Icon name="shield" size={19} /><span>{t('checking')}<small>{conflictCount ? ` ${p.clearConflicts}` : ` ${p.unknownVisible}`}</small></span></div>
     <section className="menu-companion-panel menu-companion-panel-compact">
       <div className="menu-companion-heading"><span className="menu-companion-icon"><Icon name="users" size={18} /></span><div><strong>{p.chooseCompanions}</strong><small>{p.matchTable}</small></div><button type="button" className="text-link" onClick={onOpenCompanions}>{p.manage}</button></div>
       <div className="menu-companion-chips">{connectedCompanions.map((companion) => <button type="button" key={companion.id} className={`menu-person-chip ${activeCompanionIds.includes(companion.id) ? 'active' : ''}`} onClick={() => onToggleCompanion(companion.id)}><span className="person-avatar">{companion.initials}</span><span>{companion.name.split(' ')[0]}</span>{activeCompanionIds.includes(companion.id) && <Icon name="check" size={13} />}</button>)}<button type="button" className="menu-add-companion" onClick={onOpenCompanions}><Icon name="plus" size={14} /> {p.add}</button></div>
@@ -2412,7 +2419,7 @@ function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStat
         {groups.map(({ category, dishes: groupDishes }) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => setSelectedCategory(category)}><span>{localizedCategories[category]}</span><b>{groupDishes.length}</b></button>)}
       </div>
     </section>
-    <div className="menu-category-groups">{filteredGroups.map(({ category, dishes: groupDishes }) => <section className="menu-group" key={category}><div className="menu-group-heading"><span className="menu-group-icon">{menuCategoryMeta[category].icon}</span><div><h2>{localizedCategories[category]}</h2><small>{menuCategoryMeta[category].zh}</small></div><em>{groupDishes.length}</em></div><div className="menu-list">{groupDishes.map((dish) => <DishCard key={dish.id} p={p} dish={dish} language={language} status={getStatus(dish)} t={t} onDetail={onDetail} onAddToCart={onAddToCart} cartQuantity={cart.find((item) => item.dish.id === dish.id)?.quantity || 0} />)}</div></section>)}</div>
+    <div className="menu-category-groups">{filteredGroups.map(({ category, dishes: groupDishes }) => <section className="menu-group" key={category}><div className="menu-group-heading"><span className="menu-group-icon">{menuCategoryMeta[category].icon}</span><div><h2>{localizedCategories[category]}</h2></div><em>{groupDishes.length}</em></div><div className="menu-list">{groupDishes.map((dish) => <DishCard key={dish.id} p={p} dish={dish} language={language} status={getStatus(dish)} t={t} onDetail={onDetail} onAddToCart={onAddToCart} cartQuantity={cart.find((item) => item.dish.id === dish.id)?.quantity || 0} />)}</div></section>)}</div>
     <div className={`sticky-cta ${cartCount ? 'has-items' : 'empty'}`}><button type="button" className="cart-floating-button" onClick={onOpenCart}><span className="cart-floating-icon"><Icon name="cart" size={19} />{cartCount > 0 && <b>{cartCount}</b>}</span><span className="cart-floating-copy"><strong>{cartCount ? p.viewCart : p.cart}</strong><small>{cartCount ? `${cartCount} ${countText(language, cartCount, p.dish, p.dishes)} ${p.selected}` : p.browseDishes}</small></span><strong className="cart-floating-total">{cartCount ? `¥${cartTotal}` : '¥0'}</strong><Icon name="arrow" size={17} /></button></div>
   </div>
 }
@@ -2431,7 +2438,7 @@ function IngredientVisual({ label }: { label: string }) {
   }
   return <svg className="ingredient-art" width="58" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{art[kind]}</svg>
 }
-function StatusBadge({ status, t }: { status: Status; t: (key: CopyKey) => string }) { const map = { MATCH: ['match', t('matchLabel'), 'check'], WARNING: ['warning', t('warningLabel'), 'alert'], CONFLICT: ['conflict', t('conflictLabel'), 'close'], UNKNOWN: ['unknown', t('unknownLabel'), 'alert'] } as const; const [color, label, icon] = map[status]; return <span className={`status-badge ${color}`}><Icon name={icon} size={14} /> {label}</span> }
+function StatusBadge({ status, t, showLabel = false }: { status: Status; t: (key: CopyKey) => string; showLabel?: boolean }) { const map = { MATCH: ['match', t('matchLabel'), 'check'], WARNING: ['warning', t('warningLabel'), 'alert'], CONFLICT: ['conflict', t('conflictLabel'), 'alert'], UNKNOWN: ['warning', t('unknownLabel'), 'alert'] } as const; const [color, label, icon] = map[status]; return <span className={`status-badge ${color}`} role="img" aria-label={label} title={label}><Icon name={icon} size={13} />{showLabel && <span className="status-badge-label">{label}</span>}</span> }
 const dishTagTranslations: Record<Language, Record<string, string>> = {
   en: {},
   ko: { Chicken: '닭고기', Peanut: '땅콩', Peanuts: '땅콩', 'Dried chili': '말린 고추', Tofu: '두부', 'Chili bean paste': '두반장', 'Minced pork': '다진 돼지고기', 'Sichuan pepper': '화자오', Vegetarian: '채식', 'Vegetarian option': '채식 옵션', Garlic: '마늘', Sichuan: '쓰촨', Fresh: '신선한', Mild: '순한맛', Crisp: '바삭한', 'Sweet-sour': '새콤달콤', Warm: '따뜻한' },
@@ -2495,7 +2502,19 @@ const dishNarrativeTranslations: Record<Language, Record<string, DishNarrative>>
   },
 }
 const dishNarrativeLabel = (language: Language, dish: Dish, key: keyof DishNarrative) => dishNarrativeTranslations[language][dish.id]?.[key] || dish[key]
-function DishCard({ p, dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) { const info = status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch'); const inCart = cartQuantity > 0; return <article className={`dish-card card-status-${status.toLowerCase()}`}><button className="dish-card-main" onClick={() => onDetail(dish)}><DishVisual dish={dish} language={language} /><div className="dish-card-content"><div className="dish-card-title"><div><h3>{dish.localized[language]}</h3><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div><div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{dishTagLabel(language, tag)}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div><div className="status-line"><div className="status-line-copy"><StatusBadge status={status} t={t} /><span>{info}</span></div></div></div></button><div className="dish-card-actions"><button className="dish-detail-button" onClick={() => onDetail(dish)}>{t('viewDetails')} <Icon name="arrow" size={16} /></button><button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} disabled={status === 'CONFLICT'} aria-pressed={inCart} onClick={() => onAddToCart(dish)}>{status === 'CONFLICT' ? <><Icon name="close" size={15} /> {p.excluded}</> : inCart ? <><span className="cart-button-check"><Icon name="check" size={13} /></span><span>{p.inCart}</span><b className="cart-button-count">{cartQuantity}</b></> : <><Icon name="plus" size={15} /> {p.addToCart}</>}</button></div></article> }
+function DishCard({ p, dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) {
+  const inCart = cartQuantity > 0
+  return <article className={`dish-card card-status-${status.toLowerCase()}`}>
+    <DishVisual dish={dish} language={language} small />
+    <div className="dish-card-content">
+      <div className="dish-card-title"><div className="dish-card-name-row"><h3>{dish.localized[language]}</h3><StatusBadge status={status} t={t} /></div></div>
+      <div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{dishTagLabel(language, tag)}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : ''} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div>
+    </div>
+    <strong className="dish-card-price">¥{dish.price}</strong>
+    <button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} type="button" disabled={status === 'CONFLICT'} aria-label={`${p.addToCart} ${dish.localized[language]}`} onClick={() => onAddToCart(dish)}><Icon name="plus" size={16} /></button>
+    <button className="dish-detail-button" type="button" aria-label={`${t('viewDetails')} ${dish.localized[language]}`} onClick={() => onDetail(dish)}><Icon name="arrow" size={17} /></button>
+  </article>
+}
 
 type IngredientRisk = 'clear' | 'conflict' | 'possible' | 'unknown'
 type IngredientCheck = { label: string; risk: IngredientRisk; source: EvidenceSource }
@@ -2591,7 +2610,7 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
     </div>
     <div className="detail-card">
       <div className="detail-card-handle" aria-hidden="true" />
-      <div className="detail-card-topline"><StatusBadge status={status} t={t} /></div>
+      <div className="detail-card-topline"><StatusBadge status={status} t={t} showLabel /></div>
       <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
       <div className="detail-meta-row"><span className="detail-meta-chip"><Icon name="chili" size={15} />{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span>{dish.tags.slice(0, 2).map((tag) => <span className="detail-meta-chip" key={tag}><Icon name="check" size={14} />{dishTagLabel(language, tag)}</span>)}</div>
       <section className="detail-ingredients-section">
@@ -2788,26 +2807,22 @@ function Bill({ t, p, language, billInputRef, handleFile, billMode, setBillMode,
     <div className="split-result"><div className="result-heading"><h2>{p.everyonePays}</h2><span>{p.exactCheck} <Icon name="check" size={15} /></span></div>{billMode === 'equal' ? participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{equalAmount}</strong></div>) : participants.map((person) => <div className="person-result" key={person}><span><span className="participant-initial">{participantLabel(person).trim().charAt(0).toUpperCase() || '?'}</span>{participantLabel(person)}</span><strong>¥{itemTotals[person].toFixed(2)}</strong></div>)}<div className="split-total"><span>{t('verified')}</span><strong>¥{billTotal.toFixed(2)}</strong></div></div><Button className="full-button" onClick={() => { onToast(p.shareReady); navigator.share?.({ title: 'Bitewise bill split', text: `${p.everyonePays} ¥${billTotal.toFixed(2)}` }) }} icon="share">{t('share')}</Button>{billSource === 'receipt' && <button className="reset-bill" onClick={() => { setBillSource('order'); onToast(p.toastUsingOrder) }}>{p.useOrderTotals}</button>}</div>
 }
 
-function FindFood({ t, p, language, restaurants, savedRestaurants, onToggleRestaurant, onBack }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; onBack: () => void; onDetail: (dish: Dish) => void }) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [query, setQuery] = useState('')
-  const nearbyText = nearbyCopy[language]
   const browseText = findBrowseCopy[language]
-  const nearbyRestaurants = restaurants.filter((restaurant) => restaurant.source).slice(0, 10)
   const categoryCards = foodCategories.filter((category) => category.id !== 'all').map((category) => ({
     ...category,
     dish: dishes.find((dish) => dish.id === findFoodCategoryDishIds[category.id]) || dishes[0],
   }))
-  const nearbyFood = nearbyRestaurants.map((restaurant, index) => {
-    const dish = dishes[index % dishes.length]
-    const categoryIds = findFoodCategoryIds(restaurant)
+  const popularFood = dishes.map((dish) => {
+    const categoryIds = Object.entries(findFoodCategoryDishIds).filter(([, dishId]) => dishId === dish.id).map(([categoryId]) => categoryId)
     if (dish.vegetarian && !categoryIds.includes('vegetarian')) categoryIds.push('vegetarian')
-    return { restaurant, dish, categoryIds }
+    return { dish, categoryIds }
   })
   const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
-  const visibleFood = nearbyFood.filter(({ restaurant, dish, categoryIds }) => {
-    const restaurantText = localizedRestaurant(language, restaurant)
-    const searchable = `${restaurant.name} ${restaurantText.name || ''} ${restaurant.cuisine} ${restaurantText.cuisine} ${restaurant.address || ''} ${dish.name} ${dish.zh} ${dish.localized[language]}`.toLowerCase().replace(/\s+/g, '')
+  const visibleFood = popularFood.filter(({ dish, categoryIds }) => {
+    const searchable = `${dish.name} ${dish.zh} ${dish.localized[language]} ${dish.tags.join(' ')}`.toLowerCase().replace(/\s+/g, '')
     return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
   })
 
@@ -2829,19 +2844,13 @@ function FindFood({ t, p, language, restaurants, savedRestaurants, onToggleResta
         </button>)}
       </div>
     </section>
-    <section className="find-browse-section find-nearby-section" id="nearby-food">
-      <div className="find-section-heading"><h2>{browseText.nearbyFood}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
-      <div className="find-location"><Icon name="pin" size={16} stroke={1.9} /><span>{nearbyText.area}</span></div>
+    <section className="find-browse-section find-nearby-section" id="popular-choices">
+      <div className="find-section-heading"><h2>{browseText.popularChoices}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
       <div className="nearby-food-grid">
-        {visibleFood.map(({ restaurant, dish }) => {
-          const restaurantText = localizedRestaurant(language, restaurant)
-          const displayName = restaurantText.name || restaurant.name
-          const saved = savedRestaurants.some((item) => item.id === restaurant.id)
-          return <article className="nearby-food-card" key={restaurant.id}>
-            <div className="nearby-food-media"><img src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /><span className="nearby-food-rating"><Icon name="star" size={13} stroke={1.6} /> {restaurant.rating?.toFixed(1) || '—'}</span><button type="button" className={`nearby-food-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button></div>
-            <div className="nearby-food-body"><h3>{dish.localized[language]}</h3><p>{displayName}</p><div className="nearby-food-meta"><strong>¥ {dish.price}</strong><span>{restaurant.distanceKm?.toFixed(1) || '—'} km</span></div></div>
-          </article>
-        })}
+        {visibleFood.map(({ dish }) => <button type="button" className="nearby-food-card" key={dish.id} onClick={() => onDetail(dish)} aria-label={`${dish.localized[language]} ${browseText.popularChoices}`}>
+          <div className="nearby-food-media"><img src={dish.imageSrc} alt={dish.localized[language]} loading="lazy" /></div>
+          <div className="nearby-food-body"><h3>{dish.localized[language]}</h3></div>
+        </button>)}
       </div>
       {!visibleFood.length && <div className="find-empty"><Icon name="search" size={24} /><strong>{p.noNotes}</strong><span>{p.keepExploring}</span></div>}
     </section>
@@ -2947,12 +2956,11 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
 
   return <div className={`page page-narrow ${communityMode ? 'page-community' : 'page-find'}`}>
     <PageHeader title={communityMode ? 'Community' : t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
-    <div className={`feed-intro ${communityMode ? 'community-intro' : ''}`}>
-      <div><span className="community-eyebrow">{communityMode ? 'COMMUNITY' : p.exploreKicker}</span><h1>{communityMode ? 'Share what you found at the table.' : p.findHeading}</h1><p>{communityMode ? 'Real notes, dishes and small discoveries from people eating nearby.' : p.findDescription}</p></div>
-      {communityMode && <div className="community-count"><strong>{posts.length}</strong><span>notes from the table</span></div>}
-    </div>
+    {!communityMode && <div className="feed-intro">
+      <div><span className="community-eyebrow">{p.exploreKicker}</span><h1>{p.findHeading}</h1><p>{p.findDescription}</p></div>
+    </div>}
     <div className="feed-categories" aria-label={p.foodCategories}>{foodCategories.map((category) => <button type="button" key={category.id} className={activeCategory === category.id ? 'active' : ''} onClick={() => setActiveCategory(category.id)}>{foodCategoryLabels[language][category.id]}</button>)}</div>
-    <div className="feed-context"><span className="feed-context-icon"><Icon name="leaf" size={15} /></span><span><strong>{p.communityPicks}</strong><small>{p.communityHint}</small></span></div>
+    {!communityMode && <div className="feed-context"><span className="feed-context-icon"><Icon name="leaf" size={15} /></span><span><strong>{p.communityPicks}</strong><small>{p.communityHint}</small></span></div>}
     <div className={`feed-grid ${communityMode ? 'community-feed-grid' : ''}`}>{visiblePosts.map((post) => {
       const restaurant = restaurants.find((item) => item.id === post.restaurantId)
       if (!restaurant) return null
