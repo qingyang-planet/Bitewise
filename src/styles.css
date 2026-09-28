@@ -422,6 +422,17 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 
 /* Sheets */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(61, 48, 38, .3); display: flex; justify-content: center; align-items: end; padding: 18px; backdrop-filter: blur(3px); }.ask-sheet { width: min(660px, 100%); max-height: calc(100vh - 36px); overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 28px 28px 18px 18px; box-shadow: 0 20px 70px rgba(62, 42, 29, .3); padding: 14px 22px 24px; animation: sheet-up .24s ease-out both; }.sheet-handle { width: 42px; height: 4px; background: var(--line); border-radius: 4px; margin: 0 auto 16px; }.sheet-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }.safety-label { display: inline-flex; align-items: center; gap: 7px; background: #ffe1dc; color: #b1433f; border-radius: 999px; padding: 8px 11px; font-size: 11px; font-weight: 900; margin: 0; }.ask-sheet h2 { font-size: 26px; margin: 16px 0; }.question-card { background: #fffdf5; border: 1px solid var(--line); border-radius: 19px; padding: 16px; }.question-card strong, .question-card small { display: block; }.question-card strong { font-size: 12px; }.question-card p { font-size: 17px; line-height: 1.75; margin: 12px 0; }.question-card hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }.question-card small { color: var(--muted); margin-top: 4px; }.sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }.sheet-disclaimer { color: var(--muted); font-size: 11px; line-height: 1.5; margin-top: 16px; }.toast { position: fixed; z-index: 30; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 7px; border-radius: 999px; background: var(--brown); color: #fffaf1; padding: 12px 17px; font-size: 12px; font-weight: 800; box-shadow: var(--shadow); animation: rise .2s ease-out both; }
+.risk-confirm-sheet { width: min(500px, 100%); background: var(--paper); border: 1px solid var(--line); border-radius: 28px 28px 18px 18px; box-shadow: 0 20px 70px rgba(62, 42, 29, .3); padding: 14px 22px 22px; text-align: center; animation: sheet-up .24s ease-out both; }
+.risk-confirm-icon { width: 58px; height: 58px; display: grid; place-items: center; margin: 3px auto 13px; border-radius: 20px; background: #fff0bb; color: #9b7518; }
+.risk-confirm-icon.is-conflict { background: #ffe0dc; color: #b1433f; }
+.risk-confirm-sheet h2 { margin: 0; color: var(--brown); font-size: 22px; }
+.risk-confirm-sheet p { max-width: 390px; margin: 9px auto 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.risk-confirm-dish { display: block; margin-top: 13px; color: var(--brown); font-size: 13px; }
+.risk-confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 18px; }
+.risk-confirm-actions .button { min-height: 42px; padding: 0 11px; font-size: 11px; }
+.risk-confirm-ask { min-width: 0; }
+.risk-confirm-button { background: var(--green); box-shadow: 0 8px 16px rgba(79, 126, 67, .2); }
+.risk-confirm-button:hover { background: var(--green-deep); }
 @keyframes sheet-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Assistant + order + waiter */
@@ -1814,7 +1825,7 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .page-menu .dish-card-title span { display: none; }
 .page-menu .dish-tags { flex-wrap: nowrap; gap: 4px; overflow: hidden; margin: 6px 0 0; }
 .page-menu .dish-tags .tiny-tag { max-width: 92px; overflow: hidden; padding: 4px 6px; border: 1px solid #eee7df; background: #fff; color: var(--brown); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
-.page-menu .dish-card.card-status-conflict .dish-tags .tiny-tag { border-color: #f1b8ae; background: #ffe0dc; color: #b1433f; }
+.page-menu .dish-tags .tiny-tag.passport-conflict { border-color: #f1b8ae; background: #ffe0dc; color: #b1433f; }
 .page-menu .status-badge { width: 20px; height: 20px; min-width: 20px; display: grid; flex: 0 0 auto; place-items: center; padding: 0; border-radius: 7px; font-size: 0; }
 .page-menu .dish-card-name-row .status-badge { display: grid; }
 .page-menu .status-badge.match { background: #d9f0d8; color: #31824c; }

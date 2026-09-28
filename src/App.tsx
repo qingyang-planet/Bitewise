@@ -168,6 +168,15 @@ type CartItem = {
   quantity: number
 }
 
+const riskConfirmCopy: Record<Language, { title: string; message: string; confirm: string }> = {
+  en: { title: 'Check before adding', message: 'This dish may contain an unknown allergen or an ingredient that conflicts with your Food Passport.', confirm: 'Confirm to cart' },
+  ko: { title: '추가하기 전에 확인하세요', message: '이 요리에는 확인되지 않은 알레르기 유발 성분이 있거나 푸드 패스포트와 충돌하는 재료가 있을 수 있습니다.', confirm: '장바구니에 확인 추가' },
+  ja: { title: '追加する前に確認', message: 'この料理には不明なアレルゲン、またはフードパスポートと衝突する食材が含まれる可能性があります。', confirm: '確認してカートへ' },
+  ru: { title: 'Проверьте перед добавлением', message: 'В блюде может быть неизвестный аллерген или ингредиент, конфликтующий с вашим пищевым паспортом.', confirm: 'Подтвердить и добавить' },
+  es: { title: 'Comprueba antes de añadir', message: 'Este plato puede contener un alérgeno desconocido o un ingrediente que entra en conflicto con tu pasaporte de comida.', confirm: 'Confirmar y añadir' },
+  it: { title: 'Controlla prima di aggiungere', message: 'Questo piatto potrebbe contenere un allergene sconosciuto o un ingrediente in conflitto con il tuo Passaporto alimentare.', confirm: 'Conferma e aggiungi' },
+}
+
 const languages: Array<{ code: Language; label: string; native: string }> = [
   { code: 'en', label: 'English', native: 'English' },
   { code: 'ko', label: '한국어', native: '한국어' },
@@ -678,12 +687,12 @@ const localizedPostMeta: Record<Language, { justNow: string; worthTrying: string
 }
 
 const baseDishes: Dish[] = [
-  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.png', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasScallion: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
-  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.png', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], possibleIngredients: ['Beef', 'Scallions'], possibleZhIngredients: ['牛肉', '葱花'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
-  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.png', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], possibleIngredients: ['Scallions'], possibleZhIngredients: ['葱花'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
-  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.png', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: ['soy', 'mollusk'], possibleIngredients: ['Soy sauce or oyster sauce'], possibleZhIngredients: ['生抽或蚝油'], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
-  { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.png', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
-  { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.png', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
+  { id: 'kung-pao', name: 'Kung Pao Chicken', zh: '宫保鸡丁', localized: { en: 'Kung Pao Chicken', ko: '궁보계정', ja: '宮保鶏丁', ru: 'Курица гунбао', es: 'Pollo kung pao', it: 'Pollo kung pao' }, price: 38, imageSrc: '/dish-photos/kung-pao.webp', className: 'visual-kungpao', ingredients: ['Chicken', 'Peanuts', 'Dried chilies', 'Scallions'], zhIngredients: ['鸡肉', '花生', '干辣椒', '葱'], allergens: ['peanut'], possibleAllergens: ['soy'], tags: ['Chicken', 'Peanut', 'Dried chili'], spicy: 2, vegetarian: false, vegan: false, hasPork: false, hasPoultry: true, hasScallion: true, hasCilantro: false, confidence: 0.98, taste: 'Sweet, savory, tangy and mildly numbing', texture: 'Tender chicken with crunchy peanuts', cooking: 'Quickly stir-fried over high heat', bestWith: 'Shared with rice and other dishes', culture: 'Kung Pao Chicken is a Sichuan stir-fry named after a historical official. Peanuts are normally part of the dish, not just a garnish.', reason: 'Peanuts are common in this dish, but this menu does not provide a complete ingredient list.' },
+  { id: 'mapo-tofu', name: 'Mapo Tofu', zh: '麻婆豆腐', localized: { en: 'Mapo Tofu', ko: '마파두부', ja: '麻婆豆腐', ru: 'Мапо тофу', es: 'Tofu mapo', it: 'Tofu mapo' }, price: 28, imageSrc: '/dish-photos/mapo-tofu.webp', className: 'visual-mapo', ingredients: ['Tofu', 'Chili bean paste', 'Minced pork', 'Sichuan pepper'], zhIngredients: ['豆腐', '豆瓣酱', '猪肉末', '花椒'], allergens: ['soy'], possibleAllergens: ['sesame'], possibleIngredients: ['Beef', 'Scallions'], possibleZhIngredients: ['牛肉', '葱花'], tags: ['Tofu', 'Chili bean paste', 'Minced pork'], spicy: 3, vegetarian: false, vegan: false, hasPork: true, hasCilantro: false, confidence: 0.91, taste: 'Spicy, savory and numbing', texture: 'Soft tofu with aromatic sauce', cooking: 'Simmered in a chili-bean sauce', bestWith: 'Steamed rice and greens', culture: '“Mapo” refers to the pockmarked grandmother credited with creating this beloved Sichuan dish.', reason: 'The base recipe commonly includes minced pork and the menu does not mark this version vegetarian.' },
+  { id: 'eggplant', name: 'Fish-fragrant Eggplant', zh: '鱼香茄子', localized: { en: 'Fish-fragrant Eggplant', ko: '어향 가지', ja: '魚香茄子', ru: 'Баклажаны в стиле юйсян', es: 'Berenjena yuxiang', it: 'Melanzane yuxiang' }, price: 42, imageSrc: '/dish-photos/eggplant.webp', className: 'visual-eggplant', ingredients: ['Eggplant', 'Garlic', 'Pickled chili', 'Vinegar'], zhIngredients: ['茄子', '蒜', '泡椒', '醋'], allergens: [], possibleAllergens: ['soy'], possibleIngredients: ['Scallions'], possibleZhIngredients: ['葱花'], tags: ['Vegetarian', 'Garlic', 'Sichuan'], spicy: 1, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.95, taste: 'Sweet-sour, garlicky and gently spicy', texture: 'Silky eggplant with a glossy sauce', cooking: 'Braised until tender', bestWith: 'Rice and a crisp green dish', culture: '“Fish-fragrant” describes a Sichuan seasoning style; it does not necessarily mean the dish contains fish.', reason: 'This menu labels the version vegetarian, but sauce and kitchen cross-contact still need confirmation for allergies.' },
+  { id: 'greens', name: 'Garlic Seasonal Greens', zh: '蒜蓉时蔬', localized: { en: 'Garlic Seasonal Greens', ko: '마늘 제철 채소', ja: '季節野菜のにんにく炒め', ru: 'Сезонные овощи с чесноком', es: 'Verduras de temporada al ajo', it: 'Verdure stagionali all’aglio' }, price: 28, imageSrc: '/dish-photos/seasonal-greens.webp', className: 'visual-greens', ingredients: ['Seasonal greens', 'Garlic', 'Cooking oil'], zhIngredients: ['时蔬', '蒜', '食用油'], allergens: [], possibleAllergens: ['soy', 'mollusk'], possibleIngredients: ['Soy sauce or oyster sauce'], possibleZhIngredients: ['生抽或蚝油'], tags: ['Vegetarian', 'Fresh', 'Mild'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasGarlic: true, hasCilantro: false, confidence: 0.86, taste: 'Fresh, mild and garlicky', texture: 'Crisp-tender leaves', cooking: 'Flash-fried in a hot wok', bestWith: 'Balances spicy shared dishes', culture: 'A common Chinese table vegetable; the exact greens change with the season.', reason: 'No listed conflict, but the cooking oil and shared wok are not confirmed by this menu.' },
+  { id: 'lotus', name: 'Sweet-sour Lotus Root', zh: '糖醋藕片', localized: { en: 'Sweet-sour Lotus Root', ko: '탕수 연근', ja: '甘酢れんこん', ru: 'Корень лотоса в кисло-сладком соусе', es: 'Raíz de loto agridulce', it: 'Radice di loto agrodolce' }, price: 34, imageSrc: '/dish-photos/lotus-root.webp', className: 'visual-lotus', ingredients: ['Lotus root', 'Rice vinegar', 'Sugar', 'Sesame'], zhIngredients: ['莲藕', '米醋', '糖', '芝麻'], allergens: ['sesame'], possibleAllergens: ['wheat'], tags: ['Vegetarian', 'Crisp', 'Sweet-sour'], spicy: 0, vegetarian: true, vegan: true, hasPork: false, hasCilantro: false, confidence: 0.78, taste: 'Bright sweet-sour crunch', texture: 'Crisp and juicy', cooking: 'Quickly stir-fried with vinegar glaze', bestWith: 'A rich or spicy table', culture: 'Lotus root is loved for its connected slices, often associated with togetherness at the table.', reason: 'Sesame is listed; other sauce ingredients are not fully specified.' },
+  { id: 'soup', name: 'Winter Melon Mushroom Soup', zh: '冬瓜菌菇汤', localized: { en: 'Winter Melon Mushroom Soup', ko: '동과 버섯 수프', ja: '冬瓜ときのこのスープ', ru: 'Суп из зимней дыни и грибов', es: 'Sopa de melón de invierno y setas', it: 'Zuppa di zucca invernale e funghi' }, price: 36, imageSrc: '/dish-photos/winter-melon-soup.webp', className: 'visual-soup', ingredients: ['Winter melon', 'Mushrooms', 'Ginger', 'Stock'], zhIngredients: ['冬瓜', '菌菇', '姜', '高汤'], allergens: [], possibleAllergens: ['shellfish', 'soy'], tags: ['Vegetarian option', 'Warm', 'Mild'], spicy: 0, vegetarian: true, vegan: false, hasPork: false, hasCilantro: false, confidence: 0.59, taste: 'Light, savory and warming', texture: 'Soft melon with tender mushrooms', cooking: 'Slow-simmered broth', bestWith: 'Shared across the table', culture: 'A gentle soup often used to balance bolder dishes.', reason: 'The stock base is not specified, so the dish stays explicitly uncertain.' },
 ]
 
 const demoKnowledge: Record<string, { id: string; nameEn: string; aliases: string[]; ingredients: string[]; allergens: { id: string; label?: string }[] }> = {
@@ -1008,13 +1017,13 @@ const foodCategories = [
 ]
 
 const findFoodCategoryImageSrc: Record<string, string> = {
-  local: '/dish-photos/old-town-kitchen-signature.png',
-  hotpot: '/dish-photos/hotpot.png',
-  sichuan: '/dish-photos/mapo-tofu.png',
-  snacks: '/dish-photos/jade-soup-dumpling-signature.png',
-  cantonese: '/dish-photos/lotus-table-signature.png',
-  vegetarian: '/dish-photos/seasonal-greens.png',
-  bbq: '/dish-photos/charcoal-yard-signature.png',
+  local: '/dish-photos/old-town-kitchen-signature.webp',
+  hotpot: '/dish-photos/hotpot.webp',
+  sichuan: '/dish-photos/mapo-tofu.webp',
+  snacks: '/dish-photos/jade-soup-dumpling-signature.webp',
+  cantonese: '/dish-photos/lotus-table-signature.webp',
+  vegetarian: '/dish-photos/seasonal-greens.webp',
+  bbq: '/dish-photos/charcoal-yard-signature.webp',
 }
 
 const findFoodDishCategoryIds: Record<string, string[]> = {
@@ -1028,60 +1037,60 @@ const findFoodDishCategoryIds: Record<string, string[]> = {
 
 const findFoodCategoryPreview: Record<string, FindDishCardItem[]> = {
   local: [
-    { id: 'shanghai-braised-pork-ribs', name: 'Soy-glazed pork ribs', category: 'Shanghai cuisine', imageSrc: '/dish-photos/old-town-kitchen-signature.png', tags: ['Braised', 'Pork'] },
-    { id: 'shanghai-soup-dumplings', name: 'Soup dumplings', category: 'Shanghai cuisine', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Steamed', 'Pork'] },
-    { id: 'shanghai-braised-pork', name: 'Red-braised pork belly', category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-red-braised-pork-belly.png', tags: ['Slow-cooked', 'Savory'] },
-    { id: 'shanghai-lions-head', name: "Lion's head meatball", category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-lions-head-meatball.png', tags: ['Tender', 'Pork'] },
-    { id: 'shanghai-drunken-chicken', name: 'Drunken chicken', category: 'Shanghai cuisine', imageSrc: '/dish-photos/west-lake-signature.png', tags: ['Chilled', 'Rice wine'] },
-    { id: 'shanghai-lotus-root', name: 'Sweet-sour lotus root', category: 'Shanghai cuisine', imageSrc: '/dish-photos/lotus-root.png', tags: ['Crisp', 'Sweet-sour'] },
+    { id: 'shanghai-braised-pork-ribs', name: 'Soy-glazed pork ribs', category: 'Shanghai cuisine', imageSrc: '/dish-photos/old-town-kitchen-signature.webp', tags: ['Braised', 'Pork'] },
+    { id: 'shanghai-soup-dumplings', name: 'Soup dumplings', category: 'Shanghai cuisine', imageSrc: '/dish-photos/jade-soup-dumpling-signature.webp', tags: ['Steamed', 'Pork'] },
+    { id: 'shanghai-braised-pork', name: 'Red-braised pork belly', category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-red-braised-pork-belly.webp', tags: ['Slow-cooked', 'Savory'] },
+    { id: 'shanghai-lions-head', name: "Lion's head meatball", category: 'Shanghai cuisine', imageSrc: '/dish-photos/shanghai-lions-head-meatball.webp', tags: ['Tender', 'Pork'] },
+    { id: 'shanghai-drunken-chicken', name: 'Drunken chicken', category: 'Shanghai cuisine', imageSrc: '/dish-photos/west-lake-signature.webp', tags: ['Chilled', 'Rice wine'] },
+    { id: 'shanghai-lotus-root', name: 'Sweet-sour lotus root', category: 'Shanghai cuisine', imageSrc: '/dish-photos/lotus-root.webp', tags: ['Crisp', 'Sweet-sour'] },
   ],
   hotpot: [
-    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-mushroom-broth.png', tags: ['Mild', 'Shared'] },
-    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sichuan-broth.png', tags: ['Spicy', 'Numbing'] },
-    { id: 'hotpot-beef-slices', name: 'Hand-sliced beef', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-beef-slices.png', tags: ['Beef', 'Tender'] },
-    { id: 'hotpot-shrimp-balls', name: 'Shrimp paste balls', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-shrimp-balls.png', tags: ['Seafood', 'Bouncy'] },
-    { id: 'hotpot-napa-cabbage', name: 'Napa cabbage', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-napa-cabbage.png', tags: ['Vegetable', 'Fresh'] },
-    { id: 'hotpot-sesame-noodles', name: 'Sesame dipping noodles', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sesame-noodles.png', tags: ['Sesame', 'Savory'] },
+    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-mushroom-broth.webp', tags: ['Mild', 'Shared'] },
+    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sichuan-broth.webp', tags: ['Spicy', 'Numbing'] },
+    { id: 'hotpot-beef-slices', name: 'Hand-sliced beef', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-beef-slices.webp', tags: ['Beef', 'Tender'] },
+    { id: 'hotpot-shrimp-balls', name: 'Shrimp paste balls', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-shrimp-balls.webp', tags: ['Seafood', 'Bouncy'] },
+    { id: 'hotpot-napa-cabbage', name: 'Napa cabbage', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-napa-cabbage.webp', tags: ['Vegetable', 'Fresh'] },
+    { id: 'hotpot-sesame-noodles', name: 'Sesame dipping noodles', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sesame-noodles.webp', tags: ['Sesame', 'Savory'] },
   ],
   sichuan: [
-    { id: 'sichuan-mapo-tofu', name: 'Mapo tofu', category: 'Sichuan', imageSrc: '/dish-photos/mapo-tofu.png', tags: ['Spicy', 'Tofu'] },
-    { id: 'sichuan-kung-pao-chicken', name: 'Kung Pao chicken', category: 'Sichuan', imageSrc: '/dish-photos/kung-pao.png', tags: ['Peanut', 'Sweet-spicy'] },
-    { id: 'sichuan-fish-fragrant-eggplant', name: 'Fish-fragrant eggplant', category: 'Sichuan', imageSrc: '/dish-photos/eggplant.png', tags: ['Vegetarian', 'Garlic'] },
-    { id: 'sichuan-dry-pot-prawns', name: 'Dry-pot prawns', category: 'Sichuan', imageSrc: '/dish-photos/pepper-alley-signature.png', tags: ['Crisp', 'Chili'] },
-    { id: 'sichuan-dan-dan-noodles', name: 'Dan Dan noodles', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-dan-dan-noodles.png', tags: ['Noodles', 'Sesame'] },
-    { id: 'sichuan-twice-cooked-pork', name: 'Twice-cooked pork', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-twice-cooked-pork.png', tags: ['Pork', 'Chili'] },
+    { id: 'sichuan-mapo-tofu', name: 'Mapo tofu', category: 'Sichuan', imageSrc: '/dish-photos/mapo-tofu.webp', tags: ['Spicy', 'Tofu'] },
+    { id: 'sichuan-kung-pao-chicken', name: 'Kung Pao chicken', category: 'Sichuan', imageSrc: '/dish-photos/kung-pao.webp', tags: ['Peanut', 'Sweet-spicy'] },
+    { id: 'sichuan-fish-fragrant-eggplant', name: 'Fish-fragrant eggplant', category: 'Sichuan', imageSrc: '/dish-photos/eggplant.webp', tags: ['Vegetarian', 'Garlic'] },
+    { id: 'sichuan-dry-pot-prawns', name: 'Dry-pot prawns', category: 'Sichuan', imageSrc: '/dish-photos/pepper-alley-signature.webp', tags: ['Crisp', 'Chili'] },
+    { id: 'sichuan-dan-dan-noodles', name: 'Dan Dan noodles', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-dan-dan-noodles.webp', tags: ['Noodles', 'Sesame'] },
+    { id: 'sichuan-twice-cooked-pork', name: 'Twice-cooked pork', category: 'Sichuan', imageSrc: '/dish-photos/sichuan-twice-cooked-pork.webp', tags: ['Pork', 'Chili'] },
   ],
   snacks: [
-    { id: 'snacks-pan-fried-buns', name: 'Pan-fried pork buns', category: 'Snacks', imageSrc: '/dish-photos/snacks-pan-fried-pork-buns.png', tags: ['Crisp', 'Pork'] },
-    { id: 'snacks-soup-dumplings', name: 'Soup dumplings', category: 'Snacks', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', tags: ['Steamed', 'Juicy'] },
-    { id: 'snacks-scallion-pancake', name: 'Scallion pancake', category: 'Snacks', imageSrc: '/dish-photos/snacks-scallion-pancake.png', tags: ['Crisp', 'Scallion'] },
-    { id: 'snacks-sesame-balls', name: 'Sesame rice balls', category: 'Snacks', imageSrc: '/dish-photos/snacks-sesame-rice-balls.png', tags: ['Sesame', 'Sweet'] },
-    { id: 'snacks-rice-cakes', name: 'Sweet rice cake', category: 'Snacks', imageSrc: '/dish-photos/snacks-sweet-rice-cake.png', tags: ['Chewy', 'Sweet'] },
-    { id: 'snacks-braised-tofu', name: 'Five-spice braised tofu', category: 'Snacks', imageSrc: '/dish-photos/snacks-five-spice-tofu.png', tags: ['Soy', 'Savory'] },
+    { id: 'snacks-pan-fried-buns', name: 'Pan-fried pork buns', category: 'Snacks', imageSrc: '/dish-photos/snacks-pan-fried-pork-buns.webp', tags: ['Crisp', 'Pork'] },
+    { id: 'snacks-soup-dumplings', name: 'Soup dumplings', category: 'Snacks', imageSrc: '/dish-photos/jade-soup-dumpling-signature.webp', tags: ['Steamed', 'Juicy'] },
+    { id: 'snacks-scallion-pancake', name: 'Scallion pancake', category: 'Snacks', imageSrc: '/dish-photos/snacks-scallion-pancake.webp', tags: ['Crisp', 'Scallion'] },
+    { id: 'snacks-sesame-balls', name: 'Sesame rice balls', category: 'Snacks', imageSrc: '/dish-photos/snacks-sesame-rice-balls.webp', tags: ['Sesame', 'Sweet'] },
+    { id: 'snacks-rice-cakes', name: 'Sweet rice cake', category: 'Snacks', imageSrc: '/dish-photos/snacks-sweet-rice-cake.webp', tags: ['Chewy', 'Sweet'] },
+    { id: 'snacks-braised-tofu', name: 'Five-spice braised tofu', category: 'Snacks', imageSrc: '/dish-photos/snacks-five-spice-tofu.webp', tags: ['Soy', 'Savory'] },
   ],
   cantonese: [
-    { id: 'cantonese-shrimp-dumplings', name: 'Shrimp dumplings', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-shrimp-dumplings.png', tags: ['Seafood', 'Steamed'] },
-    { id: 'cantonese-char-siu', name: 'Honey char siu', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-char-siu.png', tags: ['Roasted', 'Pork'] },
-    { id: 'cantonese-wonton-noodles', name: 'Wonton noodles', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-wonton-noodles.png', tags: ['Noodles', 'Wheat'] },
-    { id: 'cantonese-steamed-fish', name: 'Steamed fish with ginger', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-steamed-fish.png', tags: ['Fish', 'Ginger'] },
-    { id: 'cantonese-winter-melon-soup', name: 'Winter melon soup', category: 'Cantonese', imageSrc: '/dish-photos/winter-melon-soup.png', tags: ['Warm', 'Broth'] },
-    { id: 'cantonese-egg-tart', name: 'Baked egg tart', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-egg-tart.png', tags: ['Egg', 'Sweet'] },
+    { id: 'cantonese-shrimp-dumplings', name: 'Shrimp dumplings', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-shrimp-dumplings.webp', tags: ['Seafood', 'Steamed'] },
+    { id: 'cantonese-char-siu', name: 'Honey char siu', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-char-siu.webp', tags: ['Roasted', 'Pork'] },
+    { id: 'cantonese-wonton-noodles', name: 'Wonton noodles', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-wonton-noodles.webp', tags: ['Noodles', 'Wheat'] },
+    { id: 'cantonese-steamed-fish', name: 'Steamed fish with ginger', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-steamed-fish.webp', tags: ['Fish', 'Ginger'] },
+    { id: 'cantonese-winter-melon-soup', name: 'Winter melon soup', category: 'Cantonese', imageSrc: '/dish-photos/winter-melon-soup.webp', tags: ['Warm', 'Broth'] },
+    { id: 'cantonese-egg-tart', name: 'Baked egg tart', category: 'Cantonese', imageSrc: '/dish-photos/cantonese-egg-tart.webp', tags: ['Egg', 'Sweet'] },
   ],
   vegetarian: [
-    { id: 'vegetarian-garlic-greens', name: 'Garlic seasonal greens', category: 'Vegetarian', imageSrc: '/dish-photos/seasonal-greens.png', tags: ['Fresh', 'Mild'] },
-    { id: 'vegetarian-lotus-root', name: 'Sweet-sour lotus root', category: 'Vegetarian', imageSrc: '/dish-photos/lotus-root.png', tags: ['Crisp', 'Sweet-sour'] },
-    { id: 'vegetarian-mushroom-soup', name: 'Winter melon mushroom soup', category: 'Vegetarian', imageSrc: '/dish-photos/winter-melon-soup.png', tags: ['Warm', 'Mild'] },
-    { id: 'vegetarian-mapo-tofu', name: 'Vegetarian mapo tofu', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-mapo-tofu.png', tags: ['Tofu', 'Spicy'] },
-    { id: 'vegetarian-eggplant', name: 'Fish-fragrant eggplant', category: 'Vegetarian', imageSrc: '/dish-photos/eggplant.png', tags: ['Garlic', 'Tender'] },
-    { id: 'vegetarian-crispy-tofu', name: 'Crispy tofu bites', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-crispy-tofu.png', tags: ['Soy', 'Crisp'] },
+    { id: 'vegetarian-garlic-greens', name: 'Garlic seasonal greens', category: 'Vegetarian', imageSrc: '/dish-photos/seasonal-greens.webp', tags: ['Fresh', 'Mild'] },
+    { id: 'vegetarian-lotus-root', name: 'Sweet-sour lotus root', category: 'Vegetarian', imageSrc: '/dish-photos/lotus-root.webp', tags: ['Crisp', 'Sweet-sour'] },
+    { id: 'vegetarian-mushroom-soup', name: 'Winter melon mushroom soup', category: 'Vegetarian', imageSrc: '/dish-photos/winter-melon-soup.webp', tags: ['Warm', 'Mild'] },
+    { id: 'vegetarian-mapo-tofu', name: 'Vegetarian mapo tofu', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-mapo-tofu.webp', tags: ['Tofu', 'Spicy'] },
+    { id: 'vegetarian-eggplant', name: 'Fish-fragrant eggplant', category: 'Vegetarian', imageSrc: '/dish-photos/eggplant.webp', tags: ['Garlic', 'Tender'] },
+    { id: 'vegetarian-crispy-tofu', name: 'Crispy tofu bites', category: 'Vegetarian', imageSrc: '/dish-photos/vegetarian-crispy-tofu.webp', tags: ['Soy', 'Crisp'] },
   ],
   bbq: [
-    { id: 'bbq-cumin-lamb', name: 'Cumin lamb skewers', category: 'Barbecue', imageSrc: '/dish-photos/charcoal-yard-signature.png', tags: ['Smoky', 'Lamb'] },
-    { id: 'bbq-grilled-fish', name: 'Charcoal grilled fish', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-fish.png', tags: ['Fish', 'Spicy'] },
-    { id: 'bbq-chicken-wings', name: 'Chili grilled wings', category: 'Barbecue', imageSrc: '/dish-photos/bbq-chicken-wings.png', tags: ['Chicken', 'Chili'] },
-    { id: 'bbq-grilled-eggplant', name: 'Garlic grilled eggplant', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-eggplant.png', tags: ['Garlic', 'Soft'] },
-    { id: 'bbq-oyster-mushrooms', name: 'King oyster mushroom skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-oyster-mushrooms.png', tags: ['Vegetarian', 'Smoky'] },
-    { id: 'bbq-pork-belly', name: 'Pork belly skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-pork-belly-skewers.png', tags: ['Pork', 'Charred'] },
+    { id: 'bbq-cumin-lamb', name: 'Cumin lamb skewers', category: 'Barbecue', imageSrc: '/dish-photos/charcoal-yard-signature.webp', tags: ['Smoky', 'Lamb'] },
+    { id: 'bbq-grilled-fish', name: 'Charcoal grilled fish', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-fish.webp', tags: ['Fish', 'Spicy'] },
+    { id: 'bbq-chicken-wings', name: 'Chili grilled wings', category: 'Barbecue', imageSrc: '/dish-photos/bbq-chicken-wings.webp', tags: ['Chicken', 'Chili'] },
+    { id: 'bbq-grilled-eggplant', name: 'Garlic grilled eggplant', category: 'Barbecue', imageSrc: '/dish-photos/bbq-grilled-eggplant.webp', tags: ['Garlic', 'Soft'] },
+    { id: 'bbq-oyster-mushrooms', name: 'King oyster mushroom skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-oyster-mushrooms.webp', tags: ['Vegetarian', 'Smoky'] },
+    { id: 'bbq-pork-belly', name: 'Pork belly skewers', category: 'Barbecue', imageSrc: '/dish-photos/bbq-pork-belly-skewers.webp', tags: ['Pork', 'Charred'] },
   ],
 }
 
@@ -1099,16 +1108,16 @@ const findFoodCategoryIds = (restaurant: SavedRestaurant) => {
 }
 
 const homeRestaurantImageSrc: Record<string, string> = {
-  'zuihuihuang-fudan-zhengli': '/dish-photos/red-lantern-signature.png',
-  'haerbin-snacks-zhengli': '/dish-photos/jade-soup-dumpling-signature.png',
-  'he-sheng-hui-fei-dachu': '/dish-photos/pepper-alley-signature.png',
-  'he-xie-bang-cuisine': '/dish-photos/jade-soup-dumpling-signature.png',
-  'ruyi-chicken-abalone': '/dish-photos/winter-melon-soup.png',
-  'haidilao-he-sheng-hui': '/dish-photos/red-lantern-signature.png',
-  'kaijiang-grilled-fish': '/dish-photos/pepper-alley-signature.png',
-  'zuoting-youyuan-hotpot': '/dish-photos/red-lantern-signature.png',
-  'dongfang-yichuan': '/dish-photos/pepper-alley-signature.png',
-  'jiejiao-taiwanese': '/dish-photos/kung-pao.png',
+  'zuihuihuang-fudan-zhengli': '/dish-photos/red-lantern-signature.webp',
+  'haerbin-snacks-zhengli': '/dish-photos/jade-soup-dumpling-signature.webp',
+  'he-sheng-hui-fei-dachu': '/dish-photos/pepper-alley-signature.webp',
+  'he-xie-bang-cuisine': '/dish-photos/jade-soup-dumpling-signature.webp',
+  'ruyi-chicken-abalone': '/dish-photos/winter-melon-soup.webp',
+  'haidilao-he-sheng-hui': '/dish-photos/red-lantern-signature.webp',
+  'kaijiang-grilled-fish': '/dish-photos/pepper-alley-signature.webp',
+  'zuoting-youyuan-hotpot': '/dish-photos/red-lantern-signature.webp',
+  'dongfang-yichuan': '/dish-photos/pepper-alley-signature.webp',
+  'jiejiao-taiwanese': '/dish-photos/kung-pao.webp',
 }
 type HomeCopy = {
   menuScan: string
@@ -1145,14 +1154,14 @@ const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: st
 }
 
 const foodPosts: FoodPost[] = [
-  { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.png', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
-  { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.png', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
-  { id: 'post-03', restaurantId: 'pepper-alley', category: 'sichuan', categoryLabel: '川菜', author: 'Jun Park', initials: 'JP', avatarTone: 'avatar-purple', time: '1 hr ago', title: 'The dry-pot prawn plate with real attitude', body: 'Crisp prawns, celery and peppercorns keep every bite lively. The heat builds slowly, so order rice before the pan lands on the table.', dish: 'Sichuan dry-pot prawns', dishMeta: 'Crisp · spicy · ¥72', imageSrc: '/dish-photos/pepper-alley-signature.png', imageTone: 'feed-image-red', likes: 214, comments: 21 },
-  { id: 'post-04', restaurantId: 'jade-soup-dumpling', category: 'snacks', categoryLabel: '小吃', author: 'Sofia Rossi', initials: 'SR', avatarTone: 'avatar-yellow', time: '2 hrs ago', title: 'The breakfast order with the best crispy bottoms', body: 'These pan-fried buns are soft on top and deeply golden underneath. Add black vinegar and eat them while the skillet is still warm.', dish: 'Pan-fried pork buns', dishMeta: 'Crisp · juicy · ¥24 / skillet', imageSrc: '/dish-photos/jade-soup-dumpling-signature.png', imageTone: 'feed-image-gold', likes: 171, comments: 14 },
-  { id: 'post-05', restaurantId: 'lotus-table', category: 'cantonese', categoryLabel: '粤菜', author: 'Nora Li', initials: 'NL', avatarTone: 'avatar-green', time: '3 hrs ago', title: 'A tea-house plate that is all about crunch', body: 'The shrimp-and-taro rolls have a delicate web of crisp wrapper and a bright citrus dip. A small plate, but very hard to share.', dish: 'Crisp shrimp-taro rolls', dishMeta: 'Lacy · citrusy · ¥46', imageSrc: '/dish-photos/lotus-table-signature.png', imageTone: 'feed-image-green', likes: 88, comments: 6 },
-  { id: 'post-06', restaurantId: 'green-bamboo-house', category: 'vegetarian', categoryLabel: '素食', author: 'Alex Wu', initials: 'AW', avatarTone: 'avatar-blue', time: '5 hrs ago', title: 'A soft, floral finish with a pot of tea', body: 'The sticky rice cake is fragrant without being too sweet, with roasted chestnuts tucked through every slice. Best shared slowly with osmanthus tea.', dish: 'Osmanthus chestnut rice cake', dishMeta: 'Chewy · floral · ¥32', imageSrc: '/dish-photos/green-bamboo-signature.png', imageTone: 'feed-image-blue', likes: 143, comments: 17 },
-  { id: 'post-07', restaurantId: 'west-lake-tea-room', category: 'local', categoryLabel: '江浙菜', author: 'Ethan Kim', initials: 'EK', avatarTone: 'avatar-sand', time: 'Yesterday', title: 'Longjing tea in the most savory form', body: 'The tea-smoked chicken is tender, fragrant and served with slices of pear. The window seats make this an easy afternoon escape.', dish: 'Longjing tea-smoked chicken', dishMeta: 'Tender · aromatic · ¥68', imageSrc: '/dish-photos/west-lake-signature.png', imageTone: 'feed-image-sand', likes: 67, comments: 4 },
-  { id: 'post-08', restaurantId: 'charcoal-yard', category: 'bbq', categoryLabel: '烧烤', author: 'Rina Ito', initials: 'RI', avatarTone: 'avatar-night', time: 'Yesterday', title: 'Cumin lamb and ember smoke after dark', body: 'The lamb has a proper char and the king oyster mushrooms soak up all the grill flavor. A great late-night order for a table that likes to share.', dish: 'Cumin charcoal lamb skewers', dishMeta: 'Smoky · juicy · ¥48 / 6 skewers', imageSrc: '/dish-photos/charcoal-yard-signature.png', imageTone: 'feed-image-night', likes: 119, comments: 9 },
+  { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.webp', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
+  { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.webp', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
+  { id: 'post-03', restaurantId: 'pepper-alley', category: 'sichuan', categoryLabel: '川菜', author: 'Jun Park', initials: 'JP', avatarTone: 'avatar-purple', time: '1 hr ago', title: 'The dry-pot prawn plate with real attitude', body: 'Crisp prawns, celery and peppercorns keep every bite lively. The heat builds slowly, so order rice before the pan lands on the table.', dish: 'Sichuan dry-pot prawns', dishMeta: 'Crisp · spicy · ¥72', imageSrc: '/dish-photos/pepper-alley-signature.webp', imageTone: 'feed-image-red', likes: 214, comments: 21 },
+  { id: 'post-04', restaurantId: 'jade-soup-dumpling', category: 'snacks', categoryLabel: '小吃', author: 'Sofia Rossi', initials: 'SR', avatarTone: 'avatar-yellow', time: '2 hrs ago', title: 'The breakfast order with the best crispy bottoms', body: 'These pan-fried buns are soft on top and deeply golden underneath. Add black vinegar and eat them while the skillet is still warm.', dish: 'Pan-fried pork buns', dishMeta: 'Crisp · juicy · ¥24 / skillet', imageSrc: '/dish-photos/jade-soup-dumpling-signature.webp', imageTone: 'feed-image-gold', likes: 171, comments: 14 },
+  { id: 'post-05', restaurantId: 'lotus-table', category: 'cantonese', categoryLabel: '粤菜', author: 'Nora Li', initials: 'NL', avatarTone: 'avatar-green', time: '3 hrs ago', title: 'A tea-house plate that is all about crunch', body: 'The shrimp-and-taro rolls have a delicate web of crisp wrapper and a bright citrus dip. A small plate, but very hard to share.', dish: 'Crisp shrimp-taro rolls', dishMeta: 'Lacy · citrusy · ¥46', imageSrc: '/dish-photos/lotus-table-signature.webp', imageTone: 'feed-image-green', likes: 88, comments: 6 },
+  { id: 'post-06', restaurantId: 'green-bamboo-house', category: 'vegetarian', categoryLabel: '素食', author: 'Alex Wu', initials: 'AW', avatarTone: 'avatar-blue', time: '5 hrs ago', title: 'A soft, floral finish with a pot of tea', body: 'The sticky rice cake is fragrant without being too sweet, with roasted chestnuts tucked through every slice. Best shared slowly with osmanthus tea.', dish: 'Osmanthus chestnut rice cake', dishMeta: 'Chewy · floral · ¥32', imageSrc: '/dish-photos/green-bamboo-signature.webp', imageTone: 'feed-image-blue', likes: 143, comments: 17 },
+  { id: 'post-07', restaurantId: 'west-lake-tea-room', category: 'local', categoryLabel: '江浙菜', author: 'Ethan Kim', initials: 'EK', avatarTone: 'avatar-sand', time: 'Yesterday', title: 'Longjing tea in the most savory form', body: 'The tea-smoked chicken is tender, fragrant and served with slices of pear. The window seats make this an easy afternoon escape.', dish: 'Longjing tea-smoked chicken', dishMeta: 'Tender · aromatic · ¥68', imageSrc: '/dish-photos/west-lake-signature.webp', imageTone: 'feed-image-sand', likes: 67, comments: 4 },
+  { id: 'post-08', restaurantId: 'charcoal-yard', category: 'bbq', categoryLabel: '烧烤', author: 'Rina Ito', initials: 'RI', avatarTone: 'avatar-night', time: 'Yesterday', title: 'Cumin lamb and ember smoke after dark', body: 'The lamb has a proper char and the king oyster mushrooms soak up all the grill flavor. A great late-night order for a table that likes to share.', dish: 'Cumin charcoal lamb skewers', dishMeta: 'Smoky · juicy · ¥48 / 6 skewers', imageSrc: '/dish-photos/charcoal-yard-signature.webp', imageTone: 'feed-image-night', likes: 119, comments: 9 },
 ]
 
 type RestaurantText = Pick<SavedRestaurant, 'cuisine' | 'location' | 'why'> & { name?: string }
@@ -1420,6 +1429,8 @@ function App() {
   const [assistantAnswer, setAssistantAnswer] = useState('')
   const [assistantLoading, setAssistantLoading] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
+  const [riskConfirmDish, setRiskConfirmDish] = useState<Dish | null>(null)
+  const [confirmedRiskDishKeys, setConfirmedRiskDishKeys] = useState<string[]>([])
   const [sessionMenu, setSessionMenu] = useState<Dish[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('cit:session-menu') || '') as Dish[]
@@ -1474,6 +1485,7 @@ function App() {
   const selectedCompanion = selectedCompanionEmail ? currentCompanions.find((companion) => companion.email === selectedCompanionEmail) || null : null
   const p = pageCopy[language]
   const passportKey = JSON.stringify(passport)
+  const riskConfirmationKey = (dish: Dish) => `${passportKey}:${activeCompanionIds.join(',')}:${dish.id}`
   const activePro = account?.subscriptionTier === 'pro' && (!account.subscriptionExpiresAt || account.subscriptionExpiresAt > Date.now())
   const freeScanLimit = 1
   const scanCountKey = account ? `cit:menu-scan-count:${normalizeEmail(account.email)}` : ''
@@ -1915,9 +1927,12 @@ function App() {
     window.speechSynthesis.speak(utterance)
     track(eventName)
   }
-  const addToCart = (dish: Dish) => {
-    if (getDiningStatus(dish) === 'CONFLICT') {
-      setToast(p.toastConflict)
+  const addToCart = (dish: Dish, allowRiskConfirmation = false) => {
+    const status = getDiningStatus(dish)
+    const requiresRiskConfirmation = status === 'UNKNOWN' || status === 'CONFLICT'
+    const confirmationKey = riskConfirmationKey(dish)
+    if (requiresRiskConfirmation && !allowRiskConfirmation && !confirmedRiskDishKeys.includes(confirmationKey)) {
+      setRiskConfirmDish(dish)
       return
     }
     setCart((current) => {
@@ -1929,6 +1944,20 @@ function App() {
     setSelectedSessionOrder(null)
     setToast(`${dish.localized[language]} ${p.toastAdded}`)
     track('dish_added_to_cart')
+  }
+  const confirmRiskDish = () => {
+    if (!riskConfirmDish) return
+    const dish = riskConfirmDish
+    setConfirmedRiskDishKeys((current) => current.includes(riskConfirmationKey(dish)) ? current : [...current, riskConfirmationKey(dish)])
+    setRiskConfirmDish(null)
+    addToCart(dish, true)
+  }
+  const askAboutRiskDish = () => {
+    if (!riskConfirmDish) return
+    setSelectedDish(riskConfirmDish)
+    setRiskConfirmDish(null)
+    setAskSheet(true)
+    track('ask_restaurant_clicked')
   }
   const updateCartQuantity = (dishId: string, quantity: number) => setCart((current) => quantity <= 0
     ? current.filter((item) => item.dish.id !== dishId)
@@ -2023,7 +2052,7 @@ function App() {
         {screen === 'home' && <Home t={t} p={p} language={language} userName={account?.username || ''} passport={passport} dishes={sessionMenu} sessionRestaurant={sessionRestaurant} currentOrder={currentSessionOrder} openScreen={openScreen} onOpenOrder={openSavedOrder} onAddMore={startAddingToOrder} onDeleteSession={deleteCurrentSession} setSelectedDish={setSelectedDish} setAskSheet={setAskSheet} nearbyRestaurants={restaurantCatalog.filter((restaurant) => restaurant.source).slice(0, 6)} savedRestaurants={savedRestaurants} onToggleRestaurant={toggleSavedRestaurant} onScanAction={requestHomeScan} onSampleMenu={() => void startScan(undefined, true)} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('home')} />}
         {screen === 'scan' && <Scan t={t} p={p} language={language} restaurantName={sessionRestaurant} setRestaurantName={setSessionRestaurant} scanImage={scanImage} scanning={scanning} scanError={scanError} canRetry={Boolean(lastScanFile)} photoInputRef={photoInputRef} fileInputRef={fileInputRef} cameraInputRef={cameraInputRef} showUploadOptions={showUploadOptions} setShowUploadOptions={setShowUploadOptions} handleFile={handleFile} handleCameraFile={handleCameraFile} startScan={startScan} onRetry={() => { if (lastScanFile) void startScan(lastScanFile) }} onOpenCamera={openCamera} onBack={() => openScreen('home')} onToast={setToast} />}
         {screen === 'camera' && <CameraCapture t={t} p={p} pages={capturedPages} onCapture={addCapturedPage} onUndo={undoCapturedPage} onDelete={removeCapturedPage} onDone={finishMenuScan} onBack={() => openScreen('scan')} />}
-        {screen === 'menu' && <MenuResults t={t} p={p} language={language} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'menu')} />}
+        {screen === 'menu' && <MenuResults t={t} p={p} language={language} passport={passport} dishes={sessionMenu} allDishes={sessionMenu} getStatus={getDiningStatus} cart={cart} onAddToCart={addToCart} onOpenCart={() => openScreen('cart')} companions={currentCompanions} activeCompanionIds={activeCompanionIds} onToggleCompanion={toggleCompanion} onOpenCompanions={() => openCompanions('menu')} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'menu')} />}
         {screen === 'detail' && <DishDetail t={t} p={p} language={language} dish={selectedDish} passport={passport} status={getStatus(selectedDish)} onBack={() => openScreen(detailReturnScreen)} onAsk={() => { setAskSheet(true); track('ask_restaurant_clicked') }} onAddToCart={() => addToCart(selectedDish)} />}
         {screen === 'cart' && <Cart t={t} p={p} language={language} cart={cart} itemCount={cartItemCount} total={cartTotal} getStatus={getDiningStatus} onBack={() => openScreen('menu')} onIncrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) + 1)} onDecrease={(dishId) => updateCartQuantity(dishId, (cart.find((item) => item.dish.id === dishId)?.quantity || 0) - 1)} onClear={() => setCart([])} onConfirm={() => { setSelectedSessionOrder(null); track('cart_confirmed'); openScreen('order') }} />}
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} hasProAccess={Boolean(activePro)} onRequirePro={requirePro} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
@@ -2041,6 +2070,7 @@ function App() {
       {(['home', 'find', 'community', 'orders', 'profile'].includes(screen)) && <BottomNav language={language} screen={screen} openScreen={openScreen} t={t} />}
     </div>
     {homeScanTipsOpen && <HomeScanTipsSheet t={t} onClose={() => setHomeScanTipsOpen(false)} onContinue={continueHomeCamera} />}
+    {riskConfirmDish && <RiskConfirmSheet language={language} p={p} t={t} dish={riskConfirmDish} status={getDiningStatus(riskConfirmDish)} onClose={() => setRiskConfirmDish(null)} onAsk={askAboutRiskDish} onConfirm={confirmRiskDish} />}
     {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} />}
     {proGateFeature && <ProFeatureGateModal language={language} feature={proGateFeature} onClose={() => setProGateFeature(null)} onUpgrade={() => { setProGateFeature(null); setSubscriptionOpen(true) }} />}
     {subscriptionOpen && account && <SubscriptionModal language={language} user={account} onSelect={updateSubscription} onClose={() => setSubscriptionOpen(false)} />}
@@ -2519,7 +2549,7 @@ function Home({ t, p, language, userName, passport, dishes: sessionDishes, sessi
       const displayName = restaurantText.name || restaurant.name
       const categoryLabel = restaurantText.cuisine.split(' · ')[0] || homeText.featured
       const saved = savedRestaurants.some((item) => item.id === restaurant.id)
-      const imageSrc = homeRestaurantImageSrc[restaurant.id] || sessionDishes[index % sessionDishes.length]?.imageSrc || '/dish-photos/kung-pao.png'
+      const imageSrc = homeRestaurantImageSrc[restaurant.id] || sessionDishes[index % sessionDishes.length]?.imageSrc || '/dish-photos/kung-pao.webp'
       const distance = restaurant.distanceKm === undefined ? '—' : `${restaurant.distanceKm.toFixed(1)} km ${homeText.distance}`
       return <article className="home-restaurant-card" key={restaurant.id}><div className="home-restaurant-media"><img src={imageSrc} alt={`${homeText.restaurantPhotoAlt} ${displayName}`} loading={index < 2 ? 'eager' : 'lazy'} /><span className="home-restaurant-type">{categoryLabel}</span><button type="button" className={`home-restaurant-save ${saved ? 'saved' : ''}`} onClick={() => onToggleRestaurant(restaurant)} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`}><Icon name="bookmark" size={17} /></button><span className="home-restaurant-rating"><Icon name="star" size={13} /> {restaurant.rating?.toFixed(1) || '—'}</span></div><div className="home-restaurant-body"><div className="home-restaurant-title"><h3>{displayName}</h3><span>{distance}</span></div><p className="home-restaurant-cuisine">{restaurantText.cuisine}</p><small className="home-restaurant-note"><Icon name="shield" size={13} /> {restaurantText.why}</small></div></article>
     })}</div></section>
@@ -2596,7 +2626,7 @@ function CameraCapture({ t, p, pages, onCapture, onUndo, onDelete, onDone, onBac
 
 function PageHeader({ title, backLabel = 'Back', onBack, action }: { title: string; kicker?: string; hideKicker?: boolean; backLabel?: string; onBack?: () => void; action?: ReactNode }) { return <div className="page-header"><button className="icon-button soft" onClick={onBack} aria-label={backLabel}><Icon name="back" size={20} /></button><div className="page-title page-title-no-kicker"><strong>{title}</strong></div>{action || <span className="header-spacer" />}</div> }
 
-function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStatus, cart, onAddToCart, onOpenCart, companions, activeCompanionIds, onToggleCompanion, onOpenCompanions, onBack, onDetail }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; cart: CartItem[]; onAddToCart: (dish: Dish) => void; onOpenCart: () => void; companions: Companion[]; activeCompanionIds: string[]; onToggleCompanion: (id: string) => void; onOpenCompanions: () => void; onBack: () => void; onDetail: (dish: Dish) => void }) {
+function MenuResults({ t, p, language, passport, dishes: visibleDishes, allDishes, getStatus, cart, onAddToCart, onOpenCart, companions, activeCompanionIds, onToggleCompanion, onOpenCompanions, onBack, onDetail }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; passport: Passport; dishes: Dish[]; allDishes: Dish[]; getStatus: (dish: Dish) => Status; cart: CartItem[]; onAddToCart: (dish: Dish) => void; onOpenCart: () => void; companions: Companion[]; activeCompanionIds: string[]; onToggleCompanion: (id: string) => void; onOpenCompanions: () => void; onBack: () => void; onDetail: (dish: Dish) => void }) {
   const [selectedCategory, setSelectedCategory] = useState<DishCategory | 'all'>('all')
   const connectedCompanions = companions.filter((companion) => companion.passport)
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
@@ -2621,7 +2651,7 @@ function MenuResults({ t, p, language, dishes: visibleDishes, allDishes, getStat
         {groups.map(({ category, dishes: groupDishes }) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => setSelectedCategory(category)}><span>{localizedCategories[category]}</span><b>{groupDishes.length}</b></button>)}
       </div>
     </section>
-    <div className="menu-category-groups">{filteredGroups.map(({ category, dishes: groupDishes }) => <section className="menu-group" key={category}><div className="menu-group-heading"><span className="menu-group-icon">{menuCategoryMeta[category].icon}</span><div><h2>{localizedCategories[category]}</h2></div><em>{groupDishes.length}</em></div><div className="menu-list">{groupDishes.map((dish) => <DishCard key={dish.id} p={p} dish={dish} language={language} status={getStatus(dish)} t={t} onDetail={onDetail} onAddToCart={onAddToCart} cartQuantity={cart.find((item) => item.dish.id === dish.id)?.quantity || 0} />)}</div></section>)}</div>
+    <div className="menu-category-groups">{filteredGroups.map(({ category, dishes: groupDishes }) => <section className="menu-group" key={category}><div className="menu-group-heading"><span className="menu-group-icon">{menuCategoryMeta[category].icon}</span><div><h2>{localizedCategories[category]}</h2></div><em>{groupDishes.length}</em></div><div className="menu-list">{groupDishes.map((dish) => <DishCard key={dish.id} p={p} dish={dish} language={language} passport={passport} status={getStatus(dish)} t={t} onDetail={onDetail} onAddToCart={onAddToCart} cartQuantity={cart.find((item) => item.dish.id === dish.id)?.quantity || 0} />)}</div></section>)}</div>
     <div className={`sticky-cta ${cartCount ? 'has-items' : 'empty'}`}><button type="button" className="cart-floating-button" onClick={onOpenCart}><span className="cart-floating-icon"><Icon name="cart" size={19} />{cartCount > 0 && <b>{cartCount}</b>}</span><span className="cart-floating-copy"><strong>{cartCount ? p.viewCart : p.cart}</strong><small>{cartCount ? `${cartCount} ${countText(language, cartCount, p.dish, p.dishes)} ${p.selected}` : p.browseDishes}</small></span><strong className="cart-floating-total">{cartCount ? `¥${cartTotal}` : '¥0'}</strong><Icon name="arrow" size={17} /></button></div>
   </div>
 }
@@ -2704,16 +2734,17 @@ const dishNarrativeTranslations: Record<Language, Record<string, DishNarrative>>
   },
 }
 const dishNarrativeLabel = (language: Language, dish: Dish, key: keyof DishNarrative) => dishNarrativeTranslations[language][dish.id]?.[key] || dish[key]
-function DishCard({ p, dish, language, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) {
+function DishCard({ p, dish, language, passport, status, t, onDetail, onAddToCart, cartQuantity }: { p: PageCopy; dish: Dish; language: Language; passport: Passport; status: Status; t: (key: CopyKey) => string; onDetail: (dish: Dish) => void; onAddToCart: (dish: Dish) => void; cartQuantity: number }) {
   const inCart = cartQuantity > 0
+  const spiceConflict = spiceTagConflictsWithPassport(dish, passport)
   return <article className={`dish-card card-status-${status.toLowerCase()}`}>
     <DishVisual dish={dish} language={language} small />
     <div className="dish-card-content">
       <div className="dish-card-title"><div className="dish-card-name-row"><h3>{dish.localized[language]}</h3><StatusBadge status={status} t={t} /></div></div>
-      <div className="tag-row dish-tags">{dish.tags.map((tag) => <span key={tag} className="tiny-tag">{dishTagLabel(language, tag)}</span>)}<span className="tiny-tag spicy">{dish.spicy ? '🌶️'.repeat(dish.spicy) : ''} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div>
+      <div className="tag-row dish-tags">{dish.tags.filter((tag) => !(dish.spicy === 0 && tag.toLowerCase() === 'mild')).map((tag) => <span key={tag} className={`tiny-tag ${tagConflictsWithPassport(dish, tag, passport) ? 'passport-conflict' : ''}`}>{dishTagLabel(language, tag)}</span>)}<span className={`tiny-tag spicy ${spiceConflict ? 'passport-conflict' : ''}`}>{dish.spicy ? '🌶️'.repeat(dish.spicy) : ''} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.mild}</span></div>
     </div>
     <strong className="dish-card-price">¥{dish.price}</strong>
-    <button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} type="button" disabled={status === 'CONFLICT'} aria-label={`${p.addToCart} ${dish.localized[language]}`} onClick={() => onAddToCart(dish)}><Icon name="plus" size={16} /></button>
+    <button className={`dish-cart-button ${inCart ? 'is-in-cart' : ''}`} type="button" aria-label={`${p.addToCart} ${dish.localized[language]}`} onClick={() => onAddToCart(dish)}><Icon name="plus" size={16} /></button>
     <button className="dish-detail-button" type="button" aria-label={`${t('viewDetails')} ${dish.localized[language]}`} onClick={() => onDetail(dish)}><Icon name="arrow" size={17} /></button>
   </article>
 }
@@ -2738,6 +2769,16 @@ const ingredientAllergenTerms: Record<string, string[]> = {
 function ingredientMatchesAllergen(label: string, allergen: string) {
   const lower = label.toLowerCase()
   return (ingredientAllergenTerms[allergen] || [allergen.replace('-', ' ')]).some((term) => lower.includes(term))
+}
+
+function tagConflictsWithPassport(dish: Dish, tag: string, passport: Passport) {
+  const selectedAllergens = [...passport.allergies, ...(passport.otherAllergen.trim() ? [passport.otherAllergen.trim()] : [])]
+  const allergyConflict = selectedAllergens.some((selected) => dish.allergens.some((allergen) => allergenMatchKeys(selected).includes(allergen)) && ingredientMatchesAllergen(tag, selected))
+  return allergyConflict || ingredientDietConflict(tag, dish, passport)
+}
+
+function spiceTagConflictsWithPassport(dish: Dish, passport: Passport) {
+  return passport.spiceLevel !== null && dish.spicy > passport.spiceLevel
 }
 
 function ingredientCarrier(label: string) {
@@ -2825,7 +2866,7 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
       <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>Description</SectionTitle></div><div className="detail-status-summary"><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
       <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
       <section className="detail-info-section"><SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div></section>
-      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button disabled={status === 'CONFLICT'} onClick={onAddToCart} icon={status === 'CONFLICT' ? 'close' : 'cart'}>{status === 'CONFLICT' ? p.excluded : p.addToCart}</Button></div>
+      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button onClick={onAddToCart} icon="cart">{p.addToCart}</Button></div>
     </div>
   </div>
 }
@@ -2929,6 +2970,23 @@ function Fact({ icon, title, value }: { icon: string; title: string; value: stri
 function ProFeatureLock({ language, feature, onUpgrade }: { language: Language; feature: ProFeature; onUpgrade: () => void }) {
   const text = proFeatureCopy[language]
   return <div className="pro-feature-lock"><span className="pro-feature-lock-icon"><Icon name="wallet" size={21} /></span><strong>{text.featureNames[feature]}</strong><p>{text.lockedBody}</p><Button variant="secondary" onClick={onUpgrade} icon="arrow">{text.upgrade}</Button></div>
+}
+
+function RiskConfirmSheet({ language, p, t, dish, status, onClose, onAsk, onConfirm }: { language: Language; p: PageCopy; t: (key: CopyKey) => string; dish: Dish; status: Status; onClose: () => void; onAsk: () => void; onConfirm: () => void }) {
+  const text = riskConfirmCopy[language]
+  return <div className="sheet-backdrop risk-confirm-backdrop" onClick={onClose}>
+    <section className="risk-confirm-sheet" role="dialog" aria-modal="true" aria-labelledby="risk-confirm-title" onClick={(event) => event.stopPropagation()}>
+      <div className="sheet-handle" />
+      <div className={`risk-confirm-icon ${status === 'CONFLICT' ? 'is-conflict' : ''}`}><Icon name="alert" size={28} /></div>
+      <h2 id="risk-confirm-title">{text.title}</h2>
+      <p>{text.message}</p>
+      <strong className="risk-confirm-dish">{dish.localized[language]}</strong>
+      <div className="risk-confirm-actions">
+        <Button className="risk-confirm-ask" variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button>
+        <Button className="risk-confirm-button" onClick={onConfirm} icon="cart">{text.confirm}</Button>
+      </div>
+    </section>
+  </div>
 }
 
 function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void }) {
@@ -3172,7 +3230,7 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
       body: draft.body.trim(),
       dish: draft.dish.trim(),
       dishMeta: draft.dishMeta.trim() || localizedPostMeta[language].worthTrying,
-      imageSrc: draft.imageSrc || referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.png',
+      imageSrc: draft.imageSrc || referencePost?.imageSrc || '/dish-photos/old-town-kitchen-signature.webp',
       imageTone: referencePost?.imageTone || 'feed-image-coral',
       likes: 0,
       comments: 0,
