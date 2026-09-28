@@ -1,4 +1,4 @@
-/* Profile-only visual refresh. Keeps the rest of the app on its existing theme. */
+/* Profile layout details. Shared colors, type, borders, and elevation come from styles.css. */
 .topbar { display: none; }
 .home-route .topbar { display: flex; }
 
@@ -196,4 +196,181 @@
 @media (max-width: 720px) {
   .profile-entry-list { padding-left: 12px; padding-right: 12px; }
   .profile-language-panel .language-select-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Profile alignment with the shared UI contract. */
+.page-profile {
+  color: var(--text);
+  background: transparent;
+}
+
+.profile-account-card {
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.profile-avatar {
+  border-radius: var(--radius-card);
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.profile-name-row strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.profile-account-link {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.profile-account-link:hover {
+  color: var(--brand);
+}
+
+.profile-section {
+  margin-bottom: 20px;
+}
+
+.profile-section-label {
+  margin-left: 0;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.profile-entry-list {
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.profile-setting-card {
+  min-height: 58px;
+  height: 58px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+}
+
+.profile-setting-card + .profile-setting-card {
+  border-top: 1px solid var(--line);
+}
+
+.profile-setting-card:hover {
+  border-color: transparent;
+  background: var(--cream);
+  transform: none;
+}
+
+.profile-setting-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-control);
+  background: var(--brand-soft) !important;
+  color: var(--brand) !important;
+}
+
+.profile-setting-copy strong {
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.profile-setting-copy small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.profile-setting-card > .icon:last-child {
+  color: var(--text-muted);
+}
+
+.profile-language-value,
+.profile-tier-free,
+.profile-tier-pro {
+  border-radius: var(--radius-control);
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.profile-danger-row,
+.profile-danger-row .profile-setting-copy strong {
+  color: #9f4844;
+}
+
+.profile-danger-row .profile-setting-icon {
+  background: #fff0ec !important;
+  color: #c94b47 !important;
+}
+
+.profile-language-panel {
+  margin: 8px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--cream);
+}
+
+.profile-language-panel .language-select-grid button {
+  border-radius: var(--radius-control);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.profile-language-panel .language-select-grid button.active {
+  border: 1px solid var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.profile-info-modal,
+.avatar-editor-modal {
+  border-radius: var(--radius-modal);
+  box-shadow: var(--shadow-modal);
+}
+
+@media (max-width: 720px) {
+  .profile-account-card {
+    padding: 14px;
+  }
+
+  .profile-entry-list {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+
+/* Keep the profile avatar circular and separated from the page top. */
+.profile-account-card {
+  margin-top: 24px;
+}
+
+.profile-avatar {
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.profile-avatar-image,
+.profile-avatar-image img {
+  border-radius: 50%;
+}
+
+@media (max-width: 720px) {
+  .profile-account-card {
+    margin-top: 20px;
+  }
 }
