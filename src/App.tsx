@@ -1330,6 +1330,15 @@ const findBrowseCopy: Record<Language, { searchPlaceholder: string; category: st
   it: { searchPlaceholder: 'Cerca qualcosa di gustoso…', category: 'Categorie', seeAll: 'Vedi tutto', popularChoices: 'Scelte popolari', clearSearch: 'Cancella ricerca' },
 }
 
+const savedPostsCopy: Record<Language, { title: string; empty: string; saved: string; removed: string; copied: string; copyFailed: string }> = {
+  en: { title: 'Saved posts', empty: 'No saved posts yet.', saved: 'Post saved', removed: 'Post removed', copied: 'Share link copied', copyFailed: 'Could not share this post' },
+  ko: { title: '저장한 게시물', empty: '아직 저장한 게시물이 없어요.', saved: '게시물을 저장했어요', removed: '저장을 취소했어요', copied: '공유 링크를 복사했어요', copyFailed: '게시물을 공유하지 못했어요' },
+  ja: { title: '保存した投稿', empty: '保存した投稿はまだありません。', saved: '投稿を保存しました', removed: '保存を解除しました', copied: '共有リンクをコピーしました', copyFailed: '投稿を共有できませんでした' },
+  ru: { title: 'Сохранённые публикации', empty: 'Сохранённых публикаций пока нет.', saved: 'Публикация сохранена', removed: 'Публикация удалена из сохранённых', copied: 'Ссылка скопирована', copyFailed: 'Не удалось поделиться публикацией' },
+  es: { title: 'Publicaciones guardadas', empty: 'Todavía no hay publicaciones guardadas.', saved: 'Publicación guardada', removed: 'Publicación eliminada de guardados', copied: 'Enlace copiado', copyFailed: 'No se pudo compartir la publicación' },
+  it: { title: 'Post salvati', empty: 'Non ci sono ancora post salvati.', saved: 'Post salvato', removed: 'Post rimosso dai salvati', copied: 'Link copiato', copyFailed: 'Impossibile condividere il post' },
+}
+
 const foodPosts: FoodPost[] = [
   { id: 'post-01', restaurantId: 'old-town-kitchen', category: 'local', categoryLabel: '本帮菜', author: 'Mia Chen', initials: 'MC', avatarTone: 'avatar-coral', time: '18 min ago', title: 'The kind of Shanghai comfort food you remember', body: 'Sticky ribs, sweet quail eggs and a bowl that smells like toasted soy. This is the place I would bring someone trying Shanghai flavors for the first time.', dish: 'Soy-glazed pork ribs', dishMeta: 'Caramelized · savory · ¥58', imageSrc: '/dish-photos/old-town-kitchen-signature.webp', imageTone: 'feed-image-coral', likes: 128, comments: 12 },
   { id: 'post-02', restaurantId: 'red-lantern-hotpot', category: 'hotpot', categoryLabel: '火锅', author: 'Leo Huang', initials: 'LH', avatarTone: 'avatar-olive', time: '42 min ago', title: 'A hotpot signature that skips the usual soup base', body: 'The prawns arrive sizzling in mala butter with lotus seeds and peanuts. Rich, smoky and perfect for a group that wants something to share.', dish: 'Mala butter prawns', dishMeta: 'Smoky · numbing · ¥88', imageSrc: '/dish-photos/red-lantern-signature.webp', imageTone: 'feed-image-olive', likes: 96, comments: 8 },
@@ -2235,7 +2244,7 @@ function App() {
         {screen === 'order' && <OrderPage language={language} p={p} passport={selectedSessionOrder?.passportSnapshot || passport} cart={selectedSessionOrder?.cartSnapshot || cart} savedOrder={selectedSessionOrder} hasProAccess={Boolean(activePro)} onRequirePro={requirePro} onBack={() => openScreen('cart')} onComplete={completeCartOrder} onAddMore={(order) => startAddingToOrder(order)} onSplitBill={(order) => openBill(order, 'order')} onHome={() => openScreen('home')} onSpeak={(text) => speak(text, 'waiter_voice_play')} />}
         {screen === 'bill' && activeBillOrder && <Bill t={t} p={p} language={language} billInputRef={billInputRef} handleFile={handleBillFile} billMode={billMode} setBillMode={setBillMode} participants={participants} setParticipants={setParticipants} splitItems={splitItems} setSplitItems={setSplitItems} billItems={billItems} billTotal={billTotal} equalAmount={equalAmount} itemTotals={itemTotals} order={activeBillOrder} billSource={billSource} billReceiptName={billReceiptName} setBillSource={(source) => { setBillSource(source); if (source === 'order') setBillReceiptName('') }} onBack={() => openScreen(billReturnScreen)} onToast={setToast} />}
         {screen === 'find' && <FindFood t={t} p={p} language={language} onBack={() => openScreen('home')} onDetail={(dish) => openDishDetail(dish, 'find')} />}
-        {screen === 'community' && <CommunityPage variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onBack={() => openScreen('home')} />}
+        {screen === 'community' && <CommunityPage variant="community" t={t} p={p} language={language} restaurants={restaurantCatalog} savedRestaurants={savedRestaurants} pastOrders={pastSessionOrders} onToggleRestaurant={toggleSavedRestaurant} onToast={setToast} onBack={() => openScreen('home')} />}
         {screen === 'orders' && <Orders language={language} currentOrder={currentSessionOrder} pastOrders={pastSessionOrders} onOpenOrder={openSavedOrder} onSplitBill={(order) => openBill(order, 'orders')} />}
         {screen === 'profile' && account && <Profile t={t} p={p} language={language} user={account} passport={passport} restaurants={savedRestaurants} companions={currentCompanions} pendingInviteCount={incomingCompanionInvites.length} onOpenSavedRestaurants={() => openScreen('savedRestaurants')} onOpenCompanions={() => openCompanions('profile')} onOpenPassport={() => openScreen('passport')} onLanguageChange={setLanguage} onAvatarChange={updateAvatar} onOpenSubscription={() => setSubscriptionOpen(true)} onLogout={logOut} onReset={resetDemo} />}
         {screen === 'passport' && <PassportPage language={language} t={t} passport={passport} updatePassport={updatePassport} onBack={() => openScreen('profile')} />}
@@ -3302,10 +3311,39 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
   const searchTerm = query.trim().toLowerCase().replace(/\s+/g, '')
   const visibleFood = popularFood.filter(({ dish, categoryIds }) => {
     const searchable = `${dish.name} ${dish.zh} ${dish.localized[language]} ${dish.tags.join(' ')}`.toLowerCase().replace(/\s+/g, '')
-    return (activeCategory === 'all' || categoryIds.includes(activeCategory)) && (!searchTerm || searchable.includes(searchTerm))
+    return !searchTerm || searchable.includes(searchTerm)
   })
 
   if (categoryPage) {
+    if (categoryPage === 'all') {
+      return <div className="page page-find find-category-page">
+        <div className="find-category-page-header">
+          <button type="button" className="find-category-back" onClick={() => setCategoryPage(null)} aria-label={p.back}><Icon name="back" size={20} /></button>
+          <h1>{browseText.category}</h1>
+        </div>
+        <div className="find-category-directory">
+          {categoryCards.map((category) => <button type="button" key={category.id} className="find-category-directory-card" onClick={() => { setActiveCategory(category.id); setCategoryPage(category.id) }}>
+            <img src={category.imageSrc} alt="" loading="lazy" />
+            <span>{foodCategoryLabels[language][category.id]}</span>
+            <Icon name="arrow" size={16} />
+          </button>)}
+        </div>
+      </div>
+    }
+
+    if (categoryPage === 'popular') {
+      const allPopularCards = Object.entries(findFoodCategoryPreview).flatMap(([categoryId, cards]) => cards.map((card) => ({ ...card, categoryId })))
+      return <div className="page page-find find-category-page">
+        <div className="find-category-page-header">
+          <button type="button" className="find-category-back" onClick={() => setCategoryPage(null)} aria-label={p.back}><Icon name="back" size={20} /></button>
+          <h1>{browseText.popularChoices}</h1>
+        </div>
+        <div className="find-dish-card-grid">
+          {allPopularCards.map(({ categoryId, ...card }) => <FindDishCard key={`${categoryId}-${card.id}`} item={{ ...card, category: foodCategoryLabels[language][categoryId] }} onClick={() => onDetail(findFoodDishFromCard(card, categoryId))} />)}
+        </div>
+      </div>
+    }
+
     const categoryLabel = foodCategoryLabels[language][categoryPage]
     const previewCards = findFoodCategoryPreview[categoryPage] || []
     return <div className="page page-find find-category-page">
@@ -3329,7 +3367,7 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
       </label>
     </div>
     <section className="find-browse-section">
-      <div className="find-section-heading"><h2>{browseText.category}</h2><button type="button" onClick={() => setActiveCategory('all')}>{browseText.seeAll}</button></div>
+      <div className="find-section-heading"><h2>{browseText.category}</h2><button type="button" onClick={() => setCategoryPage('all')}>{browseText.seeAll}</button></div>
       <div className="find-category-scroll" aria-label={browseText.category}>
         {categoryCards.map((category, index) => <button type="button" key={category.id} className={`find-category-card find-category-card-${index + 1} ${activeCategory === category.id ? 'active' : ''}`} onClick={() => { setActiveCategory(category.id); setCategoryPage(category.id) }} aria-pressed={activeCategory === category.id}>
           <span>{foodCategoryLabels[language][category.id]}</span>
@@ -3338,7 +3376,7 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
       </div>
     </section>
     <section className="find-browse-section find-nearby-section" id="popular-choices">
-      <div className="find-section-heading"><h2>{browseText.popularChoices}</h2><button type="button" onClick={() => { setActiveCategory('all'); setQuery('') }}>{browseText.seeAll}</button></div>
+      <div className="find-section-heading"><h2>{browseText.popularChoices}</h2><button type="button" onClick={() => setCategoryPage('popular')}>{browseText.seeAll}</button></div>
       <div className="nearby-food-grid">
         {visibleFood.map(({ dish, categoryIds }) => <FindDishCard key={dish.id} item={{ id: dish.id, name: dish.localized[language], category: foodCategoryLabels[language][categoryIds[0] || 'all'], imageSrc: dish.imageSrc, tags: dish.tags.slice(0, 2).map((tag) => dishTagLabel(language, tag)) }} onClick={() => onDetail(dish)} />)}
       </div>
@@ -3360,13 +3398,20 @@ function FindDishCard({ item, onClick }: { item: FindDishCardItem; onClick?: () 
   return onClick ? <button type="button" className="find-dish-card" onClick={onClick} aria-label={item.name}>{cardContent}</button> : <article className="find-dish-card">{cardContent}</article>
 }
 
-function CommunityPage({ variant = 'community', t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onBack }: { variant?: 'find' | 'community'; t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onBack: () => void }) {
+function CommunityPage({ variant = 'community', t, p, language, restaurants, savedRestaurants, pastOrders, onToggleRestaurant, onToast, onBack }: { variant?: 'find' | 'community'; t: (key: CopyKey) => string; p: PageCopy; language: Language; restaurants: SavedRestaurant[]; savedRestaurants: SavedRestaurant[]; pastOrders: DiningOrder[]; onToggleRestaurant: (restaurant: SavedRestaurant) => void; onToast: (message: string) => void; onBack: () => void }) {
   const communityMode = variant === 'community'
   const [activeCategory, setActiveCategory] = useState('all')
   const [query, setQuery] = useState('')
+  const [savedPostsOpen, setSavedPostsOpen] = useState(false)
   const nearbyText = nearbyCopy[language]
   const browseText = findBrowseCopy[language]
   const [likedPosts, setLikedPosts] = useState<string[]>([])
+  const [savedPostIds, setSavedPostIds] = useState<string[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cit:saved-food-posts') || '') as string[]
+      return Array.isArray(saved) ? saved.filter((id): id is string => typeof id === 'string') : []
+    } catch { return [] }
+  })
   const [posts, setPosts] = useState<FoodPost[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('cit:food-posts') || '') as FoodPost[]
@@ -3385,7 +3430,29 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
   const selectedRestaurant = historyRestaurants.find((restaurant) => restaurant.id === composerRestaurantId) || historyRestaurants[0]
   const referencePost = posts.find((post) => post.restaurantId === selectedRestaurant?.id) || foodPosts.find((post) => post.restaurantId === selectedRestaurant?.id)
   const visiblePosts = activeCategory === 'all' ? posts : posts.filter((post) => post.category === activeCategory)
+  const postsForView = (savedPostsOpen ? visiblePosts.filter((post) => savedPostIds.includes(post.id)) : visiblePosts)
   const toggleLike = (postId: string) => setLikedPosts((current) => current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId])
+  const toggleSavedPost = (post: FoodPost) => {
+    const saved = savedPostIds.includes(post.id)
+    setSavedPostIds((current) => saved ? current.filter((id) => id !== post.id) : [...current, post.id])
+    onToast(saved ? savedPostsCopy[language].removed : savedPostsCopy[language].saved)
+  }
+  const sharePost = async (post: FoodPost) => {
+    const postText = localizedPost(language, post)
+    const shareData = { title: postText.title, text: `${postText.dish} · ${postText.body}`, url: window.location.href }
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData)
+        return
+      }
+      if (!navigator.clipboard) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(`${postText.title}\n${window.location.href}`)
+      onToast(savedPostsCopy[language].copied)
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      onToast(savedPostsCopy[language].copyFailed)
+    }
+  }
   const openComposer = () => {
     const firstRestaurant = historyRestaurants[0]
     const firstPost = firstRestaurant ? posts.find((post) => post.restaurantId === firstRestaurant.id) || foodPosts.find((post) => post.restaurantId === firstRestaurant.id) : undefined
@@ -3433,6 +3500,7 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
     event.target.value = ''
   }
   useEffect(() => { localStorage.setItem('cit:food-posts', JSON.stringify(posts)) }, [posts])
+  useEffect(() => { localStorage.setItem('cit:saved-food-posts', JSON.stringify(savedPostIds)) }, [savedPostIds])
   useEffect(() => {
     if (!composerOpen) return
     const previousOverflow = document.body.style.overflow
@@ -3454,32 +3522,33 @@ function CommunityPage({ variant = 'community', t, p, language, restaurants, sav
   })
 
   return <div className={`page page-narrow ${communityMode ? 'page-community' : 'page-find'}`}>
-    <PageHeader title={communityMode ? 'Community' : t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button>} />
+    <PageHeader title={communityMode && savedPostsOpen ? savedPostsCopy[language].title : communityMode ? 'Community' : t('findFood')} hideKicker backLabel={p.back} onBack={onBack} action={<span className="community-header-actions"><button type="button" className={`icon-button soft ${savedPostsOpen ? 'active' : ''}`} onClick={() => setSavedPostsOpen((open) => !open)} aria-pressed={savedPostsOpen} aria-label={savedPostsCopy[language].title}><Icon name="bookmark" size={19} /></button><button type="button" className="icon-button soft" onClick={openComposer} aria-label={p.createFoodPost}><Icon name="plus" size={20} /></button></span>} />
     {!communityMode && <div className="feed-intro">
       <div><span className="community-eyebrow">{p.exploreKicker}</span><h1>{p.findHeading}</h1><p>{p.findDescription}</p></div>
     </div>}
     <div className="feed-categories" aria-label={p.foodCategories}>{foodCategories.map((category) => <button type="button" key={category.id} className={activeCategory === category.id ? 'active' : ''} onClick={() => setActiveCategory(category.id)}>{foodCategoryLabels[language][category.id]}</button>)}</div>
     {!communityMode && <div className="feed-context"><span className="feed-context-icon"><Icon name="leaf" size={15} /></span><span><strong>{p.communityPicks}</strong><small>{p.communityHint}</small></span></div>}
-    <div className={`feed-grid ${communityMode ? 'community-feed-grid' : ''}`}>{visiblePosts.map((post) => {
+    <div className={`feed-grid ${communityMode ? 'community-feed-grid' : ''}`}>{postsForView.map((post) => {
       const restaurant = restaurants.find((item) => item.id === post.restaurantId)
       if (!restaurant) return null
       const restaurantText = localizedRestaurant(language, restaurant)
       const postText = localizedPost(language, post)
       const saved = savedRestaurants.some((item) => item.id === restaurant.id)
       const liked = likedPosts.includes(post.id)
+      const savedPost = savedPostIds.includes(post.id)
       return <article className={`feed-post ${communityMode ? 'community-feed-post' : ''}`} key={post.id}>
         <div className={`feed-media ${post.imageTone}`}><img src={post.imageSrc} alt={postText.dish} /><span className="feed-media-category">{foodCategoryLabels[language][post.category] || post.categoryLabel}</span></div>
         <div className="feed-post-body">
-          <div className="feed-author"><span className={`feed-avatar ${post.avatarTone}`}>{post.initials}</span><span><strong>{post.author}</strong><small>{postText.time} · {restaurantText.location.split(' · ')[0]}</small></span><button type="button" className="feed-more" aria-label={`${p.moreOptions} ${postText.title}`}><Icon name="dots" size={17} /></button></div>
+          <div className="feed-author"><span className={`feed-avatar ${post.avatarTone}`}>{post.initials}</span><span><strong>{post.author}</strong><small>{postText.time} · {restaurantText.location.split(' · ')[0]}</small></span><button type="button" className={`feed-more feed-post-save ${savedPost ? 'saved' : ''}`} aria-pressed={savedPost} aria-label={`${savedPost ? 'Remove saved post' : 'Save post'}: ${postText.title}`} onClick={() => toggleSavedPost(post)}><Icon name="bookmark" size={17} /></button></div>
           <h2>{postText.title}</h2>
           <p>{postText.body}</p>
-          <div className="feed-dish"><small>{p.mustTry}</small><strong>{postText.dish}</strong><span>{postText.dishMeta}</span></div>
-          <div className="feed-restaurant"><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurantText.name || restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span><button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurantText.name || restaurant.name}` : `${p.save} ${restaurantText.name || restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button></div>
-          <div className="feed-actions"><button type="button" className={liked ? 'liked' : ''} onClick={() => toggleLike(post.id)}><Icon name="heart" size={15} /> {post.likes + (liked ? 1 : 0)}</button><span><Icon name="dots" size={15} /> {post.comments}</span><button type="button" aria-label={`${p.sharePost} ${postText.title}`}><Icon name="share" size={15} /></button></div>
+          <div className="feed-dish"><small><Icon name="spark" size={10} />{p.mustTry}</small><strong>{postText.dish}</strong><span>{postText.dishMeta}</span></div>
+          <div className={`feed-restaurant ${communityMode ? 'feed-restaurant-community' : ''}`}><span className={`feed-restaurant-mark ${restaurant.tone}`}>{restaurant.emoji}</span><span className="feed-restaurant-copy"><strong>{restaurantText.name || restaurant.name}</strong><small>{restaurantText.location} · {restaurantText.cuisine}</small></span>{!communityMode && <button type="button" className={`feed-save ${saved ? 'saved' : ''}`} aria-label={saved ? `${p.removeFromSaved} ${restaurantText.name || restaurant.name}` : `${p.save} ${restaurantText.name || restaurant.name}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name="bookmark" size={16} /><span>{saved ? p.saved : p.save}</span></button>}</div>
+          <div className="feed-actions"><button type="button" className={liked ? 'liked' : ''} onClick={() => toggleLike(post.id)}><Icon name="heart" size={15} /> {post.likes + (liked ? 1 : 0)}</button><span><Icon name="dots" size={15} /> {post.comments}</span><button type="button" aria-label={`${p.sharePost} ${postText.title}`} onClick={() => void sharePost(post)}><Icon name="share" size={15} /></button></div>
         </div>
       </article>
     })}</div>
-    {!visiblePosts.length && <div className="feed-empty"><span>🍜</span><strong>{p.noNotes}</strong><small>{p.keepExploring}</small></div>}
+    {!postsForView.length && <div className="feed-empty"><span>🍜</span><strong>{savedPostsOpen ? savedPostsCopy[language].empty : p.noNotes}</strong><small>{p.keepExploring}</small></div>}
     {!communityMode && nearbyRestaurants.length > 0 && <section className="nearby-restaurant-section"><div className="nearby-restaurant-heading"><div><h2>{nearbyText.title}</h2><p>{nearbyText.description}</p></div><Icon name="compass" size={20} /></div><div className="restaurant-list nearby-restaurant-list">{nearbyRestaurants.map((restaurant) => { const restaurantText = localizedRestaurant(language, restaurant); const displayName = restaurantText.name || restaurant.name; const saved = savedRestaurants.some((item) => item.id === restaurant.id); return <article className="restaurant-card" key={restaurant.id}><div className={`restaurant-photo ${restaurant.tone}`}>{restaurant.photoSrc ? <img src={restaurant.photoSrc} alt="" loading="lazy" /> : restaurant.emoji}</div><div><div className="restaurant-top"><strong>{displayName}</strong><button type="button" className={`restaurant-save-toggle ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={saved ? `${p.removeFromSaved} ${displayName}` : `${p.save} ${displayName}`} onClick={() => onToggleRestaurant(restaurant)}><Icon name={saved ? 'check' : 'bookmark'} size={16} /><span>{saved ? p.saved : p.save}</span></button></div><p>{restaurantText.cuisine}</p><small><Icon name="shield" size={14} /> {restaurantText.why}</small><div className="restaurant-meta"><span>{restaurantText.location}</span><span>{restaurant.rating?.toFixed(1) || '—'} ★</span></div><small className="restaurant-source">{nearbyText.source}: {restaurant.source}</small></div></article> })}</div></section>}
     {composerOpen && createPortal(<div className="sheet-backdrop feed-compose-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false) }}><form className={`feed-compose-sheet ${communityMode ? 'community-compose-sheet' : ''}`} role="dialog" aria-modal="true" aria-label={p.createFoodPost} onSubmit={publishPost} onMouseDown={(event) => event.stopPropagation()}>
       <div className="feed-compose-heading"><div><span className="community-eyebrow">{communityMode ? 'COMMUNITY' : p.exploreKicker}</span><h2>{p.createFoodNote}</h2><p>{communityMode ? 'Keep the useful details: what you ordered, how it tasted and what others should know.' : p.historyOnly}</p></div><button type="button" className="icon-button soft" onClick={() => setComposerOpen(false)} aria-label={p.closeComposer}><Icon name="close" size={18} /></button></div>

@@ -1162,6 +1162,39 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
 .assistant-loading { display: flex; align-items: center; gap: 8px; color: var(--muted); }
 .photo-three { background: #f5d5ca; }
 
+/* Requested interaction and spacing refinements */
+.find-category-card { border: 0; }
+.find-category-card.active { outline: 0; }
+.find-category-directory { display: grid; gap: 10px; }
+.find-category-directory-card { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; min-height: 66px; padding: 6px 12px 6px 6px; border: 0; border-radius: 17px; background: #fff; color: #2f2d32; text-align: left; box-shadow: 0 7px 18px rgba(40, 40, 40, .06); }
+.find-category-directory-card:hover { background: #fff7f4; color: var(--brand-deep); transform: translateY(-1px); }
+.find-category-directory-card img { width: 54px; height: 54px; border-radius: 14px; object-fit: cover; }
+.find-category-directory-card span { font-size: 13px; font-weight: 800; }
+.find-category-directory-card .icon { color: #a7a9ad; }
+.nearby-restaurant-section { margin-top: 48px; padding-top: 0; border-top: 0; }
+.nearby-restaurant-heading { margin-bottom: 20px; }
+.nearby-restaurant-list { gap: 14px; }
+.page-home .home-scan-action,
+.page-home .home-scan-action-upload { border: 0; box-shadow: none; }
+.page-home .home-scan-action:hover,
+.page-home .home-scan-action-upload:hover { border-color: transparent; box-shadow: none; }
+.community-header-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 5px; }
+.community-header-actions .icon-button.active { color: var(--brand); background: var(--brand-soft); }
+.community-feed-post { border: 0; box-shadow: 0 8px 20px rgba(167, 80, 67, .06); }
+.community-feed-post:hover { border-color: transparent; box-shadow: 0 11px 24px rgba(167, 80, 67, .09); }
+.community-feed-post .feed-dish { border: 1px solid #f2d3cc; border-radius: 12px; background: #fff8f4; box-shadow: none; }
+.community-feed-post .feed-dish::before { display: none; }
+.community-feed-post .feed-dish small { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--brand); font-size: 8px; letter-spacing: .08em; }
+.community-feed-post .feed-dish small::before { display: none; }
+.feed-post-save { color: var(--muted); }
+.feed-post-save.saved { color: var(--brand); background: var(--brand-soft); }
+.feed-post-save.saved .icon { fill: currentColor; }
+.community-feed-post .feed-restaurant-community { grid-template-columns: 29px minmax(0, 1fr); }
+
+@media (max-width: 720px) {
+  .community-feed-post .feed-restaurant-community { grid-template-columns: 23px minmax(0, 1fr); }
+}
+
 @media (max-width: 560px) {
   .saved-restaurant-grid { grid-template-columns: 1fr; }
   .saved-restaurant-card { display: grid; grid-template-columns: 94px minmax(0, 1fr); }
@@ -2057,4 +2090,39 @@ h1, h2, h3, strong, button { letter-spacing: -.03em; }
   .home-scan-tip-icon { width: 26px; height: 26px; border-radius: 8px; }
   .home-scan-tip-item strong { font-size: 10px; }
   .home-scan-tips-continue { margin-top: 12px; min-height: 42px; }
+}
+
+/* Final visual overrides: keep scan and nearby sections open and evenly spaced. */
+.page-home .home-scan-action,
+.page-home .home-scan-action-upload,
+.home-scan-content .home-scan-action { border: 0; box-shadow: none; }
+.page-home .home-scan-action:hover,
+.page-home .home-scan-action-upload:hover,
+.home-scan-content .home-scan-action:hover { border-color: transparent; box-shadow: none; }
+.page-home .home-scan-visual { border: 0; box-shadow: none; }
+.page-home .home-nearby-minimal { margin-top: 48px; padding-top: 0; border-top: 0; }
+.page-home .home-nearby-minimal .home-nearby-heading { margin-bottom: 20px; }
+
+@media (max-width: 720px) {
+  .page-home .home-nearby-minimal { margin-top: 28px; padding-top: 0; }
+  .page-home .home-nearby-minimal .home-nearby-heading { margin-bottom: 16px; }
+}
+
+/* Keep Community's new save/share controls and plain post treatment above legacy feed rules. */
+.page-community > .page-header { grid-template-columns: 40px minmax(0, 1fr) auto; }
+.community-header-actions { min-width: 85px; }
+.community-feed-post { border: 0; box-shadow: 0 8px 22px rgba(70, 44, 70, .045); }
+.community-feed-post:hover { border-color: transparent; box-shadow: 0 10px 24px rgba(70, 44, 70, .065); }
+.community-feed-post .feed-dish { border: 1px solid #f2d3cc; border-left: 1px solid #f2d3cc; border-radius: 12px; background: #fff8f4; box-shadow: none; }
+.community-feed-post .feed-dish::before { display: none; }
+.community-feed-post .feed-dish small { padding: 0; border-radius: 0; background: transparent; color: var(--brand); font-size: 8px; letter-spacing: .08em; }
+.community-feed-post .feed-dish small::before { display: none; }
+.community-feed-post .feed-restaurant-community { grid-template-columns: 29px minmax(0, 1fr); }
+.feed-post-save.saved { color: var(--brand); background: var(--brand-soft); }
+.feed-post-save.saved .icon { fill: currentColor; }
+
+@media (max-width: 720px) {
+  .page-community > .page-header { grid-template-columns: 32px minmax(0, 1fr) auto; }
+  .community-header-actions { min-width: 76px; }
+  .community-feed-post .feed-restaurant-community { grid-template-columns: 23px minmax(0, 1fr); }
 }

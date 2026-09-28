@@ -68,7 +68,7 @@
   background: var(--brand);
   color: #fff;
 }
-.profile-account-details { min-width: 0; flex: 1; display: grid; align-content: center; gap: 3px; }
+.profile-account-details { min-width: 0; flex: 1; display: grid; align-self: center; align-content: center; gap: 5px; padding-bottom: 0; }
 .profile-name-row,
 .profile-account-link {
   width: fit-content;
@@ -79,7 +79,7 @@
   text-align: left;
 }
 .profile-name-row { gap: 9px; padding: 0; color: var(--brown); }
-.profile-name-row strong { font-size: 21px; line-height: 1.15; font-weight: 650; }
+.profile-name-row strong { font-size: 25px; line-height: 1.12; font-weight: 650; }
 .profile-name-row:hover, .profile-account-link:hover { background: transparent; color: var(--brown); }
 .profile-tier-badge {
   padding: 3px 6px;
@@ -91,7 +91,7 @@
 }
 .profile-tier-free { background: var(--green-soft); color: var(--green-deep); }
 .profile-tier-pro { background: var(--brand-soft); color: var(--brand-deep); }
-.profile-account-link { gap: 4px; padding: 0; color: #999c96; font-size: 14px; line-height: 1.2; font-weight: 500; }
+.profile-account-link { gap: 5px; padding: 0; color: #999c96; font-size: 17px; line-height: 1.2; font-weight: 500; }
 .profile-account-link .icon { color: #b2b4b0; }
 .profile-account-card .profile-subscription-summary { display: none; }
 
@@ -109,7 +109,8 @@
 .profile-entry-list {
   display: grid;
   gap: 0;
-  padding: 3px 14px;
+  grid-auto-rows: 54px;
+  padding: 0 14px;
   border: 0;
   border-radius: 16px;
   background: #fff;
@@ -118,12 +119,14 @@
 }
 .profile-setting-card {
   width: 100%;
-  min-height: 58px;
+  height: 54px;
+  min-height: 54px;
+  max-height: 54px;
   display: flex;
   align-items: center;
   gap: 11px;
   margin: 0;
-  padding: 8px 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -131,6 +134,7 @@
   box-shadow: none;
   transition: background .18s ease;
 }
+.profile-setting-card + .profile-setting-card { margin-top: 0; }
 .profile-setting-card:hover { background: #f7f7f3; transform: none; }
 .profile-setting-icon {
   width: 28px;
