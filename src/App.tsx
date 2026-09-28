@@ -109,6 +109,7 @@ type Dish = {
   hasGarlic?: boolean
   hasLard?: boolean
   confidence: number
+  browseOnly?: boolean
   taste: string
   texture: string
   cooking: string
@@ -619,12 +620,12 @@ const uploadSourceCopy: Record<Language, { title: string; subtitle: string; phot
 }
 
 const askEditorCopy: Record<Language, { chinese: string; english: string; translate: string; translating: string; translationError: string; pause: string; resume: string; editHint: string; translationHint: string }> = {
-  en: { chinese: 'Chinese', english: 'English', translate: 'Translate', translating: 'Translating…', translationError: 'Translation failed. Please try again.', pause: 'Pause', resume: 'Resume', editHint: 'Edit the Chinese question before showing it to the restaurant.', translationHint: 'Tap Translate after editing to generate a new English version.' },
-  ko: { chinese: '중국어', english: '영어', translate: '번역', translating: '번역 중…', translationError: '번역에 실패했습니다. 다시 시도해 주세요.', pause: '일시정지', resume: '계속 재생', editHint: '식당에 보여줄 중국어 질문을 수정할 수 있어요.', translationHint: '수정 후 번역을 눌러 새 영어 문장을 만드세요.' },
-  ja: { chinese: '中国語', english: '英語', translate: '翻訳', translating: '翻訳中…', translationError: '翻訳に失敗しました。もう一度お試しください。', pause: '一時停止', resume: '再開', editHint: 'お店に見せる中国語の質問を編集できます。', translationHint: '編集後に「翻訳」を押すと英語を更新します。' },
-  ru: { chinese: 'Китайский', english: 'Английский', translate: 'Перевести', translating: 'Переводим…', translationError: 'Не удалось перевести. Попробуйте ещё раз.', pause: 'Пауза', resume: 'Продолжить', editHint: 'Отредактируйте вопрос на китайском перед показом ресторану.', translationHint: 'После правки нажмите «Перевести», чтобы создать новую английскую версию.' },
-  es: { chinese: 'Chino', english: 'Inglés', translate: 'Traducir', translating: 'Traduciendo…', translationError: 'No se pudo traducir. Inténtalo de nuevo.', pause: 'Pausar', resume: 'Reanudar', editHint: 'Edita la pregunta en chino antes de enseñarla al restaurante.', translationHint: 'Después de editar, pulsa Traducir para generar una nueva versión.' },
-  it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', translationError: 'Traduzione non riuscita. Riprova.', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in cinese prima di mostrarla al ristorante.', translationHint: 'Dopo aver modificato il testo, premi Traduci per generare un nuovo inglese.' },
+  en: { chinese: 'Chinese', english: 'English', translate: 'Translate', translating: 'Translating…', translationError: 'Translation failed. Please try again.', pause: 'Pause', resume: 'Resume', editHint: 'Edit your question in English. We’ll translate it into Chinese for the restaurant.', translationHint: 'Edit the English question, then tap Translate to create the Chinese version.' },
+  ko: { chinese: '중국어', english: '영어', translate: '번역', translating: '번역 중…', translationError: '번역에 실패했습니다. 다시 시도해 주세요.', pause: '일시정지', resume: '계속 재생', editHint: '영어로 질문을 수정하면 식당에 보여줄 중국어로 번역합니다.', translationHint: '영어 질문을 수정한 후 번역을 눌러 중국어 문장을 만드세요.' },
+  ja: { chinese: '中国語', english: '英語', translate: '翻訳', translating: '翻訳中…', translationError: '翻訳に失敗しました。もう一度お試しください。', pause: '一時停止', resume: '再開', editHint: '英語で質問を編集すると、店員に見せる中国語に翻訳します。', translationHint: '英語の質問を編集して「翻訳」を押すと、中国語の文を作成します。' },
+  ru: { chinese: 'Китайский', english: 'Английский', translate: 'Перевести', translating: 'Переводим…', translationError: 'Не удалось перевести. Попробуйте ещё раз.', pause: 'Пауза', resume: 'Продолжить', editHint: 'Измените вопрос на английском — мы переведём его на китайский для ресторана.', translationHint: 'Измените вопрос на английском и нажмите «Перевести», чтобы создать китайскую версию.' },
+  es: { chinese: 'Chino', english: 'Inglés', translate: 'Traducir', translating: 'Traduciendo…', translationError: 'No se pudo traducir. Inténtalo de nuevo.', pause: 'Pausar', resume: 'Reanudar', editHint: 'Edita la pregunta en inglés y la traduciremos al chino para el restaurante.', translationHint: 'Edita la pregunta en inglés y pulsa Traducir para crear la versión en chino.' },
+  it: { chinese: 'Cinese', english: 'Inglese', translate: 'Traduci', translating: 'Traduzione…', translationError: 'Traduzione non riuscita. Riprova.', pause: 'Pausa', resume: 'Riprendi', editHint: 'Modifica la domanda in inglese e la tradurremo in cinese per il ristorante.', translationHint: 'Modifica la domanda in inglese e premi Traduci per creare la versione cinese.' },
 }
 
 const offlineChineseTranslations: Array<[string, string]> = [
@@ -765,6 +766,126 @@ const dishes: Dish[] = baseDishes.map((dish) => {
   const allergenEvidence = [...dish.allergens.map((id) => ({ id, source: 'menu' as const })), ...(knowledge?.allergens || []).map(({ id, label }) => ({ id, label, source: 'knowledge' as const }))]
   return { ...dish, ingredientEvidence, allergenEvidence, ...(knowledge ? { knowledgeMatch: { id: knowledge.id, nameZh: dish.zh, nameEn: knowledge.nameEn, aliases: knowledge.aliases } } : {}) }
 })
+
+const findFoodZhById: Record<string, string> = {
+  'shanghai-braised-pork-ribs': '红烧排骨',
+  'shanghai-soup-dumplings': '小笼汤包',
+  'shanghai-braised-pork': '红烧肉',
+  'shanghai-lions-head': '狮子头',
+  'shanghai-drunken-chicken': '醉鸡',
+  'shanghai-lotus-root': '糖醋藕片',
+  'hotpot-mushroom-broth': '菌汤火锅',
+  'hotpot-sichuan-broth': '麻辣火锅',
+  'hotpot-beef-slices': '手切牛肉',
+  'hotpot-shrimp-balls': '虾滑',
+  'hotpot-napa-cabbage': '娃娃菜',
+  'hotpot-sesame-noodles': '麻酱蘸面',
+  'sichuan-mapo-tofu': '麻婆豆腐',
+  'sichuan-kung-pao-chicken': '宫保鸡丁',
+  'sichuan-fish-fragrant-eggplant': '鱼香茄子',
+  'sichuan-dry-pot-prawns': '干锅虾',
+  'sichuan-dan-dan-noodles': '担担面',
+  'sichuan-twice-cooked-pork': '回锅肉',
+  'snacks-pan-fried-buns': '生煎包',
+  'snacks-soup-dumplings': '小笼包',
+  'snacks-scallion-pancake': '葱油饼',
+  'snacks-sesame-balls': '芝麻球',
+  'snacks-rice-cakes': '甜酒酿糕',
+  'snacks-braised-tofu': '五香豆腐',
+  'cantonese-shrimp-dumplings': '虾饺',
+  'cantonese-char-siu': '蜜汁叉烧',
+  'cantonese-wonton-noodles': '云吞面',
+  'cantonese-steamed-fish': '姜葱蒸鱼',
+  'cantonese-winter-melon-soup': '冬瓜汤',
+  'cantonese-egg-tart': '蛋挞',
+  'vegetarian-garlic-greens': '蒜蓉时蔬',
+  'vegetarian-lotus-root': '糖醋藕片',
+  'vegetarian-mushroom-soup': '冬瓜菌菇汤',
+  'vegetarian-mapo-tofu': '素麻婆豆腐',
+  'vegetarian-eggplant': '鱼香茄子',
+  'vegetarian-crispy-tofu': '香酥豆腐',
+  'bbq-cumin-lamb': '孜然羊肉串',
+  'bbq-grilled-fish': '炭烤鱼',
+  'bbq-chicken-wings': '辣烤鸡翅',
+  'bbq-grilled-eggplant': '蒜香烤茄子',
+  'bbq-oyster-mushrooms': '烤杏鲍菇',
+  'bbq-pork-belly': '烤五花肉串',
+}
+
+const findFoodIngredientByTag: Record<string, string> = {
+  Pork: 'Pork', Beef: 'Beef', Chicken: 'Chicken', Lamb: 'Lamb',
+  Seafood: 'Seafood', Fish: 'Fish', Tofu: 'Tofu', Soy: 'Soy', Peanut: 'Peanuts',
+  Sesame: 'Sesame', Egg: 'Egg', Wheat: 'Wheat', Garlic: 'Garlic', Scallion: 'Scallions',
+  Ginger: 'Ginger', Chili: 'Dried chilies', Cumin: 'Cumin', Noodles: 'Wheat noodles',
+}
+
+const findFoodCategoryNarratives: Record<string, Pick<Dish, 'taste' | 'texture' | 'cooking' | 'bestWith' | 'culture'>> = {
+  local: { taste: 'Savory-sweet and aromatic', texture: 'Tender, glossy and comforting', cooking: 'Often braised, steamed or gently simmered', bestWith: 'Steamed rice and shared dishes', culture: 'Shanghai cooking is known for a balanced savory-sweet profile and slow-building soy aromas.' },
+  hotpot: { taste: 'Layered, warming and easy to customize', texture: 'From tender slices to crisp vegetables', cooking: 'Cooked at the table in a shared broth', bestWith: 'A dipping sauce and a group meal', culture: 'Hotpot is a shared-table format; the broth, dipping sauce and cooking utensils can vary by restaurant.' },
+  sichuan: { taste: 'Aromatic, spicy and often numbing', texture: 'Silky, crisp or tender depending on the dish', cooking: 'Usually wok-fried, braised or simmered with layered seasonings', bestWith: 'Steamed rice and a cooling vegetable dish', culture: 'Sichuan cooking builds flavor with chili, aromatics and Sichuan pepper; “fish-fragrant” refers to a seasoning style, not necessarily fish.' },
+  snacks: { taste: 'Savory, fragrant or lightly sweet', texture: 'Crisp outside with a soft or juicy center', cooking: 'Steamed, pan-fried or baked in small portions', bestWith: 'Tea, black vinegar or a shared snack table', culture: 'Chinese snack traditions often turn dough, rice and simple fillings into small dishes made for sharing.' },
+  cantonese: { taste: 'Clean, delicate and naturally savory', texture: 'Tender, smooth and lightly crisp', cooking: 'Often steamed, roasted or gently poached', bestWith: 'Tea and a light shared meal', culture: 'Cantonese cooking often emphasizes ingredient texture and restrained seasoning, but sauces and stocks still need restaurant confirmation.' },
+  vegetarian: { taste: 'Fresh, aromatic and balanced', texture: 'Crisp vegetables, soft tofu or silky braises', cooking: 'Stir-fried, braised, steamed or crisp-fried', bestWith: 'Rice, noodles and other vegetable dishes', culture: 'A vegetarian label describes the dish’s intended profile; stock, cooking oil and shared cookware can still vary.' },
+  bbq: { taste: 'Smoky, savory and spice-forward', texture: 'Charred edges with a juicy or tender center', cooking: 'Grilled over high heat with a dry rub or glaze', bestWith: 'Rice, cold vegetables and a mild drink', culture: 'Barbecue seasoning and grill surfaces differ widely, so marinades, oil and cross-contact should be checked at the restaurant.' },
+}
+
+const findFoodDishFromCard = (item: FindDishCardItem, categoryId: string): Dish => {
+  const tags = item.tags
+  const normalizedTags = tags.map((tag) => tag.toLowerCase())
+  const ingredients = [...new Set(tags.map((tag) => findFoodIngredientByTag[tag]).filter(Boolean))]
+  const explicitAllergens = [...new Set([
+    normalizedTags.some((tag) => tag.includes('peanut')) ? 'peanut' : '',
+    normalizedTags.some((tag) => tag.includes('sesame')) ? 'sesame' : '',
+    normalizedTags.some((tag) => tag.includes('wheat') || tag.includes('noodle') || tag.includes('dumpling')) ? 'wheat' : '',
+    normalizedTags.some((tag) => tag.includes('egg')) ? 'egg' : '',
+    normalizedTags.some((tag) => tag.includes('soy') || tag.includes('tofu')) ? 'soy' : '',
+    normalizedTags.some((tag) => tag.includes('seafood') || tag.includes('shrimp') || tag.includes('fish')) ? 'crustacean' : '',
+  ].filter(Boolean))]
+  const isVegetarian = normalizedTags.includes('vegetarian') || normalizedTags.some((tag) => ['tofu', 'mushroom', 'eggplant', 'greens', 'vegetable', 'cabbage', 'lotus', 'sweet', 'scallion'].some((term) => tag.includes(term)))
+  const hasPork = normalizedTags.some((tag) => tag.includes('pork'))
+  const hasBeef = normalizedTags.some((tag) => tag.includes('beef'))
+  const hasPoultry = normalizedTags.some((tag) => tag.includes('chicken'))
+  const hasSeafood = normalizedTags.some((tag) => tag.includes('seafood') || tag.includes('fish') || tag.includes('shrimp'))
+  const hasGarlic = normalizedTags.some((tag) => tag.includes('garlic'))
+  const hasScallion = normalizedTags.some((tag) => tag.includes('scallion'))
+  const spicy = normalizedTags.some((tag) => tag.includes('spicy') || tag.includes('chili')) ? 2 : normalizedTags.some((tag) => tag.includes('pepper')) ? 1 : 0
+  const narrative = findFoodCategoryNarratives[categoryId] || findFoodCategoryNarratives.local
+  const ingredientList = ingredients.length ? ingredients : ['Recipe details vary by restaurant']
+  const localized = { en: item.name, ko: item.name, ja: item.name, ru: item.name, es: item.name, it: item.name }
+  return {
+    id: `find-food-${item.id}`,
+    name: item.name,
+    zh: findFoodZhById[item.id] || item.name,
+    localized,
+    price: 0,
+    imageSrc: item.imageSrc,
+    className: 'visual-find-food',
+    ingredients: ingredientList,
+    zhIngredients: ingredientList,
+    allergens: explicitAllergens,
+    possibleIngredients: ['Cooking oil', 'Sauce or stock base'],
+    tags,
+    spicy,
+    vegetarian: isVegetarian,
+    vegan: isVegetarian && !normalizedTags.some((tag) => tag.includes('egg') || tag.includes('milk')),
+    hasPork,
+    hasBeef,
+    hasPoultry,
+    hasSeafood,
+    hasGarlic,
+    hasScallion,
+    confidence: 0.58,
+    browseOnly: true,
+    taste: narrative.taste,
+    texture: narrative.texture,
+    cooking: narrative.cooking,
+    bestWith: narrative.bestWith,
+    culture: narrative.culture,
+    reason: 'This is common recipe context for discovery. The restaurant menu, sauce, stock, cooking oil and cross-contact still need to be confirmed.',
+    ingredientEvidence: [...ingredientList.map((label) => ({ label, source: 'knowledge' as const })), ...['Cooking oil', 'Sauce or stock base'].map((label) => ({ label, source: 'unknown' as const }))],
+    allergenEvidence: explicitAllergens.map((id) => ({ id, source: 'knowledge' as const })),
+  }
+}
 
 const emptyLocalized: Record<Language, string> = { en: '', ko: '', ja: '', ru: '', es: '', it: '' }
 const mapBackendDish = (raw: BackendDish): Dish => {
@@ -1101,8 +1222,8 @@ const findFoodCategoryPreview: Record<string, FindDishCardItem[]> = {
     { id: 'shanghai-lotus-root', name: 'Sweet-sour lotus root', category: 'Shanghai cuisine', imageSrc: '/dish-photos/lotus-root.webp', tags: ['Crisp', 'Sweet-sour'] },
   ],
   hotpot: [
-    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-mushroom-broth.webp', tags: ['Mild', 'Shared'] },
-    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sichuan-broth.webp', tags: ['Spicy', 'Numbing'] },
+    { id: 'hotpot-mushroom-broth', name: 'Mushroom broth hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-sichuan-broth.webp', tags: ['Mild', 'Shared'] },
+    { id: 'hotpot-sichuan-broth', name: 'Sichuan spicy hot pot', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-mushroom-broth.webp', tags: ['Spicy', 'Numbing'] },
     { id: 'hotpot-beef-slices', name: 'Hand-sliced beef', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-beef-slices.webp', tags: ['Beef', 'Tender'] },
     { id: 'hotpot-shrimp-balls', name: 'Shrimp paste balls', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-shrimp-balls.webp', tags: ['Seafood', 'Bouncy'] },
     { id: 'hotpot-napa-cabbage', name: 'Napa cabbage', category: 'Hotpot', imageSrc: '/dish-photos/hotpot-napa-cabbage.webp', tags: ['Vegetable', 'Fresh'] },
@@ -2127,7 +2248,7 @@ function App() {
     </div>
     {homeScanTipsOpen && <HomeScanTipsSheet t={t} onClose={() => setHomeScanTipsOpen(false)} onContinue={continueHomeCamera} />}
     {riskConfirmDish && <RiskConfirmSheet language={language} p={p} t={t} dish={riskConfirmDish} status={getDiningStatus(riskConfirmDish)} onClose={() => setRiskConfirmDish(null)} onAsk={askAboutRiskDish} onConfirm={confirmRiskDish} />}
-    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} onTranslate={(text) => translateText({ text, sourceLanguage: 'zh-CN', targetLanguage: 'en' })} />}
+    {askSheet && <AskSheet t={t} p={p} language={language} dish={selectedDish} question={questionFor(selectedDish)} loading={assistantLoading} onClose={() => setAskSheet(false)} onCopy={copyQuestion} onSpeak={(text, onEnd) => speak(text, 'question_voice_play', onEnd)} onTranslate={(text) => translateText({ text, sourceLanguage: 'en', targetLanguage: 'zh-CN' })} />}
     {proGateFeature && <ProFeatureGateModal language={language} feature={proGateFeature} onClose={() => setProGateFeature(null)} onUpgrade={() => { setProGateFeature(null); setSubscriptionOpen(true) }} />}
     {subscriptionOpen && account && <SubscriptionModal language={language} user={account} onSelect={updateSubscription} onClose={() => setSubscriptionOpen(false)} />}
     {toast && <div className="toast"><Icon name="check" size={16} /> {toast}</div>}
@@ -2910,7 +3031,7 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
     <div className="detail-card">
       <div className="detail-card-handle" aria-hidden="true" />
       <div className="detail-card-topline"><StatusBadge status={status} t={t} showLabel /></div>
-      <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div><strong>¥{dish.price}</strong></div>
+      <div className="detail-heading"><div><h1>{dish.localized[language]}</h1><span>{dish.zh}</span></div>{dish.browseOnly ? <span className="detail-price-not-set">{p.notSpecified}</span> : <strong>¥{dish.price}</strong>}</div>
       <div className="detail-meta-row"><span className="detail-meta-chip"><Icon name="chili" size={15} />{dish.spicy ? '🌶️'.repeat(dish.spicy) : '○'} {dish.spicy ? dish.spicy === 1 ? p.mild : dish.spicy === 2 ? p.medium : p.spicy : p.notSpicy}</span>{dish.tags.slice(0, 2).map((tag) => <span className="detail-meta-chip" key={tag}><Icon name="check" size={14} />{dishTagLabel(language, tag)}</span>)}</div>
       <section className="detail-ingredients-section">
         <div className="detail-section-heading"><SectionTitle>{t('mainIngredients')}</SectionTitle><span>{p.swipeExplore}</span></div>
@@ -2918,11 +3039,11 @@ function DishDetail({ t, p, language, dish, passport, status, onBack, onAsk, onA
           {ingredientChecks.map((item) => <div className={`ingredient-card ingredient-card-${item.risk}`} key={`${item.label}-${item.risk}-${item.source}`} role="listitem"><strong>{ingredientDisplayLabel(language, item.label)}</strong><IngredientVisual label={item.label} /><small>{ingredientRiskLabel(item.risk, t)}</small></div>)}
         </div>
       </section>
-      <p className="illustrative"><Icon name="alert" size={15} /> {t('illustrative')}</p>
+      <p className="illustrative"><Icon name="alert" size={15} /> {dish.browseOnly ? 'Common recipe context · confirm ingredients, oil and cross-contact with the restaurant.' : t('illustrative')}</p>
       <section className="detail-info-section"><div className="detail-section-heading"><SectionTitle>Description</SectionTitle></div><div className="detail-status-summary"><span>{status === 'CONFLICT' ? t('detailsConflict') : status === 'WARNING' ? t('possibleConflict') : status === 'UNKNOWN' ? t('detailsUnknown') : t('detailsMatch')}</span></div></section>
       <div className="fact-grid"><Fact icon="chili" title={t('taste')} value={dishNarrativeLabel(language, dish, 'taste')} /><Fact icon="tofuBowl" title={t('texture')} value={dishNarrativeLabel(language, dish, 'texture')} /><Fact icon="pot" title={t('cooking')} value={dishNarrativeLabel(language, dish, 'cooking')} /><Fact icon="riceBowl" title={t('bestWith')} value={dishNarrativeLabel(language, dish, 'bestWith')} /></div>
       <section className="detail-info-section"><SectionTitle>{t('culturalNote')}</SectionTitle><div className="culture-card"><Icon name="book" size={27} stroke={1.8} /><p>{dishNarrativeLabel(language, dish, 'culture')}</p></div></section>
-      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button><Button onClick={onAddToCart} icon="cart">{p.addToCart}</Button></div>
+      <div className="detail-actions"><Button variant="secondary" onClick={onAsk} icon="alert">{t('askRestaurant')}</Button>{!dish.browseOnly && <Button onClick={onAddToCart} icon="cart">{p.addToCart}</Button>}</div>
     </div>
   </div>
 }
@@ -3047,15 +3168,15 @@ function RiskConfirmSheet({ language, p, t, dish, status, onClose, onAsk, onConf
 
 function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, onSpeak, onTranslate }: { t: (key: CopyKey) => string; p: PageCopy; language: Language; dish: Dish; question: string; loading: boolean; onClose: () => void; onCopy: (text: string) => void; onSpeak: (text: string, onEnd: () => void) => void; onTranslate: (text: string) => Promise<string> }) {
   const text = askEditorCopy[language]
-  const [editedQuestion, setEditedQuestion] = useState(question)
-  const [translation, setTranslation] = useState(() => translateRestaurantQuestion(question, dish))
+  const [editedQuestion, setEditedQuestion] = useState(() => translateRestaurantQuestion(question, dish))
+  const [translation, setTranslation] = useState(question)
   const [translationError, setTranslationError] = useState('')
   const [translating, setTranslating] = useState(false)
   const [speechState, setSpeechState] = useState<'idle' | 'playing' | 'paused'>('idle')
 
   useEffect(() => {
-    setEditedQuestion(question)
-    setTranslation(translateRestaurantQuestion(question, dish))
+    setEditedQuestion(translateRestaurantQuestion(question, dish))
+    setTranslation(question)
     setTranslationError('')
     setSpeechState('idle')
   }, [question, dish])
@@ -3078,7 +3199,7 @@ function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, on
       return
     }
     setSpeechState('playing')
-    onSpeak(editedQuestion, () => setSpeechState('idle'))
+    onSpeak(translation, () => setSpeechState('idle'))
   }
   const updateQuestion = (value: string) => {
     stopSpeech()
@@ -3100,7 +3221,7 @@ function AskSheet({ t, p, language, dish, question, loading, onClose, onCopy, on
     }
   }
   const close = () => { stopSpeech(); onClose() }
-  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong><small>{text.editHint}</small></div><textarea aria-label={text.chinese} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading || translating} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong></div>{translationError ? <p className="bilingual-empty">{translationError}</p> : translation ? <p className="bilingual-translation">{translation}</p> : <p className="bilingual-empty">{text.translationHint}</p>}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={() => void translate()} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || translating || !editedQuestion.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(editedQuestion)} icon="copy" disabled={loading || translating || !editedQuestion.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
+  return <div className="sheet-backdrop" onClick={close}><section className="ask-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-top"><span className="safety-label"><Icon name="shield" size={15} /> {t('askWarning')}</span><button className="icon-button soft" onClick={close} aria-label={p.clear}><Icon name="close" size={18} /></button></div><h2>{t('askTitle')}</h2><div className="question-card bilingual-question-card"><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.english}</strong><small>{text.editHint}</small></div><textarea aria-label={text.english} className="bilingual-question-input" value={editedQuestion} onChange={(event) => updateQuestion(event.target.value)} disabled={loading || translating} /></div><div className="bilingual-divider" /><div className="bilingual-block"><div className="bilingual-block-heading"><strong>{text.chinese}</strong></div>{translationError ? <p className="bilingual-empty">{translationError}</p> : translation ? <p className="bilingual-translation">{translation}</p> : null}<small className="bilingual-translation-hint">{text.translationHint}</small></div><Button className="bilingual-translate-button" variant="secondary" onClick={() => void translate()} icon="refresh" disabled={loading || translating || !editedQuestion.trim()}>{translating ? text.translating : text.translate}</Button><hr /><strong>{dish.localized[language]}</strong><small>{dish.zh} · {dish.price} CNY</small></div><div className="sheet-actions"><Button onClick={toggleSpeech} icon="volume" disabled={loading || translating || !translation.trim()}>{speechState === 'paused' ? text.resume : speechState === 'playing' ? text.pause : t('playChinese')}</Button><Button variant="secondary" onClick={() => onCopy(translation)} icon="copy" disabled={loading || translating || !translation.trim()}>{t('copyQuestion')}</Button></div><p className="sheet-disclaimer">{p.askDisclaimer}</p></section></div>
 }
 
 function ItemSplitPicker({ p, participants, selected, participantLabel, open, onToggle, onChange }: { p: PageCopy; participants: string[]; selected: string[]; participantLabel: (person: string) => string; open: boolean; onToggle: () => void; onChange: (people: string[]) => void }) {
@@ -3193,7 +3314,7 @@ function FindFood({ t, p, language, onBack, onDetail }: { t: (key: CopyKey) => s
         <h1>{categoryLabel}</h1>
       </div>
       <div className="find-dish-card-grid">
-        {previewCards.map((card) => <FindDishCard key={card.id} item={{ ...card, category: categoryLabel }} />)}
+        {previewCards.map((card) => <FindDishCard key={card.id} item={{ ...card, category: categoryLabel }} onClick={() => onDetail(findFoodDishFromCard(card, categoryPage))} />)}
       </div>
     </div>
   }
